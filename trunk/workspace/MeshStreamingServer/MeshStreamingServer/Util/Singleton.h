@@ -12,6 +12,7 @@
 
 using namespace std ;
 
+//singleton class
 class Singleton 
 {
 public:
