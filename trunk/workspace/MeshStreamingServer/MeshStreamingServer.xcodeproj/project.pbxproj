@@ -9,6 +9,11 @@
 /* Begin PBXBuildFile section */
 		28D0AC4A1618815B000D174C /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28D0AC491618815B000D174C /* main.cpp */; };
 		28D0AC4C1618815B000D174C /* MeshStreamingServer.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 28D0AC4B1618815B000D174C /* MeshStreamingServer.1 */; };
+		28D0AC6A16188439000D174C /* libPocoFoundation.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 28D0AC6716188439000D174C /* libPocoFoundation.dylib */; };
+		28D0AC6B16188439000D174C /* libPocoNet.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 28D0AC6816188439000D174C /* libPocoNet.dylib */; };
+		28D0AC6C16188439000D174C /* libPocoUtil.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 28D0AC6916188439000D174C /* libPocoUtil.dylib */; };
+		28D0AC6F16188444000D174C /* libOpenMeshCore.2.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 28D0AC6D16188444000D174C /* libOpenMeshCore.2.3.dylib */; };
+		28D0AC7016188444000D174C /* libOpenMeshTools.2.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 28D0AC6E16188444000D174C /* libOpenMeshTools.2.3.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,6 +33,11 @@
 		28D0AC451618815B000D174C /* MeshStreamingServer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MeshStreamingServer; sourceTree = BUILT_PRODUCTS_DIR; };
 		28D0AC491618815B000D174C /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		28D0AC4B1618815B000D174C /* MeshStreamingServer.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = MeshStreamingServer.1; sourceTree = "<group>"; };
+		28D0AC6716188439000D174C /* libPocoFoundation.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libPocoFoundation.dylib; path = ../../../../../../../usr/local/lib/libPocoFoundation.dylib; sourceTree = "<group>"; };
+		28D0AC6816188439000D174C /* libPocoNet.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libPocoNet.dylib; path = ../../../../../../../usr/local/lib/libPocoNet.dylib; sourceTree = "<group>"; };
+		28D0AC6916188439000D174C /* libPocoUtil.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libPocoUtil.dylib; path = ../../../../../../../usr/local/lib/libPocoUtil.dylib; sourceTree = "<group>"; };
+		28D0AC6D16188444000D174C /* libOpenMeshCore.2.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libOpenMeshCore.2.3.dylib; path = ../../../../../../../usr/local/lib/OpenMesh/libOpenMeshCore.2.3.dylib; sourceTree = "<group>"; };
+		28D0AC6E16188444000D174C /* libOpenMeshTools.2.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libOpenMeshTools.2.3.dylib; path = ../../../../../../../usr/local/lib/OpenMesh/libOpenMeshTools.2.3.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -35,6 +45,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				28D0AC6F16188444000D174C /* libOpenMeshCore.2.3.dylib in Frameworks */,
+				28D0AC7016188444000D174C /* libOpenMeshTools.2.3.dylib in Frameworks */,
+				28D0AC6A16188439000D174C /* libPocoFoundation.dylib in Frameworks */,
+				28D0AC6B16188439000D174C /* libPocoNet.dylib in Frameworks */,
+				28D0AC6C16188439000D174C /* libPocoUtil.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -44,6 +59,11 @@
 		28D0AC3A1618815B000D174C = {
 			isa = PBXGroup;
 			children = (
+				28D0AC6D16188444000D174C /* libOpenMeshCore.2.3.dylib */,
+				28D0AC6E16188444000D174C /* libOpenMeshTools.2.3.dylib */,
+				28D0AC6716188439000D174C /* libPocoFoundation.dylib */,
+				28D0AC6816188439000D174C /* libPocoNet.dylib */,
+				28D0AC6916188439000D174C /* libPocoUtil.dylib */,
 				28D0AC481618815B000D174C /* MeshStreamingServer */,
 				28D0AC461618815B000D174C /* Products */,
 			);
@@ -150,7 +170,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = macosx;
+				SDKROOT = "";
 			};
 			name = Debug;
 		};
@@ -173,13 +193,17 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
-				SDKROOT = macosx;
+				SDKROOT = "";
 			};
 			name = Release;
 		};
 		28D0AC501618815B000D174C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/lib/OpenMesh,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -187,6 +211,10 @@
 		28D0AC511618815B000D174C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/lib/OpenMesh,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -210,6 +238,7 @@
 				28D0AC511618815B000D174C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
