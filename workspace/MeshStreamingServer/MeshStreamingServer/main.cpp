@@ -15,6 +15,7 @@ int main(int argc, const char * argv[])
     std::cout << "Hello, World!\n";
     // hahaha
     //lala
+    std::cout << "workspace try!" << std::endl;
     return 0;
 }
 
