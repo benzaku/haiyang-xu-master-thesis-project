@@ -1,21 +1,24 @@
 //
 //  main.cpp
-//  MeshStreamingServer
+//  PMStreamServer
 //
-//  Created by Haiyang Xu on 9/30/12.
-//  Copyright (c) 2012 Haiyang Xu. All rights reserved.
+//  Created by Haiyang Xu on 9/13/12.
+//  Copyright (c) 2012 SJTU. All rights reserved.
 //
 
 #include <iostream>
+#include "PMStreamServer.h"
 
-int main(int argc, const char * argv[])
+int main(int argc, char** argv)
 {
 
     // insert code here...
-    std::cout << "Hello, World!\n";
-    // hahaha
-    //lala
-    std::cout << "workspace try!" << std::endl;
-    return 0;
+    std::cout << "Starting PMStreamServer ... \n";
+    
+    PMStreamServer pmStreamServer;
+    
+    
+    
+    return pmStreamServer.run(argc, argv);
 }
 
