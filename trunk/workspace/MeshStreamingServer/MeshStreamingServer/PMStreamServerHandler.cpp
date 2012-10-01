@@ -130,7 +130,7 @@ PMStreamServerHandler::handleRequest()
         char * baseMeshChunk = _pmFH->getPMLoader()->getBaseMeshChunk();
         _templen = _pmFH->getPMLoader()->getBaseMeshChunkSize();
         _socket.sendBytes(baseMeshChunk, _templen);
-        delete baseMeshChunk;
+        //delete baseMeshChunk;
         std::cout<< "BASE_MESH sent..." << std::endl; 
     }
     
