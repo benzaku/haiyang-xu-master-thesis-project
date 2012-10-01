@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:MeshStreamingClient_Desktop/MeshStreamingClient_Desktop.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:MeshStreamingServer/MeshStreamingServer.xcodeproj">
    </FileRef>
 </Workspace>
