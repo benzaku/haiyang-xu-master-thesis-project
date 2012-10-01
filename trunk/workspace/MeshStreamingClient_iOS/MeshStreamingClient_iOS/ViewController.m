@@ -202,7 +202,11 @@
             //data.
             TransmitProgress = ((float)TransmittedDetails) / ((float) NDetailVertices * 24);
             NSLog(@"TransmittedProgress:%f%", TransmitProgress * 100 );
+            
             [progress setProgress:TransmitProgress];
+            if(TransmitProgress >= 1){
+                [socket disconnect];
+            }
             [socket readDataWithTimeout:-1 tag:0];
             break;
             
