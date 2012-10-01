@@ -9,6 +9,12 @@
 /* Begin PBXBuildFile section */
 		DD24841A1619AB6D000F2FBE /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DD2484191619AB6D000F2FBE /* main.cpp */; };
 		DD24841C1619AB6D000F2FBE /* MeshStreamingClient_Desktop.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = DD24841B1619AB6D000F2FBE /* MeshStreamingClient_Desktop.1 */; };
+		DD2484281619ABEE000F2FBE /* libOpenMeshCore.2.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DD2484261619ABEE000F2FBE /* libOpenMeshCore.2.3.dylib */; };
+		DD2484291619ABEE000F2FBE /* libOpenMeshTools.2.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DD2484271619ABEE000F2FBE /* libOpenMeshTools.2.3.dylib */; };
+		DD24842D1619AC08000F2FBE /* libPocoFoundation.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DD24842A1619AC08000F2FBE /* libPocoFoundation.dylib */; };
+		DD24842E1619AC08000F2FBE /* libPocoNet.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DD24842B1619AC08000F2FBE /* libPocoNet.dylib */; };
+		DD24842F1619AC08000F2FBE /* libPocoUtild.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DD24842C1619AC08000F2FBE /* libPocoUtild.dylib */; };
+		DD2484321619AC4E000F2FBE /* PMLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DD2484311619AC4E000F2FBE /* PMLoader.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,6 +34,13 @@
 		DD2484151619AB6D000F2FBE /* MeshStreamingClient_Desktop */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MeshStreamingClient_Desktop; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD2484191619AB6D000F2FBE /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		DD24841B1619AB6D000F2FBE /* MeshStreamingClient_Desktop.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = MeshStreamingClient_Desktop.1; sourceTree = "<group>"; };
+		DD2484261619ABEE000F2FBE /* libOpenMeshCore.2.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libOpenMeshCore.2.3.dylib; path = ../../../../../../../../usr/local/lib/OpenMesh/libOpenMeshCore.2.3.dylib; sourceTree = "<group>"; };
+		DD2484271619ABEE000F2FBE /* libOpenMeshTools.2.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libOpenMeshTools.2.3.dylib; path = ../../../../../../../../usr/local/lib/OpenMesh/libOpenMeshTools.2.3.dylib; sourceTree = "<group>"; };
+		DD24842A1619AC08000F2FBE /* libPocoFoundation.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libPocoFoundation.dylib; path = ../../../../../../../../usr/local/lib/libPocoFoundation.dylib; sourceTree = "<group>"; };
+		DD24842B1619AC08000F2FBE /* libPocoNet.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libPocoNet.dylib; path = ../../../../../../../../usr/local/lib/libPocoNet.dylib; sourceTree = "<group>"; };
+		DD24842C1619AC08000F2FBE /* libPocoUtild.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libPocoUtild.dylib; path = ../../../../../../../../usr/local/lib/libPocoUtild.dylib; sourceTree = "<group>"; };
+		DD2484301619AC34000F2FBE /* PMLoader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PMLoader.h; sourceTree = "<group>"; };
+		DD2484311619AC4E000F2FBE /* PMLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PMLoader.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -35,6 +48,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DD24842D1619AC08000F2FBE /* libPocoFoundation.dylib in Frameworks */,
+				DD24842E1619AC08000F2FBE /* libPocoNet.dylib in Frameworks */,
+				DD24842F1619AC08000F2FBE /* libPocoUtild.dylib in Frameworks */,
+				DD2484281619ABEE000F2FBE /* libOpenMeshCore.2.3.dylib in Frameworks */,
+				DD2484291619ABEE000F2FBE /* libOpenMeshTools.2.3.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -44,6 +62,11 @@
 		DD24840A1619AB6D000F2FBE = {
 			isa = PBXGroup;
 			children = (
+				DD24842A1619AC08000F2FBE /* libPocoFoundation.dylib */,
+				DD24842B1619AC08000F2FBE /* libPocoNet.dylib */,
+				DD24842C1619AC08000F2FBE /* libPocoUtild.dylib */,
+				DD2484261619ABEE000F2FBE /* libOpenMeshCore.2.3.dylib */,
+				DD2484271619ABEE000F2FBE /* libOpenMeshTools.2.3.dylib */,
 				DD2484181619AB6D000F2FBE /* MeshStreamingClient_Desktop */,
 				DD2484161619AB6D000F2FBE /* Products */,
 			);
@@ -62,6 +85,8 @@
 			children = (
 				DD2484191619AB6D000F2FBE /* main.cpp */,
 				DD24841B1619AB6D000F2FBE /* MeshStreamingClient_Desktop.1 */,
+				DD2484301619AC34000F2FBE /* PMLoader.h */,
+				DD2484311619AC4E000F2FBE /* PMLoader.cpp */,
 			);
 			path = MeshStreamingClient_Desktop;
 			sourceTree = "<group>";
@@ -118,6 +143,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DD24841A1619AB6D000F2FBE /* main.cpp in Sources */,
+				DD2484321619AC4E000F2FBE /* PMLoader.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -150,7 +176,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = macosx;
+				SDKROOT = "";
 			};
 			name = Debug;
 		};
@@ -173,13 +199,17 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				SDKROOT = macosx;
+				SDKROOT = "";
 			};
 			name = Release;
 		};
 		DD2484201619AB6D000F2FBE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/lib/OpenMesh,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -187,6 +217,10 @@
 		DD2484211619AB6D000F2FBE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/lib/OpenMesh,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
