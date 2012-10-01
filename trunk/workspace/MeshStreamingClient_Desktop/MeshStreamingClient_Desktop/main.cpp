@@ -33,6 +33,7 @@ int main(int argc, char** argv)
 	//const std::string HOST("dict.org");
 	//const unsigned short PORT = 2628;
     const std::string HOST("127.0.0.1");
+    
     const unsigned short PORT = 9977;
     int buf = 65536;
     //char content[1024];
