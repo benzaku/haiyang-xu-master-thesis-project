@@ -1,0 +1,481 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		DD2484471619AE03000F2FBE /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD2484461619AE03000F2FBE /* UIKit.framework */; };
+		DD2484491619AE03000F2FBE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD2484481619AE03000F2FBE /* Foundation.framework */; };
+		DD24844B1619AE03000F2FBE /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD24844A1619AE03000F2FBE /* CoreGraphics.framework */; };
+		DD2484511619AE03000F2FBE /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DD24844F1619AE03000F2FBE /* InfoPlist.strings */; };
+		DD2484531619AE03000F2FBE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DD2484521619AE03000F2FBE /* main.m */; };
+		DD2484571619AE03000F2FBE /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DD2484561619AE03000F2FBE /* AppDelegate.m */; };
+		DD2484591619AE03000F2FBE /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = DD2484581619AE03000F2FBE /* Default.png */; };
+		DD24845B1619AE03000F2FBE /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DD24845A1619AE03000F2FBE /* Default@2x.png */; };
+		DD24845D1619AE03000F2FBE /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DD24845C1619AE03000F2FBE /* Default-568h@2x.png */; };
+		DD2484631619AE03000F2FBE /* MainStoryboard_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DD2484611619AE03000F2FBE /* MainStoryboard_iPad.storyboard */; };
+		DD2484661619AE03000F2FBE /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DD2484651619AE03000F2FBE /* ViewController.m */; };
+		DD24846E1619AE04000F2FBE /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD24846D1619AE04000F2FBE /* SenTestingKit.framework */; };
+		DD24846F1619AE04000F2FBE /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD2484461619AE03000F2FBE /* UIKit.framework */; };
+		DD2484701619AE04000F2FBE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD2484481619AE03000F2FBE /* Foundation.framework */; };
+		DD2484781619AE04000F2FBE /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DD2484761619AE04000F2FBE /* InfoPlist.strings */; };
+		DD24847B1619AE04000F2FBE /* MeshStreamingClient_iOSTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DD24847A1619AE04000F2FBE /* MeshStreamingClient_iOSTests.m */; };
+		DD2484871619AF8E000F2FBE /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = DD2484861619AF8E000F2FBE /* GCDAsyncSocket.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		DD24848A1619AFF6000F2FBE /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = DD2484891619AFF6000F2FBE /* GCDAsyncUdpSocket.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		DD24848D1619B0E5000F2FBE /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD24848C1619B0E5000F2FBE /* CFNetwork.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		DD2484711619AE04000F2FBE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DD2484391619AE02000F2FBE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DD2484411619AE03000F2FBE;
+			remoteInfo = MeshStreamingClient_iOS;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		DD2484421619AE03000F2FBE /* MeshStreamingClient_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MeshStreamingClient_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DD2484461619AE03000F2FBE /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		DD2484481619AE03000F2FBE /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		DD24844A1619AE03000F2FBE /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		DD24844E1619AE03000F2FBE /* MeshStreamingClient_iOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MeshStreamingClient_iOS-Info.plist"; sourceTree = "<group>"; };
+		DD2484501619AE03000F2FBE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		DD2484521619AE03000F2FBE /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		DD2484541619AE03000F2FBE /* MeshStreamingClient_iOS-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MeshStreamingClient_iOS-Prefix.pch"; sourceTree = "<group>"; };
+		DD2484551619AE03000F2FBE /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		DD2484561619AE03000F2FBE /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		DD2484581619AE03000F2FBE /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
+		DD24845A1619AE03000F2FBE /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
+		DD24845C1619AE03000F2FBE /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		DD2484621619AE03000F2FBE /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPad.storyboard; sourceTree = "<group>"; };
+		DD2484641619AE03000F2FBE /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		DD2484651619AE03000F2FBE /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		DD24846C1619AE04000F2FBE /* MeshStreamingClient_iOSTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MeshStreamingClient_iOSTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		DD24846D1619AE04000F2FBE /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		DD2484751619AE04000F2FBE /* MeshStreamingClient_iOSTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MeshStreamingClient_iOSTests-Info.plist"; sourceTree = "<group>"; };
+		DD2484771619AE04000F2FBE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		DD2484791619AE04000F2FBE /* MeshStreamingClient_iOSTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MeshStreamingClient_iOSTests.h; sourceTree = "<group>"; };
+		DD24847A1619AE04000F2FBE /* MeshStreamingClient_iOSTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MeshStreamingClient_iOSTests.m; sourceTree = "<group>"; };
+		DD2484851619AF8E000F2FBE /* GCDAsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncSocket.h; sourceTree = "<group>"; };
+		DD2484861619AF8E000F2FBE /* GCDAsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncSocket.m; sourceTree = "<group>"; };
+		DD2484881619AFF6000F2FBE /* GCDAsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncUdpSocket.h; sourceTree = "<group>"; };
+		DD2484891619AFF6000F2FBE /* GCDAsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncUdpSocket.m; sourceTree = "<group>"; };
+		DD24848C1619B0E5000F2FBE /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		DD24843F1619AE03000F2FBE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DD24848D1619B0E5000F2FBE /* CFNetwork.framework in Frameworks */,
+				DD2484471619AE03000F2FBE /* UIKit.framework in Frameworks */,
+				DD2484491619AE03000F2FBE /* Foundation.framework in Frameworks */,
+				DD24844B1619AE03000F2FBE /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DD2484681619AE04000F2FBE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DD24846E1619AE04000F2FBE /* SenTestingKit.framework in Frameworks */,
+				DD24846F1619AE04000F2FBE /* UIKit.framework in Frameworks */,
+				DD2484701619AE04000F2FBE /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		DD2484371619AE02000F2FBE = {
+			isa = PBXGroup;
+			children = (
+				DD24848C1619B0E5000F2FBE /* CFNetwork.framework */,
+				DD24844C1619AE03000F2FBE /* MeshStreamingClient_iOS */,
+				DD2484731619AE04000F2FBE /* MeshStreamingClient_iOSTests */,
+				DD2484451619AE03000F2FBE /* Frameworks */,
+				DD2484431619AE03000F2FBE /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		DD2484431619AE03000F2FBE /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DD2484421619AE03000F2FBE /* MeshStreamingClient_iOS.app */,
+				DD24846C1619AE04000F2FBE /* MeshStreamingClient_iOSTests.octest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		DD2484451619AE03000F2FBE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				DD2484461619AE03000F2FBE /* UIKit.framework */,
+				DD2484481619AE03000F2FBE /* Foundation.framework */,
+				DD24844A1619AE03000F2FBE /* CoreGraphics.framework */,
+				DD24846D1619AE04000F2FBE /* SenTestingKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		DD24844C1619AE03000F2FBE /* MeshStreamingClient_iOS */ = {
+			isa = PBXGroup;
+			children = (
+				DD2484551619AE03000F2FBE /* AppDelegate.h */,
+				DD2484561619AE03000F2FBE /* AppDelegate.m */,
+				DD2484611619AE03000F2FBE /* MainStoryboard_iPad.storyboard */,
+				DD2484641619AE03000F2FBE /* ViewController.h */,
+				DD2484651619AE03000F2FBE /* ViewController.m */,
+				DD24844D1619AE03000F2FBE /* Supporting Files */,
+				DD2484851619AF8E000F2FBE /* GCDAsyncSocket.h */,
+				DD2484861619AF8E000F2FBE /* GCDAsyncSocket.m */,
+				DD2484881619AFF6000F2FBE /* GCDAsyncUdpSocket.h */,
+				DD2484891619AFF6000F2FBE /* GCDAsyncUdpSocket.m */,
+			);
+			path = MeshStreamingClient_iOS;
+			sourceTree = "<group>";
+		};
+		DD24844D1619AE03000F2FBE /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				DD24844E1619AE03000F2FBE /* MeshStreamingClient_iOS-Info.plist */,
+				DD24844F1619AE03000F2FBE /* InfoPlist.strings */,
+				DD2484521619AE03000F2FBE /* main.m */,
+				DD2484541619AE03000F2FBE /* MeshStreamingClient_iOS-Prefix.pch */,
+				DD2484581619AE03000F2FBE /* Default.png */,
+				DD24845A1619AE03000F2FBE /* Default@2x.png */,
+				DD24845C1619AE03000F2FBE /* Default-568h@2x.png */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		DD2484731619AE04000F2FBE /* MeshStreamingClient_iOSTests */ = {
+			isa = PBXGroup;
+			children = (
+				DD2484791619AE04000F2FBE /* MeshStreamingClient_iOSTests.h */,
+				DD24847A1619AE04000F2FBE /* MeshStreamingClient_iOSTests.m */,
+				DD2484741619AE04000F2FBE /* Supporting Files */,
+			);
+			path = MeshStreamingClient_iOSTests;
+			sourceTree = "<group>";
+		};
+		DD2484741619AE04000F2FBE /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				DD2484751619AE04000F2FBE /* MeshStreamingClient_iOSTests-Info.plist */,
+				DD2484761619AE04000F2FBE /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		DD2484411619AE03000F2FBE /* MeshStreamingClient_iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DD24847E1619AE04000F2FBE /* Build configuration list for PBXNativeTarget "MeshStreamingClient_iOS" */;
+			buildPhases = (
+				DD24843E1619AE03000F2FBE /* Sources */,
+				DD24843F1619AE03000F2FBE /* Frameworks */,
+				DD2484401619AE03000F2FBE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MeshStreamingClient_iOS;
+			productName = MeshStreamingClient_iOS;
+			productReference = DD2484421619AE03000F2FBE /* MeshStreamingClient_iOS.app */;
+			productType = "com.apple.product-type.application";
+		};
+		DD24846B1619AE04000F2FBE /* MeshStreamingClient_iOSTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DD2484811619AE04000F2FBE /* Build configuration list for PBXNativeTarget "MeshStreamingClient_iOSTests" */;
+			buildPhases = (
+				DD2484671619AE04000F2FBE /* Sources */,
+				DD2484681619AE04000F2FBE /* Frameworks */,
+				DD2484691619AE04000F2FBE /* Resources */,
+				DD24846A1619AE04000F2FBE /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				DD2484721619AE04000F2FBE /* PBXTargetDependency */,
+			);
+			name = MeshStreamingClient_iOSTests;
+			productName = MeshStreamingClient_iOSTests;
+			productReference = DD24846C1619AE04000F2FBE /* MeshStreamingClient_iOSTests.octest */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		DD2484391619AE02000F2FBE /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0450;
+				ORGANIZATIONNAME = "Haiyang Xu";
+			};
+			buildConfigurationList = DD24843C1619AE02000F2FBE /* Build configuration list for PBXProject "MeshStreamingClient_iOS" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = DD2484371619AE02000F2FBE;
+			productRefGroup = DD2484431619AE03000F2FBE /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				DD2484411619AE03000F2FBE /* MeshStreamingClient_iOS */,
+				DD24846B1619AE04000F2FBE /* MeshStreamingClient_iOSTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		DD2484401619AE03000F2FBE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DD2484511619AE03000F2FBE /* InfoPlist.strings in Resources */,
+				DD2484591619AE03000F2FBE /* Default.png in Resources */,
+				DD24845B1619AE03000F2FBE /* Default@2x.png in Resources */,
+				DD24845D1619AE03000F2FBE /* Default-568h@2x.png in Resources */,
+				DD2484631619AE03000F2FBE /* MainStoryboard_iPad.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DD2484691619AE04000F2FBE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DD2484781619AE04000F2FBE /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		DD24846A1619AE04000F2FBE /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		DD24843E1619AE03000F2FBE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DD2484531619AE03000F2FBE /* main.m in Sources */,
+				DD2484571619AE03000F2FBE /* AppDelegate.m in Sources */,
+				DD2484661619AE03000F2FBE /* ViewController.m in Sources */,
+				DD2484871619AF8E000F2FBE /* GCDAsyncSocket.m in Sources */,
+				DD24848A1619AFF6000F2FBE /* GCDAsyncUdpSocket.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DD2484671619AE04000F2FBE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DD24847B1619AE04000F2FBE /* MeshStreamingClient_iOSTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		DD2484721619AE04000F2FBE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DD2484411619AE03000F2FBE /* MeshStreamingClient_iOS */;
+			targetProxy = DD2484711619AE04000F2FBE /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		DD24844F1619AE03000F2FBE /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				DD2484501619AE03000F2FBE /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		DD2484611619AE03000F2FBE /* MainStoryboard_iPad.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				DD2484621619AE03000F2FBE /* en */,
+			);
+			name = MainStoryboard_iPad.storyboard;
+			sourceTree = "<group>";
+		};
+		DD2484761619AE04000F2FBE /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				DD2484771619AE04000F2FBE /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		DD24847C1619AE04000F2FBE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "compiler-default";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		DD24847D1619AE04000F2FBE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "compiler-default";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		DD24847F1619AE04000F2FBE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "MeshStreamingClient_iOS/MeshStreamingClient_iOS-Prefix.pch";
+				INFOPLIST_FILE = "MeshStreamingClient_iOS/MeshStreamingClient_iOS-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 2;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		DD2484801619AE04000F2FBE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "MeshStreamingClient_iOS/MeshStreamingClient_iOS-Prefix.pch";
+				INFOPLIST_FILE = "MeshStreamingClient_iOS/MeshStreamingClient_iOS-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 2;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		DD2484821619AE04000F2FBE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/MeshStreamingClient_iOS.app/MeshStreamingClient_iOS";
+				FRAMEWORK_SEARCH_PATHS = (
+					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
+					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "MeshStreamingClient_iOS/MeshStreamingClient_iOS-Prefix.pch";
+				INFOPLIST_FILE = "MeshStreamingClient_iOSTests/MeshStreamingClient_iOSTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Debug;
+		};
+		DD2484831619AE04000F2FBE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/MeshStreamingClient_iOS.app/MeshStreamingClient_iOS";
+				FRAMEWORK_SEARCH_PATHS = (
+					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
+					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "MeshStreamingClient_iOS/MeshStreamingClient_iOS-Prefix.pch";
+				INFOPLIST_FILE = "MeshStreamingClient_iOSTests/MeshStreamingClient_iOSTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		DD24843C1619AE02000F2FBE /* Build configuration list for PBXProject "MeshStreamingClient_iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DD24847C1619AE04000F2FBE /* Debug */,
+				DD24847D1619AE04000F2FBE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DD24847E1619AE04000F2FBE /* Build configuration list for PBXNativeTarget "MeshStreamingClient_iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DD24847F1619AE04000F2FBE /* Debug */,
+				DD2484801619AE04000F2FBE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		DD2484811619AE04000F2FBE /* Build configuration list for PBXNativeTarget "MeshStreamingClient_iOSTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DD2484821619AE04000F2FBE /* Debug */,
+				DD2484831619AE04000F2FBE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = DD2484391619AE02000F2FBE /* Project object */;
+}
