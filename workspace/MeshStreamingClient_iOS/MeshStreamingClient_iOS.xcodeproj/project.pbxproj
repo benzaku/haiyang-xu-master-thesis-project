@@ -16,7 +16,7 @@
 		DD2484591619AE03000F2FBE /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = DD2484581619AE03000F2FBE /* Default.png */; };
 		DD24845B1619AE03000F2FBE /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DD24845A1619AE03000F2FBE /* Default@2x.png */; };
 		DD24845D1619AE03000F2FBE /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DD24845C1619AE03000F2FBE /* Default-568h@2x.png */; };
-		DD2484631619AE03000F2FBE /* MainStoryboard_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DD2484611619AE03000F2FBE /* MainStoryboard_iPad.storyboard */; };
+		DD2484631619AE03000F2FBE /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DD2484611619AE03000F2FBE /* MainStoryboard.storyboard */; };
 		DD2484661619AE03000F2FBE /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DD2484651619AE03000F2FBE /* ViewController.m */; };
 		DD24846E1619AE04000F2FBE /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD24846D1619AE04000F2FBE /* SenTestingKit.framework */; };
 		DD24846F1619AE04000F2FBE /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD2484461619AE03000F2FBE /* UIKit.framework */; };
@@ -52,7 +52,7 @@
 		DD2484581619AE03000F2FBE /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		DD24845A1619AE03000F2FBE /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		DD24845C1619AE03000F2FBE /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
-		DD2484621619AE03000F2FBE /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPad.storyboard; sourceTree = "<group>"; };
+		DD2484621619AE03000F2FBE /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
 		DD2484641619AE03000F2FBE /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		DD2484651619AE03000F2FBE /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		DD24846C1619AE04000F2FBE /* MeshStreamingClient_iOSTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MeshStreamingClient_iOSTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -129,7 +129,7 @@
 			children = (
 				DD2484551619AE03000F2FBE /* AppDelegate.h */,
 				DD2484561619AE03000F2FBE /* AppDelegate.m */,
-				DD2484611619AE03000F2FBE /* MainStoryboard_iPad.storyboard */,
+				DD2484611619AE03000F2FBE /* MainStoryboard.storyboard */,
 				DD2484641619AE03000F2FBE /* ViewController.h */,
 				DD2484651619AE03000F2FBE /* ViewController.m */,
 				DD24844D1619AE03000F2FBE /* Supporting Files */,
@@ -249,7 +249,7 @@
 				DD2484591619AE03000F2FBE /* Default.png in Resources */,
 				DD24845B1619AE03000F2FBE /* Default@2x.png in Resources */,
 				DD24845D1619AE03000F2FBE /* Default-568h@2x.png in Resources */,
-				DD2484631619AE03000F2FBE /* MainStoryboard_iPad.storyboard in Resources */,
+				DD2484631619AE03000F2FBE /* MainStoryboard.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -319,12 +319,12 @@
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
-		DD2484611619AE03000F2FBE /* MainStoryboard_iPad.storyboard */ = {
+		DD2484611619AE03000F2FBE /* MainStoryboard.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
 				DD2484621619AE03000F2FBE /* en */,
 			);
-			name = MainStoryboard_iPad.storyboard;
+			name = MainStoryboard.storyboard;
 			sourceTree = "<group>";
 		};
 		DD2484761619AE04000F2FBE /* InfoPlist.strings */ = {
@@ -466,6 +466,7 @@
 				DD2484801619AE04000F2FBE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		DD2484811619AE04000F2FBE /* Build configuration list for PBXNativeTarget "MeshStreamingClient_iOSTests" */ = {
 			isa = XCConfigurationList;
@@ -474,6 +475,7 @@
 				DD2484831619AE04000F2FBE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
