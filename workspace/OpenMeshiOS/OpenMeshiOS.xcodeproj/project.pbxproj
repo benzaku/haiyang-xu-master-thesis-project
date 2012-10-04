@@ -115,6 +115,10 @@
 		DDA4FBFD1619D5DF009EBB0A /* SingletonT.hh in CopyFiles */ = {isa = PBXBuildFile; fileRef = DDA4FA9A1619D24D009EBB0A /* SingletonT.hh */; };
 		DDA4FBFE1619D5DF009EBB0A /* vector_cast.hh in CopyFiles */ = {isa = PBXBuildFile; fileRef = DDA4FA9B1619D24D009EBB0A /* vector_cast.hh */; };
 		DDA4FBFF1619D5DF009EBB0A /* vector_traits.hh in CopyFiles */ = {isa = PBXBuildFile; fileRef = DDA4FA9C1619D24D009EBB0A /* vector_traits.hh */; };
+		DDA4FC4D161DB997009EBB0A /* ArrayKernelT.cc in CopyFiles */ = {isa = PBXBuildFile; fileRef = DDA4FA5E1619D24C009EBB0A /* ArrayKernelT.cc */; };
+		DDA4FC4F161DB9D0009EBB0A /* PolyMeshT.cc in CopyFiles */ = {isa = PBXBuildFile; fileRef = DDA4FA731619D24C009EBB0A /* PolyMeshT.cc */; };
+		DDA4FC50161DB9F0009EBB0A /* SingletonT.cc in CopyFiles */ = {isa = PBXBuildFile; fileRef = DDA4FA991619D24D009EBB0A /* SingletonT.cc */; };
+		DDA4FC51161DBA1C009EBB0A /* TriMeshT.cc in CopyFiles */ = {isa = PBXBuildFile; fileRef = DDA4FA7A1619D24C009EBB0A /* TriMeshT.cc */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -215,6 +219,9 @@
 			dstPath = include/OpenMesh/Core/Mesh;
 			dstSubfolderSpec = 16;
 			files = (
+				DDA4FC51161DBA1C009EBB0A /* TriMeshT.cc in CopyFiles */,
+				DDA4FC4F161DB9D0009EBB0A /* PolyMeshT.cc in CopyFiles */,
+				DDA4FC4D161DB997009EBB0A /* ArrayKernelT.cc in CopyFiles */,
 				DDA4FBD31619D56C009EBB0A /* ArrayItems.hh in CopyFiles */,
 				DDA4FBD41619D56C009EBB0A /* ArrayKernel.hh in CopyFiles */,
 				DDA4FBD51619D56C009EBB0A /* AttribKernelT.hh in CopyFiles */,
@@ -272,6 +279,7 @@
 			dstPath = include/OpenMesh/Core/Utils;
 			dstSubfolderSpec = 16;
 			files = (
+				DDA4FC50161DB9F0009EBB0A /* SingletonT.cc in CopyFiles */,
 				DDA4FBF41619D5DF009EBB0A /* AutoPropertyHandleT.hh in CopyFiles */,
 				DDA4FBF51619D5DF009EBB0A /* BaseProperty.hh in CopyFiles */,
 				DDA4FBF61619D5DF009EBB0A /* color_cast.hh in CopyFiles */,
@@ -772,6 +780,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_INPUT_FILETYPE = sourcecode.cpp.objcpp;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -797,6 +806,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_INPUT_FILETYPE = sourcecode.cpp.objcpp;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -855,6 +865,7 @@
 				DDA4F9851619D1FB009EBB0A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
