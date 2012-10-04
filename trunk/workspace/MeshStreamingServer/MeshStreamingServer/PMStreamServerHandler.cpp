@@ -55,7 +55,8 @@ PMStreamServerHandler::~PMStreamServerHandler()
     try
     {
         app.logger().information("Disconnecting " + _socket.peerAddress().toString());
-        delete pmInfoChunk;
+        if(pmInfoChunk)
+            delete pmInfoChunk;
     }
     catch (...)
     {
