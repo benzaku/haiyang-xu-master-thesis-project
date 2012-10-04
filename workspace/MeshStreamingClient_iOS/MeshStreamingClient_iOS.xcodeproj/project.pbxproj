@@ -11,13 +11,13 @@
 		DD2484491619AE03000F2FBE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD2484481619AE03000F2FBE /* Foundation.framework */; };
 		DD24844B1619AE03000F2FBE /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD24844A1619AE03000F2FBE /* CoreGraphics.framework */; };
 		DD2484511619AE03000F2FBE /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DD24844F1619AE03000F2FBE /* InfoPlist.strings */; };
-		DD2484531619AE03000F2FBE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DD2484521619AE03000F2FBE /* main.m */; };
-		DD2484571619AE03000F2FBE /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DD2484561619AE03000F2FBE /* AppDelegate.m */; };
+		DD2484531619AE03000F2FBE /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = DD2484521619AE03000F2FBE /* main.mm */; };
+		DD2484571619AE03000F2FBE /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = DD2484561619AE03000F2FBE /* AppDelegate.mm */; };
 		DD2484591619AE03000F2FBE /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = DD2484581619AE03000F2FBE /* Default.png */; };
 		DD24845B1619AE03000F2FBE /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DD24845A1619AE03000F2FBE /* Default@2x.png */; };
 		DD24845D1619AE03000F2FBE /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DD24845C1619AE03000F2FBE /* Default-568h@2x.png */; };
 		DD2484631619AE03000F2FBE /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DD2484611619AE03000F2FBE /* MainStoryboard.storyboard */; };
-		DD2484661619AE03000F2FBE /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DD2484651619AE03000F2FBE /* ViewController.m */; };
+		DD2484661619AE03000F2FBE /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = DD2484651619AE03000F2FBE /* ViewController.mm */; };
 		DD24846E1619AE04000F2FBE /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD24846D1619AE04000F2FBE /* SenTestingKit.framework */; };
 		DD24846F1619AE04000F2FBE /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD2484461619AE03000F2FBE /* UIKit.framework */; };
 		DD2484701619AE04000F2FBE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD2484481619AE03000F2FBE /* Foundation.framework */; };
@@ -26,6 +26,9 @@
 		DD2484871619AF8E000F2FBE /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = DD2484861619AF8E000F2FBE /* GCDAsyncSocket.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		DD24848A1619AFF6000F2FBE /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = DD2484891619AFF6000F2FBE /* GCDAsyncUdpSocket.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		DD24848D1619B0E5000F2FBE /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD24848C1619B0E5000F2FBE /* CFNetwork.framework */; };
+		DDA4FC41161DA4F4009EBB0A /* libOpenMeshiOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DDA4FC40161DA406009EBB0A /* libOpenMeshiOS.a */; };
+		DDA4FC48161DA97E009EBB0A /* ProgressiveMeshModel.mm in Sources */ = {isa = PBXBuildFile; fileRef = DDA4FC47161DA97E009EBB0A /* ProgressiveMeshModel.mm */; };
+		DDA4FC57161DCBCC009EBB0A /* PMStruct.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DDA4FC55161DCBCA009EBB0A /* PMStruct.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +39,13 @@
 			remoteGlobalIDString = DD2484411619AE03000F2FBE;
 			remoteInfo = MeshStreamingClient_iOS;
 		};
+		DDA4FC3F161DA406009EBB0A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DDA4FC38161DA406009EBB0A /* OpenMeshiOS.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DDA4F9751619D1FB009EBB0A;
+			remoteInfo = OpenMeshiOS;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -45,16 +55,16 @@
 		DD24844A1619AE03000F2FBE /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		DD24844E1619AE03000F2FBE /* MeshStreamingClient_iOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MeshStreamingClient_iOS-Info.plist"; sourceTree = "<group>"; };
 		DD2484501619AE03000F2FBE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		DD2484521619AE03000F2FBE /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		DD2484521619AE03000F2FBE /* main.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
 		DD2484541619AE03000F2FBE /* MeshStreamingClient_iOS-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MeshStreamingClient_iOS-Prefix.pch"; sourceTree = "<group>"; };
 		DD2484551619AE03000F2FBE /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		DD2484561619AE03000F2FBE /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		DD2484561619AE03000F2FBE /* AppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
 		DD2484581619AE03000F2FBE /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		DD24845A1619AE03000F2FBE /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		DD24845C1619AE03000F2FBE /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		DD2484621619AE03000F2FBE /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
 		DD2484641619AE03000F2FBE /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		DD2484651619AE03000F2FBE /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		DD2484651619AE03000F2FBE /* ViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ViewController.mm; sourceTree = "<group>"; };
 		DD24846C1619AE04000F2FBE /* MeshStreamingClient_iOSTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MeshStreamingClient_iOSTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD24846D1619AE04000F2FBE /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		DD2484751619AE04000F2FBE /* MeshStreamingClient_iOSTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MeshStreamingClient_iOSTests-Info.plist"; sourceTree = "<group>"; };
@@ -66,6 +76,11 @@
 		DD2484881619AFF6000F2FBE /* GCDAsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncUdpSocket.h; sourceTree = "<group>"; };
 		DD2484891619AFF6000F2FBE /* GCDAsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncUdpSocket.m; sourceTree = "<group>"; };
 		DD24848C1619B0E5000F2FBE /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		DDA4FC38161DA406009EBB0A /* OpenMeshiOS.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OpenMeshiOS.xcodeproj; path = ../OpenMeshiOS/OpenMeshiOS.xcodeproj; sourceTree = "<group>"; };
+		DDA4FC46161DA97E009EBB0A /* ProgressiveMeshModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProgressiveMeshModel.h; sourceTree = "<group>"; };
+		DDA4FC47161DA97E009EBB0A /* ProgressiveMeshModel.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ProgressiveMeshModel.mm; sourceTree = "<group>"; };
+		DDA4FC55161DCBCA009EBB0A /* PMStruct.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PMStruct.cpp; sourceTree = "<group>"; };
+		DDA4FC56161DCBCA009EBB0A /* PMStruct.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PMStruct.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +88,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DDA4FC41161DA4F4009EBB0A /* libOpenMeshiOS.a in Frameworks */,
 				DD24848D1619B0E5000F2FBE /* CFNetwork.framework in Frameworks */,
 				DD2484471619AE03000F2FBE /* UIKit.framework in Frameworks */,
 				DD2484491619AE03000F2FBE /* Foundation.framework in Frameworks */,
@@ -96,6 +112,7 @@
 		DD2484371619AE02000F2FBE = {
 			isa = PBXGroup;
 			children = (
+				DDA4FC38161DA406009EBB0A /* OpenMeshiOS.xcodeproj */,
 				DD24848C1619B0E5000F2FBE /* CFNetwork.framework */,
 				DD24844C1619AE03000F2FBE /* MeshStreamingClient_iOS */,
 				DD2484731619AE04000F2FBE /* MeshStreamingClient_iOSTests */,
@@ -128,15 +145,19 @@
 			isa = PBXGroup;
 			children = (
 				DD2484551619AE03000F2FBE /* AppDelegate.h */,
-				DD2484561619AE03000F2FBE /* AppDelegate.m */,
+				DD2484561619AE03000F2FBE /* AppDelegate.mm */,
 				DD2484611619AE03000F2FBE /* MainStoryboard.storyboard */,
 				DD2484641619AE03000F2FBE /* ViewController.h */,
-				DD2484651619AE03000F2FBE /* ViewController.m */,
+				DD2484651619AE03000F2FBE /* ViewController.mm */,
 				DD24844D1619AE03000F2FBE /* Supporting Files */,
 				DD2484851619AF8E000F2FBE /* GCDAsyncSocket.h */,
 				DD2484861619AF8E000F2FBE /* GCDAsyncSocket.m */,
 				DD2484881619AFF6000F2FBE /* GCDAsyncUdpSocket.h */,
 				DD2484891619AFF6000F2FBE /* GCDAsyncUdpSocket.m */,
+				DDA4FC46161DA97E009EBB0A /* ProgressiveMeshModel.h */,
+				DDA4FC47161DA97E009EBB0A /* ProgressiveMeshModel.mm */,
+				DDA4FC55161DCBCA009EBB0A /* PMStruct.cpp */,
+				DDA4FC56161DCBCA009EBB0A /* PMStruct.h */,
 			);
 			path = MeshStreamingClient_iOS;
 			sourceTree = "<group>";
@@ -146,7 +167,7 @@
 			children = (
 				DD24844E1619AE03000F2FBE /* MeshStreamingClient_iOS-Info.plist */,
 				DD24844F1619AE03000F2FBE /* InfoPlist.strings */,
-				DD2484521619AE03000F2FBE /* main.m */,
+				DD2484521619AE03000F2FBE /* main.mm */,
 				DD2484541619AE03000F2FBE /* MeshStreamingClient_iOS-Prefix.pch */,
 				DD2484581619AE03000F2FBE /* Default.png */,
 				DD24845A1619AE03000F2FBE /* Default@2x.png */,
@@ -172,6 +193,14 @@
 				DD2484761619AE04000F2FBE /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		DDA4FC39161DA406009EBB0A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DDA4FC40161DA406009EBB0A /* libOpenMeshiOS.a */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -232,6 +261,12 @@
 			mainGroup = DD2484371619AE02000F2FBE;
 			productRefGroup = DD2484431619AE03000F2FBE /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = DDA4FC39161DA406009EBB0A /* Products */;
+					ProjectRef = DDA4FC38161DA406009EBB0A /* OpenMeshiOS.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				DD2484411619AE03000F2FBE /* MeshStreamingClient_iOS */,
@@ -239,6 +274,16 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		DDA4FC40161DA406009EBB0A /* libOpenMeshiOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libOpenMeshiOS.a;
+			remoteRef = DDA4FC3F161DA406009EBB0A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		DD2484401619AE03000F2FBE /* Resources */ = {
@@ -284,11 +329,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DD2484531619AE03000F2FBE /* main.m in Sources */,
-				DD2484571619AE03000F2FBE /* AppDelegate.m in Sources */,
-				DD2484661619AE03000F2FBE /* ViewController.m in Sources */,
+				DD2484531619AE03000F2FBE /* main.mm in Sources */,
+				DD2484571619AE03000F2FBE /* AppDelegate.mm in Sources */,
+				DD2484661619AE03000F2FBE /* ViewController.mm in Sources */,
 				DD2484871619AF8E000F2FBE /* GCDAsyncSocket.m in Sources */,
 				DD24848A1619AFF6000F2FBE /* GCDAsyncUdpSocket.m in Sources */,
+				DDA4FC48161DA97E009EBB0A /* ProgressiveMeshModel.mm in Sources */,
+				DDA4FC57161DCBCC009EBB0A /* PMStruct.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -392,8 +439,10 @@
 		DD24847F1619AE04000F2FBE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_INPUT_FILETYPE = automatic;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MeshStreamingClient_iOS/MeshStreamingClient_iOS-Prefix.pch";
+				GCC_VERSION = "";
 				INFOPLIST_FILE = "MeshStreamingClient_iOS/MeshStreamingClient_iOS-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = 2;
@@ -404,8 +453,10 @@
 		DD2484801619AE04000F2FBE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_INPUT_FILETYPE = automatic;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MeshStreamingClient_iOS/MeshStreamingClient_iOS-Prefix.pch";
+				GCC_VERSION = "";
 				INFOPLIST_FILE = "MeshStreamingClient_iOS/MeshStreamingClient_iOS-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = 2;
