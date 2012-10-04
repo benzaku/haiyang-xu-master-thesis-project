@@ -8,9 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import "GCDAsyncSocket.h"
+#import "ProgressiveMeshModel.h"
 
 @interface ViewController : UIViewController<GCDAsyncSocketDelegate,UITextFieldDelegate>{
     GCDAsyncSocket *socket;
+    ProgressiveMeshModel *pmModel;
 }
 
 @property NSInteger STATE;
@@ -22,9 +24,12 @@
 @property NSData*   BaseMeshChunk;
 @property NSInteger TransmittedDetails;
 @property float     TransmitProgress;
+
+
 @property (strong, nonatomic) IBOutlet UIProgressView *progress;
 
 @property(strong)  GCDAsyncSocket *socket;
+//@property(strong)  ProgressiveMeshModel *pmModel;
 
 @property (strong, nonatomic) IBOutlet UITextView *append;
 - (IBAction)connect:(id)sender;
