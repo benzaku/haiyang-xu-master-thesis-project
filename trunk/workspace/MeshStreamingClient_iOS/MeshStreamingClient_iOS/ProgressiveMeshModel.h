@@ -14,7 +14,8 @@
 @interface ProgressiveMeshModel : NSObject{
     NSData *baseMeshChunk;
     
-    MyMesh *mesh;
+    MyMesh baseMesh;
+    PMInfoContainer details;
     
     //ProgressiveMesh *pm;
     
@@ -37,5 +38,10 @@
 
 //setter
 - (void) setBaseMeshChunk:(NSData*) data;
+
+
+
+- (void) addPMDetail:(PMInfo) pminfo;
+- (void) addPMDetailsFromNSData:(NSData *) data;
 
 @end
