@@ -14,7 +14,9 @@
 @interface ProgressiveMeshModel : NSObject{
     NSData *baseMeshChunk;
     
-    ProgressiveMesh *pm;
+    MyMesh *mesh;
+    
+    //ProgressiveMesh *pm;
     
 }
 
