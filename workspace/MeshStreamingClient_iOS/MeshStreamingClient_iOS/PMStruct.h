@@ -43,5 +43,11 @@ struct PMInfo
 typedef std::vector<PMInfo>          PMInfoContainer;
 typedef PMInfoContainer::iterator    PMInfoIter;
 
+struct membuf : std::streambuf
+{
+    membuf(char* begin, char* end) {
+        this->setg(begin, begin, end);
+    }
+};
 
 #endif /* defined(__MeshStreamingClient_iOS__PMStruct__) */

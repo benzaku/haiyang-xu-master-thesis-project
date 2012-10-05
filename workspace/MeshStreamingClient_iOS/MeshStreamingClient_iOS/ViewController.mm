@@ -35,6 +35,8 @@
 	// Do any additional setup after loading the view, typically from a nib.
     pmModel = [[ProgressiveMeshModel alloc] init];
     
+    
+    
 }
 
 - (void)didReceiveMemoryWarning
@@ -176,6 +178,7 @@
         case 6:
             //state 6 denotes "ACK_OK_SIZE_OF_BASE_MESH" sent .  now should reveice a data chunk of BaseMesh
             NSLog(@"Size of Base Mesh: %u", data.length);
+            [pmModel setBaseMeshChunk:data];
             BaseMeshChunk = [[NSData alloc] initWithData:data];
             NSLog(@"Size of newly allocated base mesh : %u", BaseMeshChunk.length);
             STATE = 7;
@@ -203,11 +206,11 @@
         case 8:
             NSLog(@"data length : %u", data.length);
             NSLog(@"number of details transmitted in this packet = %u", data.length / 24);
+            
+            [pmModel addPMDetailsFromNSData:data];
+            
             TransmittedDetails += data.length;
             
-            
-            //output.text = [output.text stringByAppendingFormat:@"TransmittedDetails:%u\n", TransmittedDetails];
-            //data.
             TransmitProgress = ((float)TransmittedDetails) / ((float) NDetailVertices * 24);
             NSLog(@"TransmittedProgress:%f%", TransmitProgress * 100 );
             
