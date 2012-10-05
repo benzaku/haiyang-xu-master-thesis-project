@@ -10,9 +10,11 @@
 #define __MeshStreamingClient_iOS__PMStruct__
 
 #include <iostream>
-#include <OpenMesh/Core/Mesh/Attributes.hh>
+#include "OpenMesh/Core/Mesh/Attributes.hh"
+
 
 #include <OpenMesh/Core/Mesh/TriMesh_ArrayKernelT.hh>
+
 
 using namespace OpenMesh;
 using namespace OpenMesh::Attributes;
@@ -41,14 +43,5 @@ struct PMInfo
 typedef std::vector<PMInfo>          PMInfoContainer;
 typedef PMInfoContainer::iterator    PMInfoIter;
 
-class ProgressiveMesh {
-    MyMesh baseMesh;
-    
-    
-public:
-    MyMesh getBaseMesh();
-    ProgressiveMesh();
-    ~ProgressiveMesh();
-};
 
 #endif /* defined(__MeshStreamingClient_iOS__PMStruct__) */

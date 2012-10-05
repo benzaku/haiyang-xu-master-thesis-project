@@ -8,18 +8,3 @@
 
 #include "PMStruct.h"
 
-ProgressiveMesh::ProgressiveMesh()
-{
-    
-}
-
-ProgressiveMesh::~ProgressiveMesh()
-{
-    
-}
-
-MyMesh
-ProgressiveMesh::getBaseMesh()
-{
-    return baseMesh;
-}
