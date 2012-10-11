@@ -14,6 +14,9 @@
 @interface ViewController : GLKViewController<GCDAsyncSocketDelegate,UITextFieldDelegate>{
     GCDAsyncSocket *socket;
     ProgressiveMeshModel *pmModel;
+    
+    char *BaseMeshBuf;
+    int   BaseMeshBufPointer;
 }
 
 @property NSInteger STATE;

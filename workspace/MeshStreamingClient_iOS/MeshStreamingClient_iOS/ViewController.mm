@@ -74,6 +74,53 @@ GLfloat gCubeVertexData[216] =
 };
 
 
+GLfloat gCubeVertexData2[216] =
+{
+    // Data layout for each line below is:
+    // positionX, positionY, positionZ,     normalX, normalY, normalZ,
+    0.1f, -0.5f, -0.5f,        1.0f, 0.0f, 0.0f,
+    0.1f, 0.5f, -0.5f,         1.0f, 0.0f, 0.0f,
+    0.1f, -0.5f, 0.5f,         1.0f, 0.0f, 0.0f,
+    0.1f, -0.5f, 0.5f,         1.0f, 0.0f, 0.0f,
+    0.1f, 0.5f, -0.5f,          1.0f, 0.0f, 0.0f,
+    0.1f, 0.5f, 0.5f,         1.0f, 0.0f, 0.0f,
+    
+    0.5f, 0.5f, -0.5f,         0.0f, 1.0f, 0.0f,
+    -0.5f, 0.5f, -0.5f,        0.0f, 1.0f, 0.0f,
+    0.5f, 0.5f, 0.5f,          0.0f, 1.0f, 0.0f,
+    0.5f, 0.5f, 0.5f,          0.0f, 1.0f, 0.0f,
+    -0.5f, 0.5f, -0.5f,        0.0f, 1.0f, 0.0f,
+    -0.5f, 0.5f, 0.5f,         0.0f, 1.0f, 0.0f,
+    
+    -0.5f, 0.5f, -0.5f,        -1.0f, 0.0f, 0.0f,
+    -0.5f, -0.5f, -0.5f,       -1.0f, 0.0f, 0.0f,
+    -0.5f, 0.5f, 0.5f,         -1.0f, 0.0f, 0.0f,
+    -0.5f, 0.5f, 0.5f,         -1.0f, 0.0f, 0.0f,
+    -0.5f, -0.5f, -0.5f,       -1.0f, 0.0f, 0.0f,
+    -0.5f, -0.5f, 0.5f,        -1.0f, 0.0f, 0.0f,
+    
+    -0.5f, -0.5f, -0.5f,       0.0f, -1.0f, 0.0f,
+    0.5f, -0.5f, -0.5f,        0.0f, -1.0f, 0.0f,
+    -0.5f, -0.5f, 0.5f,        0.0f, -1.0f, 0.0f,
+    -0.5f, -0.5f, 0.5f,        0.0f, -1.0f, 0.0f,
+    0.5f, -0.5f, -0.5f,        0.0f, -1.0f, 0.0f,
+    0.5f, -0.5f, 0.5f,         0.0f, -1.0f, 0.0f,
+    
+    0.5f, 0.5f, 0.5f,          0.0f, 0.0f, 1.0f,
+    -0.5f, 0.5f, 0.5f,         0.0f, 0.0f, 1.0f,
+    0.5f, -0.5f, 0.5f,         0.0f, 0.0f, 1.0f,
+    0.5f, -0.5f, 0.5f,         0.0f, 0.0f, 1.0f,
+    -0.5f, 0.5f, 0.5f,         0.0f, 0.0f, 1.0f,
+    -0.5f, -0.5f, 0.5f,        0.0f, 0.0f, 1.0f,
+    
+    0.5f, -0.5f, -0.5f,        0.0f, 0.0f, -1.0f,
+    -0.5f, -0.5f, -0.5f,       0.0f, 0.0f, -1.0f,
+    0.5f, 0.5f, -0.5f,         0.0f, 0.0f, -1.0f,
+    0.5f, 0.5f, -0.5f,         0.0f, 0.0f, -1.0f,
+    -0.5f, -0.5f, -0.5f,       0.0f, 0.0f, -1.0f,
+    -0.5f, 0.5f, -0.5f,        0.0f, 0.0f, -1.0f
+};
+
 
 
 @interface ViewController (){
@@ -123,10 +170,12 @@ GLfloat gCubeVertexData[216] =
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     pmModel = [[ProgressiveMeshModel alloc] init];
+    BaseMeshBuf = NULL;
+    BaseMeshBufPointer = 0;
     
     //GL load
     
-    [super setPreferredFramesPerSecond:60];
+    [super setPreferredFramesPerSecond:30];
     
     self.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
     
@@ -174,6 +223,8 @@ GLfloat gCubeVertexData[216] =
 
 
 - (IBAction)connect:(id)sender {
+    [progress setProgress:0];
+    
     NSLog(@"Connect Clicked!");
     NSLog(@"host = %@", host.text);
     NSLog(@"port = %@", port.text);
@@ -209,6 +260,8 @@ GLfloat gCubeVertexData[216] =
     [socket readDataWithTimeout:-1 tag:0];
     
 }
+
+
 
 
 -(void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
@@ -292,6 +345,9 @@ GLfloat gCubeVertexData[216] =
             NSLog(@"SIZE_OF_BASE_MESH = %zu", receivedSizeT);
             [pmModel setSizeBaseMesh:receivedSizeT];
             SizeBaseMesh = receivedSizeT;
+            
+            BaseMeshBuf = new char[[pmModel sizeBaseMesh]];
+            BaseMeshBufPointer = 0;
             STATE = 6;
             
             requestString = @"ACK_OK_SIZE_OF_BASE_MESH";
@@ -303,13 +359,25 @@ GLfloat gCubeVertexData[216] =
         case 6:
             //state 6 denotes "ACK_OK_SIZE_OF_BASE_MESH" sent .  now should reveice a data chunk of BaseMesh
             NSLog(@"Size of Base Mesh: %u", data.length);
-            [pmModel setBaseMeshChunk:data];
-            BaseMeshChunk = [[NSData alloc] initWithData:data];
-            NSLog(@"Size of newly allocated base mesh : %u", BaseMeshChunk.length);
-            STATE = 7;
-            requestString = @"ACK_OK_BASE_MESH";
-            [socket writeData:[requestString dataUsingEncoding:NSUTF8StringEncoding] withTimeout:-1 tag:0];
+            
+            NSLog(@"Save data in Buf");
+            [data getBytes:BaseMeshBuf + BaseMeshBufPointer length:data.length];
+            BaseMeshBufPointer += data.length;
+            NSLog(@"basemeshbuffer = %d, sizebasemesh = %d", BaseMeshBufPointer, [pmModel sizeBaseMesh]);
+            if(BaseMeshBufPointer >= [pmModel sizeBaseMesh]){
+                NSLog(@"Base Mesh transmitted!");
+                [pmModel setBaseMeshChunk:[[NSData alloc] initWithBytes:BaseMeshBuf length:[pmModel sizeBaseMesh]]];
+                STATE = 7;
+                requestString = @"ACK_OK_BASE_MESH";
+                [socket writeData:[requestString dataUsingEncoding:NSUTF8StringEncoding] withTimeout:-1 tag:0];
+                
+                //release buf
+                delete[] BaseMeshBuf;
+                BaseMeshBufPointer = 0;
+            }
             [socket readDataWithTimeout:-1 tag:0];
+                      
+            
             
             break;
             
@@ -424,6 +492,10 @@ GLfloat gCubeVertexData[216] =
     _modelViewProjectionMatrix = GLKMatrix4Multiply(projectionMatrix, modelViewMatrix);
     
     _rotation += self.timeSinceLastUpdate * 0.1f;
+    
+    
+    
+    
 }
 
 
