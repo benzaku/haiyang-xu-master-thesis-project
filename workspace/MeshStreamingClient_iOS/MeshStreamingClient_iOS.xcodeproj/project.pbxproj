@@ -39,6 +39,12 @@
 		589A5DD4161EFC9300C57821 /* BaseProperty.cc in Sources */ = {isa = PBXBuildFile; fileRef = 589A5DA9161EFC9300C57821 /* BaseProperty.cc */; };
 		589A5DD5161EFC9300C57821 /* Endian.cc in Sources */ = {isa = PBXBuildFile; fileRef = 589A5DAC161EFC9300C57821 /* Endian.cc */; };
 		589A5DD6161EFC9300C57821 /* SingletonT.cc in Sources */ = {isa = PBXBuildFile; fileRef = 589A5DB3161EFC9300C57821 /* SingletonT.cc */; };
+		58C9A5BC1626FC9000A36306 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58C9A5BB1626FC9000A36306 /* GLKit.framework */; };
+		58C9A5BF1626FC9A00A36306 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58C9A5BE1626FC9A00A36306 /* OpenGLES.framework */; };
+		58C9A5C61626FFD700A36306 /* Shader.fsh in Sources */ = {isa = PBXBuildFile; fileRef = 58C9A5C41626FFD700A36306 /* Shader.fsh */; };
+		58C9A5C71626FFD700A36306 /* Shader.vsh in Sources */ = {isa = PBXBuildFile; fileRef = 58C9A5C51626FFD700A36306 /* Shader.vsh */; };
+		58C9A5C81627001600A36306 /* Shader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 58C9A5C41626FFD700A36306 /* Shader.fsh */; };
+		58C9A5C91627001E00A36306 /* Shader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 58C9A5C51626FFD700A36306 /* Shader.vsh */; };
 		DD2484471619AE03000F2FBE /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD2484461619AE03000F2FBE /* UIKit.framework */; };
 		DD2484491619AE03000F2FBE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD2484481619AE03000F2FBE /* Foundation.framework */; };
 		DD24844B1619AE03000F2FBE /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD24844A1619AE03000F2FBE /* CoreGraphics.framework */; };
@@ -184,6 +190,10 @@
 		589A5DB4161EFC9300C57821 /* SingletonT.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SingletonT.hh; sourceTree = "<group>"; };
 		589A5DB5161EFC9300C57821 /* vector_cast.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = vector_cast.hh; sourceTree = "<group>"; };
 		589A5DB6161EFC9300C57821 /* vector_traits.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = vector_traits.hh; sourceTree = "<group>"; };
+		58C9A5BB1626FC9000A36306 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
+		58C9A5BE1626FC9A00A36306 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		58C9A5C41626FFD700A36306 /* Shader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Shader.fsh; sourceTree = "<group>"; };
+		58C9A5C51626FFD700A36306 /* Shader.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Shader.vsh; sourceTree = "<group>"; };
 		DD2484421619AE03000F2FBE /* MeshStreamingClient_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MeshStreamingClient_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD2484461619AE03000F2FBE /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		DD2484481619AE03000F2FBE /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -222,6 +232,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				58C9A5BF1626FC9A00A36306 /* OpenGLES.framework in Frameworks */,
+				58C9A5BC1626FC9000A36306 /* GLKit.framework in Frameworks */,
 				DD24848D1619B0E5000F2FBE /* CFNetwork.framework in Frameworks */,
 				DD2484471619AE03000F2FBE /* UIKit.framework in Frameworks */,
 				DD2484491619AE03000F2FBE /* Foundation.framework in Frameworks */,
@@ -448,9 +460,38 @@
 			path = Utils;
 			sourceTree = "<group>";
 		};
+		58C9A5C01626FDC500A36306 /* AsyncSocket */ = {
+			isa = PBXGroup;
+			children = (
+				DD2484851619AF8E000F2FBE /* GCDAsyncSocket.h */,
+				DD2484861619AF8E000F2FBE /* GCDAsyncSocket.m */,
+				DD2484881619AFF6000F2FBE /* GCDAsyncUdpSocket.h */,
+				DD2484891619AFF6000F2FBE /* GCDAsyncUdpSocket.m */,
+			);
+			name = AsyncSocket;
+			sourceTree = "<group>";
+		};
+		58C9A5C11626FDDD00A36306 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Utils;
+			sourceTree = "<group>";
+		};
+		58C9A5C31626FFCA00A36306 /* Shaders */ = {
+			isa = PBXGroup;
+			children = (
+				58C9A5C41626FFD700A36306 /* Shader.fsh */,
+				58C9A5C51626FFD700A36306 /* Shader.vsh */,
+			);
+			name = Shaders;
+			sourceTree = "<group>";
+		};
 		DD2484371619AE02000F2FBE = {
 			isa = PBXGroup;
 			children = (
+				58C9A5BE1626FC9A00A36306 /* OpenGLES.framework */,
+				58C9A5BB1626FC9000A36306 /* GLKit.framework */,
 				DD24848C1619B0E5000F2FBE /* CFNetwork.framework */,
 				DD24844C1619AE03000F2FBE /* MeshStreamingClient_iOS */,
 				DD2484731619AE04000F2FBE /* MeshStreamingClient_iOSTests */,
@@ -482,6 +523,9 @@
 		DD24844C1619AE03000F2FBE /* MeshStreamingClient_iOS */ = {
 			isa = PBXGroup;
 			children = (
+				58C9A5C31626FFCA00A36306 /* Shaders */,
+				58C9A5C11626FDDD00A36306 /* Utils */,
+				58C9A5C01626FDC500A36306 /* AsyncSocket */,
 				589A5D3C161EFC9300C57821 /* OpenMesh */,
 				DD2484551619AE03000F2FBE /* AppDelegate.h */,
 				DD2484561619AE03000F2FBE /* AppDelegate.mm */,
@@ -489,10 +533,6 @@
 				DD2484641619AE03000F2FBE /* ViewController.h */,
 				DD2484651619AE03000F2FBE /* ViewController.mm */,
 				DD24844D1619AE03000F2FBE /* Supporting Files */,
-				DD2484851619AF8E000F2FBE /* GCDAsyncSocket.h */,
-				DD2484861619AF8E000F2FBE /* GCDAsyncSocket.m */,
-				DD2484881619AFF6000F2FBE /* GCDAsyncUdpSocket.h */,
-				DD2484891619AFF6000F2FBE /* GCDAsyncUdpSocket.m */,
 				DDA4FC46161DA97E009EBB0A /* ProgressiveMeshModel.h */,
 				DDA4FC47161DA97E009EBB0A /* ProgressiveMeshModel.mm */,
 				DDA4FC55161DCBCA009EBB0A /* PMStruct.cpp */,
@@ -614,6 +654,8 @@
 				589A5DC3161EFC9300C57821 /* SR_binary_vector_of_fundamentals.inl in Resources */,
 				589A5DC4161EFC9300C57821 /* SR_binary_vector_of_string.inl in Resources */,
 				589A5DCE161EFC9300C57821 /* generate.sh in Resources */,
+				58C9A5C81627001600A36306 /* Shader.fsh in Resources */,
+				58C9A5C91627001E00A36306 /* Shader.vsh in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -683,6 +725,8 @@
 				589A5DD4161EFC9300C57821 /* BaseProperty.cc in Sources */,
 				589A5DD5161EFC9300C57821 /* Endian.cc in Sources */,
 				589A5DD6161EFC9300C57821 /* SingletonT.cc in Sources */,
+				58C9A5C61626FFD700A36306 /* Shader.fsh in Sources */,
+				58C9A5C71626FFD700A36306 /* Shader.vsh in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

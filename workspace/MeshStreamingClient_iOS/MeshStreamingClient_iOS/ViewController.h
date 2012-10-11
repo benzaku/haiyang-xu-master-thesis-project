@@ -7,10 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <GLKit/GLKit.h>
 #import "GCDAsyncSocket.h"
 #import "ProgressiveMeshModel.h"
 
-@interface ViewController : UIViewController<GCDAsyncSocketDelegate,UITextFieldDelegate>{
+@interface ViewController : GLKViewController<GCDAsyncSocketDelegate,UITextFieldDelegate>{
     GCDAsyncSocket *socket;
     ProgressiveMeshModel *pmModel;
 }
