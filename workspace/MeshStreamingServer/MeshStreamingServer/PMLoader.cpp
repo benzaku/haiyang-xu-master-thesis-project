@@ -229,7 +229,7 @@ PMLoader::getBaseMeshChunk()
     baseMeshChunkSize = n_base_vertices_ * sizeof(MyMesh::Point) + n_base_faces_ * sizeof(unsigned int) * 3;
     std::cout<< "baseMeshChunkSize = " << baseMeshChunkSize << std::endl;
     char* baseMeshChunk = new char[baseMeshChunkSize];
-    mesh_.clear();
+    //mesh_.clear();
     
     ifs.read(baseMeshChunk, baseMeshChunkSize);
     /*
