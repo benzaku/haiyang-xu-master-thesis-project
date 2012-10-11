@@ -78,12 +78,12 @@ GLfloat gCubeVertexData2[216] =
 {
     // Data layout for each line below is:
     // positionX, positionY, positionZ,     normalX, normalY, normalZ,
-    0.1f, -0.5f, -0.5f,        1.0f, 0.0f, 0.0f,
-    0.1f, 0.5f, -0.5f,         1.0f, 0.0f, 0.0f,
-    0.1f, -0.5f, 0.5f,         1.0f, 0.0f, 0.0f,
-    0.1f, -0.5f, 0.5f,         1.0f, 0.0f, 0.0f,
-    0.1f, 0.5f, -0.5f,          1.0f, 0.0f, 0.0f,
-    0.1f, 0.5f, 0.5f,         1.0f, 0.0f, 0.0f,
+    1.5f, -0.5f, -0.5f,        1.0f, 0.0f, 0.0f,
+    1.5f, 0.5f, -0.5f,         1.0f, 0.0f, 0.0f,
+    1.5f, -0.5f, 0.5f,         1.0f, 0.0f, 0.0f,
+    1.5f, -0.5f, 0.5f,         1.0f, 0.0f, 0.0f,
+    1.5f, 0.5f, -0.5f,          1.0f, 0.0f, 0.0f,
+    1.5f, 0.5f, 0.5f,         1.0f, 0.0f, 0.0f,
     
     0.5f, 0.5f, -0.5f,         0.0f, 1.0f, 0.0f,
     -0.5f, 0.5f, -0.5f,        0.0f, 1.0f, 0.0f,
@@ -374,7 +374,9 @@ GLfloat gCubeVertexData2[216] =
                 //release buf
                 delete[] BaseMeshBuf;
                 BaseMeshBufPointer = 0;
+                [self updateBaseMeshToView];
             }
+            
             [socket readDataWithTimeout:-1 tag:0];
                       
             
@@ -468,7 +470,7 @@ GLfloat gCubeVertexData2[216] =
 - (void)update
 {
     float aspect = fabsf(self.view.bounds.size.width / self.view.bounds.size.height);
-    GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0f), aspect, 0.1f, 100.0f);
+    GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(500.0f), aspect, 0.1f, 1000.0f);
     
     self.effect.transform.projectionMatrix = projectionMatrix;
     
@@ -495,7 +497,54 @@ GLfloat gCubeVertexData2[216] =
     
     
     
+    /*
+    if((int)_rotation % 4 < 2){
+        //NSLog(@"Rotate % 4 = %d < 2", (int)_rotation%10);
+        glDeleteBuffers(1, &_vertexBuffer);
+        
+        glGenBuffers(1, &_vertexBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(gCubeVertexData2), gCubeVertexData2, GL_STATIC_DRAW);
+        
+        glEnableVertexAttribArray(GLKVertexAttribPosition);
+        glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(0));
+        glEnableVertexAttribArray(GLKVertexAttribNormal);
+        glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(12));
+    } else{
+        //NSLog(@"Rotate % 4 = %d >= 2", (int)_rotation%10);
+
+        glDeleteBuffers(1, &_vertexBuffer);
+        
+        glGenBuffers(1, &_vertexBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(gCubeVertexData2), gCubeVertexData, GL_STATIC_DRAW);
+        
+        glEnableVertexAttribArray(GLKVertexAttribPosition);
+        glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(0));
+        glEnableVertexAttribArray(GLKVertexAttribNormal);
+        glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(12));
+    }
+    */
     
+}
+
+- (void) updateBaseMeshToView
+{
+    GLubyte * data = [pmModel getBaseMeshGLArray];
+    
+    GLsizei size = [pmModel getBaseMeshGLArraySize];
+    
+    glDeleteBuffers(1, &_vertexBuffer);
+    
+    glGenBuffers(1, &_vertexBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
+    glBufferData(GL_ARRAY_BUFFER, size, data, GL_DYNAMIC_DRAW);
+    
+    glEnableVertexAttribArray(GLKVertexAttribPosition);
+    glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(0));
+    glEnableVertexAttribArray(GLKVertexAttribNormal);
+    glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(12));
+
 }
 
 
@@ -509,8 +558,12 @@ GLfloat gCubeVertexData2[216] =
     // Render the object with GLKit
     [self.effect prepareToDraw];
     
-    glDrawArrays(GL_TRIANGLES, 0, 36);
+    if([pmModel getBaseMeshGLArraySize] == 0)
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+    else
+        glDrawArrays(GL_TRIANGLES, 0, [pmModel getBaseMeshGLArraySize] / (6 * sizeof(float)));
     
+    /*
     // Render the object again with ES2
     glUseProgram(_program);
     
@@ -518,6 +571,8 @@ GLfloat gCubeVertexData2[216] =
     glUniformMatrix3fv(uniforms[UNIFORM_NORMAL_MATRIX], 1, 0, _normalMatrix.m);
     
     glDrawArrays(GL_TRIANGLES, 0, 36);
+    */
+    
 }
 
 

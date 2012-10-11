@@ -27,6 +27,8 @@
         nBaseFaces = 0;
         nMaxVertices = 0;
         nDetailVertices = 0;
+        baseMeshGLArray = NULL;
+        baseMeshGLArraySize = 0;
     }
     //MyMesh mesh;
     return self;
@@ -41,18 +43,13 @@
 - (void)setBaseMeshChunk:(NSData *)data
 {
     baseMeshChunk = [[NSData alloc] initWithData:data];
-   
+    
     char * mesh = new char[[data length]];
     
     [data getBytes:mesh length:[data length]];
     
     membuf sbuf(mesh, mesh + [data length]);
     std::istream meshis(&sbuf);
-
-    unsigned int * ui = (unsigned int *) &(mesh[self.nBaseVertices * sizeof(MyMesh::Point)]);
-    NSLog(@"ui = %d", *ui);
-    
-    MyMesh::Point * ppp = (MyMesh::Point *) &(mesh[(self.nBaseVertices -1) * sizeof(MyMesh::Point)]);
     
     
     //load base mesh
@@ -74,10 +71,32 @@
         meshis.read((char *)&i2, sizeUnInt);
         
         baseMesh.add_face(baseMesh.vertex_handle(i0),
-                       baseMesh.vertex_handle(i1),
-                       baseMesh.vertex_handle(i2));
+                          baseMesh.vertex_handle(i1),
+                          baseMesh.vertex_handle(i2));
+    }
+
+    baseMesh.update_face_normals();
+    baseMesh.update_vertex_normals();
+    MyMesh::ConstVertexIter
+    vIt(baseMesh.vertices_begin()),
+    vEnd(baseMesh.vertices_end());
+    
+    MyMesh::Point bbMin, bbMax;
+    
+    bbMin = bbMax = baseMesh.point(vIt);
+    
+    for(; vIt != vEnd; ++vIt){
+        bbMin.minimize(baseMesh.point(vIt));
+        bbMax.maximize(baseMesh.point(vIt));
     }
     
+    GLubyte *temp = [self getBaseMeshGLArray];
+    
+    GLsizei tempsize= [self getBaseMeshGLArraySize];
+    
+    GLfloat * tf = (GLfloat *)temp;
+    
+    NSLog(@"tempsize = %d", tempsize);
 }
 
 - (void)addPMDetail:(PMInfo)pminfo
@@ -122,6 +141,56 @@
         pminfo.vr = MyMesh::VertexHandle(vr);
         self->details.push_back(pminfo);
     }
+    
+}
+
+- (GLubyte *) getBaseMeshGLArray
+{
+    
+    
+    if(baseMeshGLArray == NULL){
+        baseMeshGLArraySize = nBaseFaces * 18 * sizeof(float);
+        baseMeshGLArray = new GLubyte[baseMeshGLArraySize];
+        MyMesh::ConstFaceIter   fIt(baseMesh.faces_begin()), fEnd(baseMesh.faces_end());
+        MyMesh::ConstFaceVertexIter     fvIt;
+        int counter = 0;
+        for(; fIt != fEnd; ++fIt){
+            fvIt = baseMesh.cfv_iter(fIt.handle());
+            
+            //cord of 1st vertex
+           
+            memcpy(&baseMeshGLArray[counter], &baseMesh.point(fvIt)[0], 3 * sizeof(float));
+            counter += (3 * sizeof(float));
+            //normal of 1st vertex
+            memcpy(&baseMeshGLArray[counter], &baseMesh.normal(fvIt)[0], 3 * sizeof(float));
+            counter += (3 * sizeof(float));
+            
+            ++fvIt;
+            //cord of 2nd vertex
+            memcpy(&baseMeshGLArray[counter], &baseMesh.point(fvIt)[0], 3 * sizeof(float));
+            counter += (3 * sizeof(float));
+            //normal of 2nd vertex
+            memcpy(&baseMeshGLArray[counter], &baseMesh.normal(fvIt)[0], 3 * sizeof(float));
+            counter += (3 * sizeof(float));
+            
+            ++fvIt;
+            //cord of 3rd vertex
+            memcpy(&baseMeshGLArray[counter], &baseMesh.point(fvIt)[0], 3 * sizeof(float));
+            counter += (3 * sizeof(float));
+            //normal of 1st vertex
+            memcpy(&baseMeshGLArray[counter], &baseMesh.normal(fvIt)[0], 3 * sizeof(float));
+            counter += (3 * sizeof(float));
+            
+            
+        }
+        
+    }
+    
+    return baseMeshGLArray;
+}
+- (GLsizei ) getBaseMeshGLArraySize
+{
+    return baseMeshGLArraySize;
 }
 
 

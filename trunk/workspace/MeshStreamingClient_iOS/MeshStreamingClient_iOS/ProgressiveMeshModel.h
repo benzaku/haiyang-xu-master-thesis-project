@@ -17,6 +17,8 @@
     MyMesh baseMesh;
     PMInfoContainer details;
     
+    GLubyte * baseMeshGLArray;
+    GLsizei baseMeshGLArraySize;
     //ProgressiveMesh *pm;
     
 }
@@ -38,6 +40,9 @@
 
 //setter
 - (void) setBaseMeshChunk:(NSData*) data;
+
+- (GLubyte *) getBaseMeshGLArray;
+- (GLsizei ) getBaseMeshGLArraySize;
 
 
 
