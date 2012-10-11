@@ -37,6 +37,7 @@
     return baseMeshChunk;
 }
 
+
 - (void)setBaseMeshChunk:(NSData *)data
 {
     baseMeshChunk = [[NSData alloc] initWithData:data];
@@ -48,6 +49,12 @@
     membuf sbuf(mesh, mesh + [data length]);
     std::istream meshis(&sbuf);
 
+    unsigned int * ui = (unsigned int *) &(mesh[self.nBaseVertices * sizeof(MyMesh::Point)]);
+    NSLog(@"ui = %d", *ui);
+    
+    MyMesh::Point * ppp = (MyMesh::Point *) &(mesh[(self.nBaseVertices -1) * sizeof(MyMesh::Point)]);
+    
+    
     //load base mesh
     MyMesh::Point p;
     unsigned int   i0, i1, i2;
@@ -62,7 +69,7 @@
     
     for (int i = 0; i < nBaseFaces; i ++) {
         //load base faces
-        meshis.read((char *)&i0, sizeUnInt);
+        meshis.read((char *)&i0, sizeof(unsigned int));
         meshis.read((char *)&i1, sizeUnInt);
         meshis.read((char *)&i2, sizeUnInt);
         
