@@ -131,6 +131,15 @@ PMStreamServerHandler::handleRequest()
         char * baseMeshChunk = _pmFH->getPMLoader()->getBaseMeshChunk();
         _templen = _pmFH->getPMLoader()->getBaseMeshChunkSize();
         _socket.sendBytes(baseMeshChunk, _templen);
+        int nbase = _pmFH->getPMLoader()->getNBaseVertices();
+        unsigned int *ii = (unsigned int *)&(baseMeshChunk[nbase * sizeof(MyMesh::Point)]);
+        MyMesh::Point * ppp = (MyMesh::Point *) &(baseMeshChunk[(nbase-1) * sizeof(MyMesh::Point)]);
+        std::cout << *ppp << std::endl;
+        std::cout << "ii " << *ii << std::endl;
+        std::cout << "ii +" << *(++ii) << std::endl;
+        MyMesh::Point * first = (MyMesh::Point *) baseMeshChunk;
+        std::cout << *first << std::endl;
+        
         //delete baseMeshChunk;
         std::cout<< "BASE_MESH sent..." << std::endl; 
     }
