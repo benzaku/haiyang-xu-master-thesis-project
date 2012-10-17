@@ -18,6 +18,10 @@
 @synthesize nBaseFaces;
 @synthesize nDetailVertices;
 @synthesize sizeBaseMesh;
+@synthesize center;
+@synthesize radius;
+@synthesize nVertices;
+@synthesize nFaces;
 
 - (id)init
 {
@@ -29,6 +33,10 @@
         nDetailVertices = 0;
         baseMeshGLArray = NULL;
         baseMeshGLArraySize = 0;
+        pmiter = details.begin();
+        currentPointer = 0;
+        nVertices = 0;
+        nFaces = 0;
     }
     //MyMesh mesh;
     return self;
@@ -42,6 +50,8 @@
 
 - (void)setBaseMeshChunk:(NSData *)data
 {
+    
+    
     baseMeshChunk = [[NSData alloc] initWithData:data];
     
     char * mesh = new char[[data length]];
@@ -90,11 +100,18 @@
         bbMax.maximize(baseMesh.point(vIt));
     }
     
+    //set center and radius
+    center = 0.5f*(bbMin + bbMax);
+    radius = 0.5*(bbMin - bbMax).norm();
+    
     GLubyte *temp = [self getBaseMeshGLArray];
     
     GLsizei tempsize= [self getBaseMeshGLArraySize];
     
     GLfloat * tf = (GLfloat *)temp;
+    
+    nVertices = nBaseVertices;
+    nFaces = nBaseFaces;
     
     NSLog(@"tempsize = %d", tempsize);
 }
@@ -118,14 +135,14 @@
     NSInteger sizePoint = sizeof(p);
     NSInteger sizeUnInt = sizeof(unsigned int);
     NSInteger nDetails =  data.length / sizePMInfo;
-    NSLog(@"There are %u details", nDetails);
+    //NSLog(@"There are %u details", nDetails);
     
     
-    char * details = new char[[data length]];
+    char * detailschars = new char[[data length]];
     
-    [data getBytes:details length:[data length]];
+    [data getBytes:detailschars length:[data length]];
     
-    membuf sbuf(details, details + [data length]);
+    membuf sbuf(detailschars, detailschars + [data length]);
     std::istream detailis(&sbuf);
 
     for(int i = 0; i < nDetails; i ++){
@@ -141,49 +158,57 @@
         pminfo.vr = MyMesh::VertexHandle(vr);
         self->details.push_back(pminfo);
     }
+    delete [] detailschars;
+}
+
+- (void) updateBaseMeshGLArray
+{
+    //baseMeshGLArraySize = (nFaces) * 18 * sizeof(float);
     
+    MyMesh::ConstFaceIter   fIt(baseMesh.faces_begin()), fEnd(baseMesh.faces_end());
+    MyMesh::ConstFaceVertexIter     fvIt;
+    int counter = 0;
+    int cnt = 0;
+    for(; fIt != fEnd; ++fIt){
+        fvIt = baseMesh.cfv_iter(fIt.handle());
+        
+        //cord of 1st vertex
+        
+        memcpy(&baseMeshGLArray[counter], &baseMesh.point(fvIt)[0], 3 * sizeof(float));
+        counter += (3 * sizeof(float));
+        //normal of 1st vertex
+        memcpy(&baseMeshGLArray[counter], &baseMesh.normal(fvIt)[0], 3 * sizeof(float));
+        counter += (3 * sizeof(float));
+        
+        ++fvIt;
+        //cord of 2nd vertex
+        memcpy(&baseMeshGLArray[counter], &baseMesh.point(fvIt)[0], 3 * sizeof(float));
+        counter += (3 * sizeof(float));
+        //normal of 2nd vertex
+        memcpy(&baseMeshGLArray[counter], &baseMesh.normal(fvIt)[0], 3 * sizeof(float));
+        counter += (3 * sizeof(float));
+        
+        ++fvIt;
+        //cord of 3rd vertex
+        memcpy(&baseMeshGLArray[counter], &baseMesh.point(fvIt)[0], 3 * sizeof(float));
+        counter += (3 * sizeof(float));
+        //normal of 1st vertex
+        memcpy(&baseMeshGLArray[counter], &baseMesh.normal(fvIt)[0], 3 * sizeof(float));
+        counter += (3 * sizeof(float));
+        
+        ++cnt;
+    }
+    baseMeshGLArraySize = cnt * 18 * sizeof(float);
+    //NSLog(@"update finished!");
 }
 
 - (GLubyte *) getBaseMeshGLArray
 {
-    
+    //NSLog(@"big size: %ld", (nBaseFaces + nDetailVertices) * 18 * sizeof(float));
     
     if(baseMeshGLArray == NULL){
-        baseMeshGLArraySize = nBaseFaces * 18 * sizeof(float);
-        baseMeshGLArray = new GLubyte[baseMeshGLArraySize];
-        MyMesh::ConstFaceIter   fIt(baseMesh.faces_begin()), fEnd(baseMesh.faces_end());
-        MyMesh::ConstFaceVertexIter     fvIt;
-        int counter = 0;
-        for(; fIt != fEnd; ++fIt){
-            fvIt = baseMesh.cfv_iter(fIt.handle());
-            
-            //cord of 1st vertex
-           
-            memcpy(&baseMeshGLArray[counter], &baseMesh.point(fvIt)[0], 3 * sizeof(float));
-            counter += (3 * sizeof(float));
-            //normal of 1st vertex
-            memcpy(&baseMeshGLArray[counter], &baseMesh.normal(fvIt)[0], 3 * sizeof(float));
-            counter += (3 * sizeof(float));
-            
-            ++fvIt;
-            //cord of 2nd vertex
-            memcpy(&baseMeshGLArray[counter], &baseMesh.point(fvIt)[0], 3 * sizeof(float));
-            counter += (3 * sizeof(float));
-            //normal of 2nd vertex
-            memcpy(&baseMeshGLArray[counter], &baseMesh.normal(fvIt)[0], 3 * sizeof(float));
-            counter += (3 * sizeof(float));
-            
-            ++fvIt;
-            //cord of 3rd vertex
-            memcpy(&baseMeshGLArray[counter], &baseMesh.point(fvIt)[0], 3 * sizeof(float));
-            counter += (3 * sizeof(float));
-            //normal of 1st vertex
-            memcpy(&baseMeshGLArray[counter], &baseMesh.normal(fvIt)[0], 3 * sizeof(float));
-            counter += (3 * sizeof(float));
-            
-            
-        }
-        
+        baseMeshGLArray = new GLubyte[(nBaseFaces + nDetailVertices * 2) * 18 * sizeof(float)];
+        [self updateBaseMeshGLArray];
     }
     
     return baseMeshGLArray;
@@ -193,6 +218,62 @@
     return baseMeshGLArraySize;
 }
 
+- (PMInfoIter) getPMInfoIter
+{
+    return pmiter;
+}
+
+- (PMInfoIter) getDetailsEnd
+{
+    return details.end();
+}
+
+- (void) incPMInfoIter
+{
+    pmiter++;
+}
+
+- (size_t) getDetailSize
+{
+    return details.size();
+}
+
+- (size_t) getCurrentPointer
+{
+    return currentPointer;
+}
+
+- (void) incCurrentPointer: (int) times
+{
+    for(int i = 0; i < times; i ++)
+        currentPointer ++;
+}
+
+- (void) refine: (int) steps
+{
+    PMInfo *pminfo;
+    
+    
+    for(int i = 0 ; i < steps; i ++){
+        
+        pminfo = &(details[currentPointer]);
+        
+        pminfo->v0 = baseMesh.add_vertex(pminfo->p0);
+        baseMesh.vertex_split(pminfo->v0,
+                           pminfo->v1,
+                           pminfo->vl,
+                           pminfo->vr);
+        
+        nVertices ++;
+        nFaces ++;
+        currentPointer ++;
+    }
+    
+    baseMesh.update_face_normals();
+    baseMesh.update_vertex_normals();
+    [self updateBaseMeshGLArray];
+    
+}
 
 
 @end

@@ -19,6 +19,9 @@
     
     GLubyte * baseMeshGLArray;
     GLsizei baseMeshGLArraySize;
+    
+    PMInfoIter pmiter;
+    int currentPointer;
     //ProgressiveMesh *pm;
     
 }
@@ -31,7 +34,10 @@
 @property NSInteger nDetailVertices;
 @property NSInteger nMaxVertices;
 @property NSInteger sizeBaseMesh;
-
+@property NSInteger nVertices;
+@property NSInteger nFaces;
+@property MyMesh::Point center;
+@property float radius;
 
 - (id)init;
 
@@ -48,5 +54,20 @@
 
 - (void) addPMDetail:(PMInfo) pminfo;
 - (void) addPMDetailsFromNSData:(NSData *) data;
+
+- (PMInfoIter) getPMInfoIter;
+
+- (void) incPMInfoIter;
+
+- (PMInfoIter) getDetailsEnd;
+
+- (size_t) getDetailSize;
+
+- (size_t) getCurrentPointer;
+
+- (void) incCurrentPointer: (int) times;
+
+- (void) refine: (int) steps;
+
 
 @end

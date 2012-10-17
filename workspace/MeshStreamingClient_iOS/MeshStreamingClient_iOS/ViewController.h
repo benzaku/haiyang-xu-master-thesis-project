@@ -31,6 +31,7 @@
 
 
 @property (strong, nonatomic) IBOutlet UIProgressView *progress;
+@property (strong, nonatomic) IBOutlet UIProgressView *detailRecoverProgress;
 
 @property(strong)  GCDAsyncSocket *socket;
 //@property(strong)  ProgressiveMeshModel *pmModel;
