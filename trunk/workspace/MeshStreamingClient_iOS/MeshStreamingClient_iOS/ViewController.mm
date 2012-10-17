@@ -132,6 +132,7 @@ GLfloat gCubeVertexData2[216] =
     
     GLuint _vertexArray;
     GLuint _vertexBuffer;
+    GLuint _myFence;
 }
 
 @property (strong, nonatomic) EAGLContext *context;
@@ -154,6 +155,7 @@ GLfloat gCubeVertexData2[216] =
 @synthesize host;
 @synthesize port;
 @synthesize progress;
+@synthesize detailRecoverProgress;
 
 @synthesize STATE;
 @synthesize NBaseVertices;
@@ -175,7 +177,7 @@ GLfloat gCubeVertexData2[216] =
     
     //GL load
     
-    [super setPreferredFramesPerSecond:30];
+    [super setPreferredFramesPerSecond:60];
     
     self.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
     
@@ -225,6 +227,8 @@ GLfloat gCubeVertexData2[216] =
 - (IBAction)connect:(id)sender {
     [progress setProgress:0];
     
+    [detailRecoverProgress setProgress:0];
+    
     NSLog(@"Connect Clicked!");
     NSLog(@"host = %@", host.text);
     NSLog(@"port = %@", port.text);
@@ -270,6 +274,7 @@ GLfloat gCubeVertexData2[216] =
     NSString *requestString;
     size_t receivedSizeT;
     NSComparisonResult compareResult;
+    int nByteToWait;
     switch (STATE) {
         case 0:
             //state 0 denotes initial state. should receive HELLO
@@ -291,6 +296,7 @@ GLfloat gCubeVertexData2[216] =
             [data getBytes: &receivedSizeT length: sizeof(size_t)];
             NSLog(@"N_BASE_VERTICES = %zu", receivedSizeT);
             [pmModel setNBaseVertices:receivedSizeT];
+            [pmModel setNVertices:receivedSizeT];
             NBaseVertices = receivedSizeT;
             STATE = 2;
             
@@ -304,6 +310,7 @@ GLfloat gCubeVertexData2[216] =
             [data getBytes: &receivedSizeT length: sizeof(size_t)];
             NSLog(@"N_BASE_FACES = %zu", receivedSizeT);
             [pmModel setNBaseFaces:receivedSizeT];
+            [pmModel setNFaces:receivedSizeT];
             NBaseFaces = receivedSizeT;
             STATE = 3;
             
@@ -394,27 +401,44 @@ GLfloat gCubeVertexData2[216] =
                 requestString = @"PMDETAIL";
                 [socket writeData:[requestString dataUsingEncoding:NSUTF8StringEncoding] withTimeout:-1 tag:0];
                 //[socket readDataToLength:24 withTimeout:-1 tag:0];
-                [socket readDataWithTimeout:-1 tag:0];
+                //[socket readDataWithTimeout:-1 tag:0];
+                
+                [socket readDataToLength:2400 withTimeout:-1 tag:0];
             }
             
             break;
         case 8:
-            NSLog(@"data length : %u", data.length);
-            NSLog(@"number of details transmitted in this packet = %u", data.length / 24);
+            //NSLog(@"data length : %u", data.length);
+            //NSLog(@"number of details transmitted in this packet = %u", data.length / 24);
             
             [pmModel addPMDetailsFromNSData:data];
+            
+            //[pmModel refine:1];
+            
+            //[self updateBaseMeshToView];
             
             TransmittedDetails += data.length;
             
             TransmitProgress = ((float)TransmittedDetails) / ((float) NDetailVertices * 24);
-            NSLog(@"TransmittedProgress:%f%", TransmitProgress * 100 );
+            //NSLog(@"TransmittedProgress:%d%", (int)(TransmitProgress * 100) );
             
             [progress setProgress:TransmitProgress];
             if(TransmitProgress >= 1){
+                NSLog(@"Transmitted Progress : %d %", (int)(TransmitProgress * 100));
+                //[pmModel refine:400];
                 [socket disconnect];
             }
-            [socket readDataWithTimeout:-1 tag:0];
-            break;
+            
+            
+            
+            //[socket readDataWithTimeout:-1 tag:0];
+            
+            nByteToWait = NDetailVertices * 24 - TransmittedDetails;
+            if(nByteToWait > 2400)
+                nByteToWait = 2400;
+            [socket readDataToLength:nByteToWait withTimeout:-1 tag:0];
+            
+             break;
             
         default:
             break;
@@ -448,6 +472,8 @@ GLfloat gCubeVertexData2[216] =
     glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(12));
     
     glBindVertexArrayOES(0);
+    
+    
 }
 
 - (void)tearDownGL
@@ -469,12 +495,31 @@ GLfloat gCubeVertexData2[216] =
 
 - (void)update
 {
+    
+    if([pmModel getCurrentPointer] < [pmModel getDetailSize] && [pmModel getBaseMeshGLArraySize] != 0){
+        
+        if([pmModel getDetailSize] - [pmModel getCurrentPointer] > 10){
+            [pmModel refine:10];
+            [self updateBaseMeshToView];
+        }
+        else if([pmModel getDetailSize] == [pmModel nDetailVertices]){
+            [pmModel refine:[pmModel getDetailSize] - [pmModel getCurrentPointer]];
+            [self updateBaseMeshToView];
+        }
+        [detailRecoverProgress setProgress:(float)([pmModel getCurrentPointer]) / (float)([pmModel nDetailVertices])];
+        //NSLog(@"refine");
+    }
+    
+    
+    
+    
+    
     float aspect = fabsf(self.view.bounds.size.width / self.view.bounds.size.height);
-    GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(500.0f), aspect, 0.1f, 1000.0f);
+    GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(45.0f), aspect, 0.1f, 1000.0f);
     
     self.effect.transform.projectionMatrix = projectionMatrix;
     
-    GLKMatrix4 baseModelViewMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, -4.0f);
+    GLKMatrix4 baseModelViewMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, 0.0f);
     baseModelViewMatrix = GLKMatrix4Rotate(baseModelViewMatrix, _rotation, 0.0f, 1.0f, 0.0f);
     
     // Compute the model view matrix for the object rendered with GLKit
@@ -493,38 +538,11 @@ GLfloat gCubeVertexData2[216] =
     
     _modelViewProjectionMatrix = GLKMatrix4Multiply(projectionMatrix, modelViewMatrix);
     
-    _rotation += self.timeSinceLastUpdate * 0.1f;
+    //_rotation += self.timeSinceLastUpdate * 0.5f;
     
     
     
-    /*
-    if((int)_rotation % 4 < 2){
-        //NSLog(@"Rotate % 4 = %d < 2", (int)_rotation%10);
-        glDeleteBuffers(1, &_vertexBuffer);
-        
-        glGenBuffers(1, &_vertexBuffer);
-        glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(gCubeVertexData2), gCubeVertexData2, GL_STATIC_DRAW);
-        
-        glEnableVertexAttribArray(GLKVertexAttribPosition);
-        glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(0));
-        glEnableVertexAttribArray(GLKVertexAttribNormal);
-        glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(12));
-    } else{
-        //NSLog(@"Rotate % 4 = %d >= 2", (int)_rotation%10);
-
-        glDeleteBuffers(1, &_vertexBuffer);
-        
-        glGenBuffers(1, &_vertexBuffer);
-        glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(gCubeVertexData2), gCubeVertexData, GL_STATIC_DRAW);
-        
-        glEnableVertexAttribArray(GLKVertexAttribPosition);
-        glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(0));
-        glEnableVertexAttribArray(GLKVertexAttribNormal);
-        glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(12));
-    }
-    */
+    
     
 }
 
@@ -545,6 +563,7 @@ GLfloat gCubeVertexData2[216] =
     glEnableVertexAttribArray(GLKVertexAttribNormal);
     glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(12));
 
+    
 }
 
 
@@ -554,6 +573,7 @@ GLfloat gCubeVertexData2[216] =
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     glBindVertexArrayOES(_vertexArray);
+    
     
     // Render the object with GLKit
     [self.effect prepareToDraw];
