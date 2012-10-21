@@ -37,6 +37,16 @@
         currentPointer = 0;
         nVertices = 0;
         nFaces = 0;
+        verticeGLArray = NULL;
+        normalGLArray = NULL;
+        currentVerticeIdx = 0;
+        VerticeNormalGLArray = NULL;
+        BASE_MESH_VERTEX_NORMAL_ARRAY = NULL;
+        BASE_MESH_VERTEX_NORMAL_ARRAY_SIZE = 0;
+        BASE_MESH_INDICE_ARRAY = 0;
+        MESH_INDICE_ARRAY = NULL;
+        MESH_INDICE_ARRAY_SIZE = 0;
+        
     }
     //MyMesh mesh;
     return self;
@@ -91,18 +101,18 @@
     vIt(baseMesh.vertices_begin()),
     vEnd(baseMesh.vertices_end());
     
-    MyMesh::Point bbMin, bbMax;
+    //MyMesh::Point bbMin, bbMax;
     
-    bbMin = bbMax = baseMesh.point(vIt);
+    BBMIN = BBMAX = baseMesh.point(vIt);
     
     for(; vIt != vEnd; ++vIt){
-        bbMin.minimize(baseMesh.point(vIt));
-        bbMax.maximize(baseMesh.point(vIt));
+        BBMIN.minimize(baseMesh.point(vIt));
+        BBMAX.maximize(baseMesh.point(vIt));
     }
     
     //set center and radius
-    center = 0.5f*(bbMin + bbMax);
-    radius = 0.5*(bbMin - bbMax).norm();
+    center = 0.5f*(BBMIN + BBMAX);
+    radius = 0.5*(BBMIN - BBMAX).norm();
     
     GLubyte *temp = [self getBaseMeshGLArray];
     
@@ -267,11 +277,173 @@
         nVertices ++;
         nFaces ++;
         currentPointer ++;
+        
+        
+        BBMAX.maximize(pminfo->p0);
+        BBMIN.minimize(pminfo->p0);
+        center = 0.5f*(BBMAX + BBMIN);
+        radius = 0.5*(BBMIN - BBMAX).norm();
     }
     
     baseMesh.update_face_normals();
     baseMesh.update_vertex_normals();
     [self updateBaseMeshGLArray];
+    
+}
+
+- (void) clear
+{
+    baseMesh.clean();
+    details.clear();
+    center[0], center[1] = 0, center[2] = 0;
+    radius = 0;
+    baseMeshGLArraySize = 0;
+    delete [] baseMeshGLArray;
+    baseMeshGLArray = NULL;
+    currentPointer = 0;
+    
+}
+
+- (void) updateVerticePositionAndNormalGLArray
+{
+    MyMesh::VertexHandle vh;
+    MyMesh::Normal vn;
+    MyMesh::Point p;
+    
+    
+    float * pos;
+    float * nor;
+    
+    for(int i = currentVerticeIdx; i < nCurrentVertices; i ++){
+        vh = baseMesh.vertex_handle(i);
+        vn = baseMesh.normal(vh);
+        p = baseMesh.point(vh);
+        
+        pos = (float *)&verticeGLArray[i * 3 * sizeof(float)];
+        
+        pos[0] = p.values_[0];
+        pos[1] = p.values_[1];
+        pos[2] = p.values_[2];
+        
+        nor = (float *)&normalGLArray[i * 3 * sizeof(float)];
+        nor[0] = vn.values_[0];
+        nor[1] = vn.values_[1];
+        nor[2] = vn.values_[2];
+        
+    }
+    
+    
+}
+
+- (void) updateVerticeNormalGLArray
+{
+    
+}
+
+
+- (GLubyte *) getVerticePositionGLArray
+{
+    if(verticeGLArray == NULL){
+        verticeGLArray = new GLubyte[(nBaseVertices + nDetailVertices)* 3 * sizeof(float)];
+        [self updateVerticePositionAndNormalGLArray];
+    }
+    
+    return verticeGLArray;
+    
+}
+- (GLubyte *) getVerticeNormalGLArray
+{
+    if (VerticeNormalGLArray == NULL) {
+        VerticeNormalGLArray = new GLubyte[2 * (nBaseVertices + nDetailVertices)* 3 * sizeof(float)];
+        
+    }
+    return normalGLArray;
+}
+- (GLsizei ) getCurrentFaceNumber
+{
+    return currentFaceNumber;
+}
+
+- (void) generateBaseMeshVertexNormalArray
+{
+    if(BASE_MESH_VERTEX_NORMAL_ARRAY != NULL){
+        delete [] BASE_MESH_VERTEX_NORMAL_ARRAY;
+        BASE_MESH_VERTEX_NORMAL_ARRAY_SIZE = 0;
+    }
+    BASE_MESH_VERTEX_NORMAL_ARRAY_SIZE = 2 * nBaseVertices * 3;
+    BASE_MESH_VERTEX_NORMAL_ARRAY = new GLfloat[BASE_MESH_VERTEX_NORMAL_ARRAY_SIZE];
+    
+    
+    MyMesh::VertexHandle vh;
+    MyMesh::Normal vn;
+    MyMesh::Point p;
+    
+    
+    for(int i = 0; i < nBaseVertices; i ++){
+        vh = baseMesh.vertex_handle(i);
+        vn = baseMesh.normal(vh);
+        p = baseMesh.point(vh);
+        
+        memcpy(&(BASE_MESH_VERTEX_NORMAL_ARRAY[i * 2 * 3]), &(p.values_[0]), 3 * sizeof(float));
+        memcpy(&(BASE_MESH_VERTEX_NORMAL_ARRAY[i * 2 * 3 + 3]), &(vn.values_[0]), 3 * sizeof(float));
+        
+    }
+
+}
+
+- (GLfloat *) getBaseMeshVertexNormalArray
+{
+    if (BASE_MESH_VERTEX_NORMAL_ARRAY == NULL) {
+        
+        [self generateBaseMeshVertexNormalArray];
+        
+    }
+    
+    return BASE_MESH_VERTEX_NORMAL_ARRAY;
+}
+
+- (GLsizei) getBaseMeshVertexNormalArraySize
+{
+    return BASE_MESH_VERTEX_NORMAL_ARRAY_SIZE;
+}
+
+
+- (void) generateInitMeshIndiceArray
+{
+    if (MESH_INDICE_ARRAY != NULL) {
+        delete [] MESH_INDICE_ARRAY;
+        MESH_INDICE_ARRAY_SIZE = 0;
+    }
+    
+    MESH_INDICE_ARRAY_SIZE = 3 * (nBaseFaces + 2 * nDetailVertices) * sizeof(int);
+    MESH_INDICE_ARRAY = new GLubyte[MESH_INDICE_ARRAY_SIZE];
+    
+    MyMesh::ConstFaceIter   fIt(baseMesh.faces_begin()), fEnd(baseMesh.faces_end());
+    MyMesh::ConstFaceVertexIter     fvIt;
+    
+    
+    int cnt = 0;
+    
+    int * p_indice = (int *)&(MESH_INDICE_ARRAY[0]);
+    
+    for(; fIt != fEnd; ++fIt){
+        fvIt = baseMesh.cfv_iter(fIt.handle());
+        for(int i = 0; i < 3; i ++){
+            *p_indice = (fvIt.handle()).idx();
+            ++ p_indice;
+            ++fvIt;
+        }
+        ++cnt;
+    }
+
+
+}
+- (GLubyte *) getMeshIndiceArray
+{
+    if (MESH_INDICE_ARRAY == NULL) {
+        [self generateInitMeshIndiceArray];
+    }
+    return MESH_INDICE_ARRAY;
     
 }
 

@@ -20,9 +20,32 @@
     GLubyte * baseMeshGLArray;
     GLsizei baseMeshGLArraySize;
     
+    GLfloat * BASE_MESH_VERTEX_NORMAL_ARRAY;
+    GLsizei BASE_MESH_VERTEX_NORMAL_ARRAY_SIZE;
+    GLubyte * BASE_MESH_INDICE_ARRAY;
+    GLsizei BASE_MESH_INDICE_ARRAY_SIZE;
+    
+    GLubyte * MESH_INDICE_ARRAY;
+    GLsizei MESH_INDICE_ARRAY_SIZE;
+    
+    GLubyte * verticeGLArray;
+    GLubyte * normalGLArray;
+    
+    GLsizei currentFaceNumber;
+    GLsizei currentVerticeIdx;
+    int nCurrentVertices;
+    MyMesh::VertexIter currentVertexIter;
+    
+    GLubyte * VerticeNormalGLArray;
+    
+    
+    
+    
     PMInfoIter pmiter;
     int currentPointer;
     //ProgressiveMesh *pm;
+    
+    MyMesh::Point BBMAX, BBMIN;
     
 }
 
@@ -50,6 +73,9 @@
 - (GLubyte *) getBaseMeshGLArray;
 - (GLsizei ) getBaseMeshGLArraySize;
 
+- (GLubyte *) getVerticePositionGLArray;
+- (GLubyte *) getVerticeNormalGLArray;
+- (GLsizei ) getCurrentFaceNumber;
 
 
 - (void) addPMDetail:(PMInfo) pminfo;
@@ -69,5 +95,12 @@
 
 - (void) refine: (int) steps;
 
+- (void) clear;
+
+- (GLfloat *) getBaseMeshVertexNormalArray;
+
+- (GLsizei) getBaseMeshVertexNormalArraySize;
+
+- (GLubyte *) getMeshIndiceArray;
 
 @end
