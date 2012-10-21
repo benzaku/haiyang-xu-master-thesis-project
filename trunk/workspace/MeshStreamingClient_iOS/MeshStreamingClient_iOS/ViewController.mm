@@ -133,6 +133,9 @@ GLfloat gCubeVertexData2[216] =
     GLuint _vertexArray;
     GLuint _vertexBuffer;
     GLuint _myFence;
+    
+    float center[3];
+    float radius;
 }
 
 @property (strong, nonatomic) EAGLContext *context;
@@ -192,6 +195,9 @@ GLfloat gCubeVertexData2[216] =
     view.context = self.context;
     view.drawableDepthFormat = GLKViewDrawableDepthFormat24;
     
+    center[0] = 0, center[1] = 0; center[2] = 0;
+    radius = 1.0f;
+    
     [self setupGL];
 
     
@@ -225,6 +231,7 @@ GLfloat gCubeVertexData2[216] =
 
 
 - (IBAction)connect:(id)sender {
+    [socket disconnect];
     [progress setProgress:0];
     
     [detailRecoverProgress setProgress:0];
@@ -247,6 +254,11 @@ GLfloat gCubeVertexData2[216] =
     }
     
     
+    [pmModel clear];
+    center[0] = 0, center[1] = 0; center[2] = 0;
+    radius = 1.0f;
+    
+    //[self setupGL];
 }
 
 -(void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port
@@ -374,6 +386,8 @@ GLfloat gCubeVertexData2[216] =
             if(BaseMeshBufPointer >= [pmModel sizeBaseMesh]){
                 NSLog(@"Base Mesh transmitted!");
                 [pmModel setBaseMeshChunk:[[NSData alloc] initWithBytes:BaseMeshBuf length:[pmModel sizeBaseMesh]]];
+                center[0] = [pmModel center][0], center[1] = [pmModel center][1], center[2] = [pmModel center][2];
+                radius = [pmModel radius];
                 STATE = 7;
                 requestString = @"ACK_OK_BASE_MESH";
                 [socket writeData:[requestString dataUsingEncoding:NSUTF8StringEncoding] withTimeout:-1 tag:0];
@@ -462,15 +476,6 @@ GLfloat gCubeVertexData2[216] =
     glGenVertexArraysOES(1, &_vertexArray);
     glBindVertexArrayOES(_vertexArray);
     
-    glGenBuffers(1, &_vertexBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(gCubeVertexData), gCubeVertexData, GL_STATIC_DRAW);
-    
-    glEnableVertexAttribArray(GLKVertexAttribPosition);
-    glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(0));
-    glEnableVertexAttribArray(GLKVertexAttribNormal);
-    glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(12));
-    
     glBindVertexArrayOES(0);
     
     
@@ -507,47 +512,37 @@ GLfloat gCubeVertexData2[216] =
             [self updateBaseMeshToView];
         }
         [detailRecoverProgress setProgress:(float)([pmModel getCurrentPointer]) / (float)([pmModel nDetailVertices])];
-        //NSLog(@"refine");
+        
+        //update center and radius
+        center[0] = [pmModel center][0], center[1] = [pmModel center][1], center[2] = [pmModel center][2];
+        radius = [pmModel radius];
+        
     }
     
     
-    
-    
-    
     float aspect = fabsf(self.view.bounds.size.width / self.view.bounds.size.height);
-    GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(45.0f), aspect, 0.1f, 1000.0f);
+    GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(45.0f), aspect, 0.1f, 10000.0f);
     
     self.effect.transform.projectionMatrix = projectionMatrix;
+        
+    GLKMatrix4 baseModelViewMatrix = GLKMatrix4MakeTranslation(-center[0], -center[1], -center[2] - radius * 5);
     
-    GLKMatrix4 baseModelViewMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, 0.0f);
     baseModelViewMatrix = GLKMatrix4Rotate(baseModelViewMatrix, _rotation, 0.0f, 1.0f, 0.0f);
     
-    // Compute the model view matrix for the object rendered with GLKit
-    GLKMatrix4 modelViewMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, -1.5f);
-    modelViewMatrix = GLKMatrix4Rotate(modelViewMatrix, _rotation, 1.0f, 1.0f, 1.0f);
-    modelViewMatrix = GLKMatrix4Multiply(baseModelViewMatrix, modelViewMatrix);
+    self.effect.transform.modelviewMatrix = /*modelViewMatrix*/ baseModelViewMatrix;
     
-    self.effect.transform.modelviewMatrix = modelViewMatrix;
-    
-    // Compute the model view matrix for the object rendered with ES2
-    modelViewMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, 1.5f);
-    modelViewMatrix = GLKMatrix4Rotate(modelViewMatrix, _rotation, 1.0f, 1.0f, 1.0f);
-    modelViewMatrix = GLKMatrix4Multiply(baseModelViewMatrix, modelViewMatrix);
-    
-    _normalMatrix = GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3(modelViewMatrix), NULL);
-    
-    _modelViewProjectionMatrix = GLKMatrix4Multiply(projectionMatrix, modelViewMatrix);
-    
-    //_rotation += self.timeSinceLastUpdate * 0.5f;
-    
-    
-    
-    
+    _rotation += self.timeSinceLastUpdate * 0.5f;
     
 }
 
 - (void) updateBaseMeshToView
 {
+    
+    
+    GLfloat * bm = [pmModel getBaseMeshVertexNormalArray];
+    
+    GLubyte * bi = [pmModel getMeshIndiceArray];
+
     GLubyte * data = [pmModel getBaseMeshGLArray];
     
     GLsizei size = [pmModel getBaseMeshGLArraySize];
@@ -583,16 +578,7 @@ GLfloat gCubeVertexData2[216] =
     else
         glDrawArrays(GL_TRIANGLES, 0, [pmModel getBaseMeshGLArraySize] / (6 * sizeof(float)));
     
-    /*
-    // Render the object again with ES2
-    glUseProgram(_program);
-    
-    glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, 0, _modelViewProjectionMatrix.m);
-    glUniformMatrix3fv(uniforms[UNIFORM_NORMAL_MATRIX], 1, 0, _normalMatrix.m);
-    
-    glDrawArrays(GL_TRIANGLES, 0, 36);
-    */
-    
+   
 }
 
 
