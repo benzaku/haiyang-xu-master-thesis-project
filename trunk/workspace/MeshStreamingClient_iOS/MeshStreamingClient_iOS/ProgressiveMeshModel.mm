@@ -40,12 +40,18 @@
         verticeGLArray = NULL;
         normalGLArray = NULL;
         currentVerticeIdx = 0;
+        nCurrentVertices = 0;
         VerticeNormalGLArray = NULL;
         BASE_MESH_VERTEX_NORMAL_ARRAY = NULL;
         BASE_MESH_VERTEX_NORMAL_ARRAY_SIZE = 0;
         BASE_MESH_INDICE_ARRAY = 0;
         MESH_INDICE_ARRAY = NULL;
         MESH_INDICE_ARRAY_SIZE = 0;
+        TOTAL_VERTEX_NORMAL_ARRAY_SIZE = 0;
+        TOTAL_FACE_INDICE_BUFFER_SIZE = 0;
+        BASE_MESH_INDICE_BUFFER_SIZE = 0;
+        currentOffset = NULL;
+        currentRecoveredFaceNumber = 0;
         
     }
     //MyMesh mesh;
@@ -113,17 +119,9 @@
     //set center and radius
     center = 0.5f*(BBMIN + BBMAX);
     radius = 0.5*(BBMIN - BBMAX).norm();
-    
-    GLubyte *temp = [self getBaseMeshGLArray];
-    
-    GLsizei tempsize= [self getBaseMeshGLArraySize];
-    
-    GLfloat * tf = (GLfloat *)temp;
-    
     nVertices = nBaseVertices;
     nFaces = nBaseFaces;
     
-    NSLog(@"tempsize = %d", tempsize);
 }
 
 - (void)addPMDetail:(PMInfo)pminfo
@@ -171,63 +169,6 @@
     delete [] detailschars;
 }
 
-- (void) updateBaseMeshGLArray
-{
-    //baseMeshGLArraySize = (nFaces) * 18 * sizeof(float);
-    
-    MyMesh::ConstFaceIter   fIt(baseMesh.faces_begin()), fEnd(baseMesh.faces_end());
-    MyMesh::ConstFaceVertexIter     fvIt;
-    int counter = 0;
-    int cnt = 0;
-    for(; fIt != fEnd; ++fIt){
-        fvIt = baseMesh.cfv_iter(fIt.handle());
-        
-        //cord of 1st vertex
-        
-        memcpy(&baseMeshGLArray[counter], &baseMesh.point(fvIt)[0], 3 * sizeof(float));
-        counter += (3 * sizeof(float));
-        //normal of 1st vertex
-        memcpy(&baseMeshGLArray[counter], &baseMesh.normal(fvIt)[0], 3 * sizeof(float));
-        counter += (3 * sizeof(float));
-        
-        ++fvIt;
-        //cord of 2nd vertex
-        memcpy(&baseMeshGLArray[counter], &baseMesh.point(fvIt)[0], 3 * sizeof(float));
-        counter += (3 * sizeof(float));
-        //normal of 2nd vertex
-        memcpy(&baseMeshGLArray[counter], &baseMesh.normal(fvIt)[0], 3 * sizeof(float));
-        counter += (3 * sizeof(float));
-        
-        ++fvIt;
-        //cord of 3rd vertex
-        memcpy(&baseMeshGLArray[counter], &baseMesh.point(fvIt)[0], 3 * sizeof(float));
-        counter += (3 * sizeof(float));
-        //normal of 1st vertex
-        memcpy(&baseMeshGLArray[counter], &baseMesh.normal(fvIt)[0], 3 * sizeof(float));
-        counter += (3 * sizeof(float));
-        
-        ++cnt;
-    }
-    baseMeshGLArraySize = cnt * 18 * sizeof(float);
-    //NSLog(@"update finished!");
-}
-
-- (GLubyte *) getBaseMeshGLArray
-{
-    //NSLog(@"big size: %ld", (nBaseFaces + nDetailVertices) * 18 * sizeof(float));
-    
-    if(baseMeshGLArray == NULL){
-        baseMeshGLArray = new GLubyte[(nBaseFaces + nDetailVertices * 2) * 18 * sizeof(float)];
-        [self updateBaseMeshGLArray];
-    }
-    
-    return baseMeshGLArray;
-}
-- (GLsizei ) getBaseMeshGLArraySize
-{
-    return baseMeshGLArraySize;
-}
-
 - (PMInfoIter) getPMInfoIter
 {
     return pmiter;
@@ -259,36 +200,141 @@
         currentPointer ++;
 }
 
-- (void) refine: (int) steps
+- (UpdateInfo *) refineWithOffset: (int) steps: (int &) offset: (int &) size
 {
+    
     PMInfo *pminfo;
     
+    offset = currentVerticeIdx * 3 * 2 * sizeof(float);
+    size = steps * 3 * 2 * sizeof(float);
+    
+    
+    updatePartIndex.clear();
+    indicePartIndex.clear();
     
     for(int i = 0 ; i < steps; i ++){
         
+        std::vector<int> v0, v1, v0new, v1new;
+        
+        int idx;
+        int nv0 = 0, nv1 = 0, nv11 = 0;
+        
         pminfo = &(details[currentPointer]);
         
+        for (MyMesh::VertexFaceIter vfiter = baseMesh.vf_begin(pminfo->v1); vfiter != baseMesh.vf_end(pminfo->v1); ++ vfiter) {
+            nv11 ++;
+        }
+        
         pminfo->v0 = baseMesh.add_vertex(pminfo->p0);
+        
         baseMesh.vertex_split(pminfo->v0,
-                           pminfo->v1,
-                           pminfo->vl,
-                           pminfo->vr);
+                              pminfo->v1,
+                              pminfo->vl,
+                              pminfo->vr);
         
+        // update the vertex position
+        memcpy(&(BASE_MESH_VERTEX_NORMAL_ARRAY[nVertices * 3 * 2]), pminfo->p0.data(), 3 * sizeof(float));
+        updatePartIndex.insert(nVertices * 3 * 2);
         nVertices ++;
-        nFaces ++;
+        nFaces += 2;
         currentPointer ++;
-        
+        nCurrentVertices ++;
+        currentVerticeIdx ++;
+        //currentRecoveredFaceNumber += 2;
         
         BBMAX.maximize(pminfo->p0);
         BBMIN.minimize(pminfo->p0);
         center = 0.5f*(BBMAX + BBMIN);
         radius = 0.5*(BBMIN - BBMAX).norm();
+        //updating affected face normals and vertex normals
+        // face normals
+        for (MyMesh::VertexFaceIter vfiter = baseMesh.vf_begin(pminfo->v0); vfiter != baseMesh.vf_end(pminfo->v0); ++ vfiter) {
+            baseMesh.update_normal(vfiter.handle());
+            
+            nv0 ++;
+            // update indice
+            MyMesh::ConstFaceVertexIter cfviter = baseMesh.cfv_iter(vfiter.handle());
+            
+            idx = cfviter.handle().idx();
+            MESH_INDICE_ARRAY[vfiter.handle().idx() * 3] = idx;
+            indicePartIndex.insert(vfiter.handle().idx() * 3);
+            ++cfviter;
+            idx = cfviter.handle().idx();
+            MESH_INDICE_ARRAY[vfiter.handle().idx() * 3 + 1] = idx;
+            indicePartIndex.insert(vfiter.handle().idx() * 3 + 1);
+            ++cfviter;
+            idx = cfviter.handle().idx();
+            MESH_INDICE_ARRAY[vfiter.handle().idx() * 3 + 2] = idx;
+            indicePartIndex.insert(vfiter.handle().idx() * 3 + 2);
+                            
+        }
+        for (MyMesh::VertexFaceIter vfiter = baseMesh.vf_begin(pminfo->v1); vfiter != baseMesh.vf_end(pminfo->v1); ++ vfiter) {
+            baseMesh.update_normal(vfiter.handle());
+            nv1 ++;
+        }
+        
+        currentRecoveredFaceNumber += ((nv1 + nv0 - nv11) / 2);
+            for (MyMesh::VertexVertexIter vviter = baseMesh.vv_begin(pminfo->v0); vviter != baseMesh.vv_end(pminfo->v0); ++ vviter) {
+            baseMesh.update_normal(vviter.handle());
+            // update normal in vertex normal array
+            memcpy(&(BASE_MESH_VERTEX_NORMAL_ARRAY[vviter.handle().idx() * 3 * 2 + 3]), baseMesh.normal(vviter.handle()).data(), 3 * sizeof(float));
+            
+            updatePartIndex.insert(vviter.handle().idx() * 3 * 2 + 3);
+        }
+
+        for (MyMesh::VertexVertexIter vviter = baseMesh.vv_begin(pminfo->v1); vviter != baseMesh.vv_end(pminfo->v1); ++ vviter) {
+            baseMesh.update_normal(vviter.handle());
+            baseMesh.update_normal(vviter.handle());
+            // update normal in vertex normal array
+            memcpy(&(BASE_MESH_VERTEX_NORMAL_ARRAY[vviter.handle().idx() * 3 * 2 + 3]), baseMesh.normal(vviter.handle()).data(), 3 * sizeof(float));
+            
+            updatePartIndex.insert(vviter.handle().idx() * 3 * 2 + 3);
+        }
+        
+        
+        
+
     }
     
-    baseMesh.update_face_normals();
-    baseMesh.update_vertex_normals();
-    [self updateBaseMeshGLArray];
+    updateInfo = std::make_pair(&updatePartIndex, &indicePartIndex);
     
+    return &updateInfo;
+}
+
+
+
+- (void) updateVertexNormalArray
+{
+    MyMesh::VertexHandle vh;
+    MyMesh::Normal vn;
+    MyMesh::Point p;
+    MyMesh::VertexIter v_it, v_end(baseMesh.vertices_end());
+    
+    
+    
+    float * pos;
+    float * nor;
+    
+    for(;currentVerticeIdx < nCurrentVertices; currentVerticeIdx ++){
+        vh = baseMesh.vertex_handle(currentVerticeIdx);
+        vn = baseMesh.normal(vh);
+        p = baseMesh.point(vh);
+        
+        pos = (float *)&BASE_MESH_VERTEX_NORMAL_ARRAY[currentVerticeIdx * 3 * 2 ];
+        
+        pos[0] = p.values_[0];
+        pos[1] = p.values_[1];
+        pos[2] = p.values_[2];
+        
+        
+        
+        nor = (float *)&BASE_MESH_VERTEX_NORMAL_ARRAY[currentVerticeIdx * 3 * 2 + 3];
+        nor[0] = vn.values_[0];
+        nor[1] = vn.values_[1];
+        nor[2] = vn.values_[2];
+        
+    }
+
 }
 
 - (void) clear
@@ -298,67 +344,37 @@
     center[0], center[1] = 0, center[2] = 0;
     radius = 0;
     baseMeshGLArraySize = 0;
-    delete [] baseMeshGLArray;
-    baseMeshGLArray = NULL;
     currentPointer = 0;
     
-}
-
-- (void) updateVerticePositionAndNormalGLArray
-{
-    MyMesh::VertexHandle vh;
-    MyMesh::Normal vn;
-    MyMesh::Point p;
+    nBaseVertices = 0;
+    nBaseFaces = 0;
+    nMaxVertices = 0;
+    nDetailVertices = 0;
     
+    baseMeshGLArraySize = 0;
+    pmiter = details.begin();
+    currentPointer = 0;
+    nVertices = 0;
+    nFaces = 0;
     
-    float * pos;
-    float * nor;
-    
-    for(int i = currentVerticeIdx; i < nCurrentVertices; i ++){
-        vh = baseMesh.vertex_handle(i);
-        vn = baseMesh.normal(vh);
-        p = baseMesh.point(vh);
-        
-        pos = (float *)&verticeGLArray[i * 3 * sizeof(float)];
-        
-        pos[0] = p.values_[0];
-        pos[1] = p.values_[1];
-        pos[2] = p.values_[2];
-        
-        nor = (float *)&normalGLArray[i * 3 * sizeof(float)];
-        nor[0] = vn.values_[0];
-        nor[1] = vn.values_[1];
-        nor[2] = vn.values_[2];
-        
-    }
-    
+    currentVerticeIdx = 0;
+    nCurrentVertices = 0;
+    //VerticeNormalGLArray = NULL;
+    delete [] BASE_MESH_VERTEX_NORMAL_ARRAY;
+    BASE_MESH_VERTEX_NORMAL_ARRAY = NULL;
+    BASE_MESH_VERTEX_NORMAL_ARRAY_SIZE = 0;
+    BASE_MESH_INDICE_ARRAY = 0;
+    delete [] MESH_INDICE_ARRAY;
+    MESH_INDICE_ARRAY = NULL;
+    MESH_INDICE_ARRAY_SIZE = 0;
+    TOTAL_VERTEX_NORMAL_ARRAY_SIZE = 0;
+    TOTAL_FACE_INDICE_BUFFER_SIZE = 0;
+    BASE_MESH_INDICE_BUFFER_SIZE = 0;
+    currentOffset = NULL;
+    currentRecoveredFaceNumber = 0;
     
 }
 
-- (void) updateVerticeNormalGLArray
-{
-    
-}
-
-
-- (GLubyte *) getVerticePositionGLArray
-{
-    if(verticeGLArray == NULL){
-        verticeGLArray = new GLubyte[(nBaseVertices + nDetailVertices)* 3 * sizeof(float)];
-        [self updateVerticePositionAndNormalGLArray];
-    }
-    
-    return verticeGLArray;
-    
-}
-- (GLubyte *) getVerticeNormalGLArray
-{
-    if (VerticeNormalGLArray == NULL) {
-        VerticeNormalGLArray = new GLubyte[2 * (nBaseVertices + nDetailVertices)* 3 * sizeof(float)];
-        
-    }
-    return normalGLArray;
-}
 - (GLsizei ) getCurrentFaceNumber
 {
     return currentFaceNumber;
@@ -371,24 +387,30 @@
         BASE_MESH_VERTEX_NORMAL_ARRAY_SIZE = 0;
     }
     BASE_MESH_VERTEX_NORMAL_ARRAY_SIZE = 2 * nBaseVertices * 3;
-    BASE_MESH_VERTEX_NORMAL_ARRAY = new GLfloat[BASE_MESH_VERTEX_NORMAL_ARRAY_SIZE];
     
+    
+    
+    BASE_MESH_VERTEX_NORMAL_ARRAY = new GLfloat[[self getTotalVertexNormalArraySize]];
+    for(int i = 0; i < [self getTotalVertexNormalArraySize]; i ++)
+        BASE_MESH_VERTEX_NORMAL_ARRAY[i] = 0.0f;
     
     MyMesh::VertexHandle vh;
     MyMesh::Normal vn;
     MyMesh::Point p;
     
+    MyMesh::VertexIter v_it, v_end(baseMesh.vertices_end());
     
-    for(int i = 0; i < nBaseVertices; i ++){
-        vh = baseMesh.vertex_handle(i);
-        vn = baseMesh.normal(vh);
-        p = baseMesh.point(vh);
+    for(v_it = baseMesh.vertices_begin(); v_it!= v_end; ++v_it){
+        p = baseMesh.point(v_it);
+        vn = baseMesh.normal(v_it);
+        memcpy(&(BASE_MESH_VERTEX_NORMAL_ARRAY[v_it.handle().idx() * 2 * 3]), &(p.values_[0]), 3 * sizeof(float));
+        memcpy(&(BASE_MESH_VERTEX_NORMAL_ARRAY[v_it.handle().idx() * 2 * 3 + 3]), &(vn.values_[0]), 3 * sizeof(float));
         
-        memcpy(&(BASE_MESH_VERTEX_NORMAL_ARRAY[i * 2 * 3]), &(p.values_[0]), 3 * sizeof(float));
-        memcpy(&(BASE_MESH_VERTEX_NORMAL_ARRAY[i * 2 * 3 + 3]), &(vn.values_[0]), 3 * sizeof(float));
-        
+        //update current vertex idx
+        currentVerticeIdx = v_it.handle().idx();
+        nCurrentVertices ++;
     }
-
+    currentVerticeIdx ++;
 }
 
 - (GLfloat *) getBaseMeshVertexNormalArray
@@ -404,9 +426,42 @@
 
 - (GLsizei) getBaseMeshVertexNormalArraySize
 {
+    
     return BASE_MESH_VERTEX_NORMAL_ARRAY_SIZE;
 }
 
+- (int) getMeshIndiceArraySize
+{
+    return MESH_INDICE_ARRAY_SIZE;
+}
+
+- (void) updateMeshIndiceArray
+{
+    MyMesh::ConstFaceIter   fIt(baseMesh.faces_begin()), fEnd(baseMesh.faces_end());
+    MyMesh::ConstFaceVertexIter     fvIt;
+    
+    
+    int cnt = 0;
+    int facecount = 0;    
+    unsigned int * indice_array = MESH_INDICE_ARRAY;
+    
+    for(; fIt != fEnd; ++fIt){
+        fvIt = baseMesh.cfv_iter(fIt.handle());
+        for(int i = 0; i < 3; i ++){
+            
+            indice_array[cnt] = (fvIt.handle().idx());
+            ++fvIt;
+            ++cnt;
+            
+        }
+        ++facecount;
+        
+        
+        
+    }
+    currentRecoveredFaceNumber = facecount;
+
+}
 
 - (void) generateInitMeshIndiceArray
 {
@@ -415,8 +470,8 @@
         MESH_INDICE_ARRAY_SIZE = 0;
     }
     
-    MESH_INDICE_ARRAY_SIZE = 3 * (nBaseFaces + 2 * nDetailVertices) * sizeof(int);
-    MESH_INDICE_ARRAY = new GLubyte[MESH_INDICE_ARRAY_SIZE];
+    MESH_INDICE_ARRAY_SIZE = 3 * (nBaseFaces + 2 * nDetailVertices) ;
+    MESH_INDICE_ARRAY = new unsigned int[MESH_INDICE_ARRAY_SIZE];
     
     MyMesh::ConstFaceIter   fIt(baseMesh.faces_begin()), fEnd(baseMesh.faces_end());
     MyMesh::ConstFaceVertexIter     fvIt;
@@ -424,7 +479,7 @@
     
     int cnt = 0;
     
-    int * p_indice = (int *)&(MESH_INDICE_ARRAY[0]);
+    unsigned int * p_indice = (unsigned int *)&(MESH_INDICE_ARRAY[0]);
     
     for(; fIt != fEnd; ++fIt){
         fvIt = baseMesh.cfv_iter(fIt.handle());
@@ -432,13 +487,14 @@
             *p_indice = (fvIt.handle()).idx();
             ++ p_indice;
             ++fvIt;
+            ++cnt;
         }
-        ++cnt;
+        
     }
-
+    currentRecoveredFaceNumber = nBaseFaces;
 
 }
-- (GLubyte *) getMeshIndiceArray
+- (unsigned int *) getMeshIndiceArray
 {
     if (MESH_INDICE_ARRAY == NULL) {
         [self generateInitMeshIndiceArray];
@@ -447,5 +503,43 @@
     
 }
 
+- (GLsizei) getTotalVertexNormalArraySize
+{
+    if(TOTAL_VERTEX_NORMAL_ARRAY_SIZE == 0){
+        TOTAL_VERTEX_NORMAL_ARRAY_SIZE = (nBaseVertices + nDetailVertices) * 3 * 2;
+    }
+    
+    return TOTAL_VERTEX_NORMAL_ARRAY_SIZE;
+}
+
+- (GLsizei) getTotalFaceIndiceBufferSize
+{
+    if (TOTAL_FACE_INDICE_BUFFER_SIZE == 0) {
+        TOTAL_FACE_INDICE_BUFFER_SIZE = (nBaseFaces + 2 * nDetailVertices) * 3 * sizeof(unsigned int);
+    }
+    
+    return TOTAL_FACE_INDICE_BUFFER_SIZE;
+}
+
+- (GLsizei) getBaseMeshIndiceBufferSize
+{
+    if (BASE_MESH_INDICE_BUFFER_SIZE == 0) {
+        BASE_MESH_INDICE_BUFFER_SIZE = nBaseFaces * 3 * sizeof(int);
+    }
+    
+    return BASE_MESH_INDICE_BUFFER_SIZE;
+}
+
+- (int) getFaceNumber
+{
+    MyMesh::FaceIter fend = baseMesh.faces_end();
+    MyMesh::FaceHandle fh = fend.handle();
+    return fh.idx();
+}
+
+- (int) getCurrentRecoveredFacesNumber
+{
+    return currentRecoveredFaceNumber;
+}
 
 @end

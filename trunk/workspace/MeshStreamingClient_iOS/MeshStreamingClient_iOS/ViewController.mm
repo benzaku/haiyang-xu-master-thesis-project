@@ -26,6 +26,8 @@ enum
     NUM_ATTRIBUTES
 };
 
+
+
 GLfloat gCubeVertexData[216] =
 {
     // Data layout for each line below is:
@@ -134,6 +136,15 @@ GLfloat gCubeVertexData2[216] =
     GLuint _vertexBuffer;
     GLuint _myFence;
     
+    GLuint _vertexNormalBufferVBO;
+    GLuint _faceIndiceBufferIBO;
+    
+    // cur;
+    int cur;
+    
+    int currentRecoveredFace;
+    
+    
     float center[3];
     float radius;
 }
@@ -198,6 +209,9 @@ GLfloat gCubeVertexData2[216] =
     center[0] = 0, center[1] = 0; center[2] = 0;
     radius = 1.0f;
     
+    cur = 0;
+    currentRecoveredFace = 0;
+    
     [self setupGL];
 
     
@@ -253,8 +267,9 @@ GLfloat gCubeVertexData2[216] =
         //output.text = [output.text stringByAppendingFormat:@"%@\n",@"Socket Connected!"];
     }
     
-    
+    currentRecoveredFace = 0;
     [pmModel clear];
+    pmModel = [[ProgressiveMeshModel alloc] init];
     center[0] = 0, center[1] = 0; center[2] = 0;
     radius = 1.0f;
     
@@ -414,27 +429,17 @@ GLfloat gCubeVertexData2[216] =
                 
                 requestString = @"PMDETAIL";
                 [socket writeData:[requestString dataUsingEncoding:NSUTF8StringEncoding] withTimeout:-1 tag:0];
-                //[socket readDataToLength:24 withTimeout:-1 tag:0];
-                //[socket readDataWithTimeout:-1 tag:0];
-                
                 [socket readDataToLength:2400 withTimeout:-1 tag:0];
             }
             
             break;
         case 8:
-            //NSLog(@"data length : %u", data.length);
-            //NSLog(@"number of details transmitted in this packet = %u", data.length / 24);
             
             [pmModel addPMDetailsFromNSData:data];
-            
-            //[pmModel refine:1];
-            
-            //[self updateBaseMeshToView];
             
             TransmittedDetails += data.length;
             
             TransmitProgress = ((float)TransmittedDetails) / ((float) NDetailVertices * 24);
-            //NSLog(@"TransmittedProgress:%d%", (int)(TransmitProgress * 100) );
             
             [progress setProgress:TransmitProgress];
             if(TransmitProgress >= 1){
@@ -473,10 +478,14 @@ GLfloat gCubeVertexData2[216] =
     
     glEnable(GL_DEPTH_TEST);
     
+    
     glGenVertexArraysOES(1, &_vertexArray);
     glBindVertexArrayOES(_vertexArray);
     
     glBindVertexArrayOES(0);
+    
+    
+    
     
     
 }
@@ -500,17 +509,22 @@ GLfloat gCubeVertexData2[216] =
 
 - (void)update
 {
+    int ooffset;
+    int ssize;
     
-    if([pmModel getCurrentPointer] < [pmModel getDetailSize] && [pmModel getBaseMeshGLArraySize] != 0){
+    //determin refine steps
+    
+    
+    if([pmModel getCurrentPointer] < [pmModel getDetailSize] && [pmModel getBaseMeshVertexNormalArraySize] != 0){
         
-        if([pmModel getDetailSize] - [pmModel getCurrentPointer] > 10){
-            [pmModel refine:10];
-            [self updateBaseMeshToView];
+        if([pmModel getDetailSize] - [pmModel getCurrentPointer] > 25){
+            [self refinement:25 :ooffset:ssize];
         }
+        
         else if([pmModel getDetailSize] == [pmModel nDetailVertices]){
-            [pmModel refine:[pmModel getDetailSize] - [pmModel getCurrentPointer]];
-            [self updateBaseMeshToView];
+            [self refinement:[pmModel getDetailSize] - [pmModel getCurrentPointer] :ooffset :ssize];
         }
+        
         [detailRecoverProgress setProgress:(float)([pmModel getCurrentPointer]) / (float)([pmModel nDetailVertices])];
         
         //update center and radius
@@ -535,31 +549,81 @@ GLfloat gCubeVertexData2[216] =
     
 }
 
-- (void) updateBaseMeshToView
+- (void) refinement: (int) steps: (int &) offset : (int &) size
 {
-    
-    
-    GLfloat * bm = [pmModel getBaseMeshVertexNormalArray];
-    
-    GLubyte * bi = [pmModel getMeshIndiceArray];
+    UpdateInfo *ui = [pmModel refineWithOffset:steps :offset :size];
+    [self updateRefinementToView:offset :size : ui];
+}
 
-    GLubyte * data = [pmModel getBaseMeshGLArray];
+- (void) updateRefinementToView: (int)offset :(int)size : (UpdateInfo *) ui
+{
+        
+    UpdatePartIndex * upi_array = ui->first;
+    UpdatePartIndex * upi_indice = ui->second;
     
-    GLsizei size = [pmModel getBaseMeshGLArraySize];
-    
-    glDeleteBuffers(1, &_vertexBuffer);
-    
-    glGenBuffers(1, &_vertexBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, size, data, GL_DYNAMIC_DRAW);
+    for (UpdatePartIndex::iterator i = upi_array->begin(); i != upi_array->end(); i ++) {
+        glBufferSubData(GL_ARRAY_BUFFER, (*i) * sizeof(float), 3 * sizeof(float), &[pmModel getBaseMeshVertexNormalArray][*i]);
+    }
     
     glEnableVertexAttribArray(GLKVertexAttribPosition);
     glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(0));
     glEnableVertexAttribArray(GLKVertexAttribNormal);
     glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(12));
-
+    
+    //update index
+    
+    
+    // allocate enough space for indice vbo
+    GLubyte * indice = (GLubyte *)&([pmModel getMeshIndiceArray][0]);
+    currentRecoveredFace = [pmModel getCurrentRecoveredFacesNumber];
+    
+    for (UpdatePartIndex::iterator i = upi_indice->begin(); i != upi_indice->end(); i ++) {
+        glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, (*i) * sizeof(unsigned int), 3 * sizeof(unsigned int), &[pmModel getMeshIndiceArray][*i]);
+    }
+    
     
 }
+
+- (void) updateBaseMeshToView
+{
+        
+    /**** use draw elements ***/
+    GLubyte * data = (GLubyte *)[pmModel getBaseMeshVertexNormalArray];
+    
+    GLsizei size = [pmModel getBaseMeshVertexNormalArraySize] * sizeof(float);
+    
+    glDeleteBuffers(1, &_vertexBuffer);
+    glGenBuffers(1, &_vertexBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
+    glBufferData(GL_ARRAY_BUFFER, [pmModel getTotalVertexNormalArraySize] * sizeof(float), 0, GL_DYNAMIC_DRAW);
+    
+    GLvoid * vbo_buffer = glMapBufferOES(GL_ARRAY_BUFFER, GL_WRITE_ONLY_OES);
+    //transfer the vertex data to the vbo
+    memcpy(vbo_buffer, data, size);
+    
+    glUnmapBufferOES(GL_ARRAY_BUFFER);
+    
+    glEnableVertexAttribArray(GLKVertexAttribPosition);
+    glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(0));
+    glEnableVertexAttribArray(GLKVertexAttribNormal);
+    glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(12));
+    
+    
+    glGenBuffers(1, &_faceIndiceBufferIBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _faceIndiceBufferIBO);
+    
+    // allocate enough space for indice vbo
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, [pmModel getTotalFaceIndiceBufferSize], 0, GL_STREAM_DRAW);
+    
+    //map indice buffer
+    GLvoid * ibo_buffer = glMapBufferOES(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY_OES);
+    memcpy(ibo_buffer, [pmModel getMeshIndiceArray], [pmModel getBaseMeshIndiceBufferSize]);
+    glUnmapBufferOES(GL_ELEMENT_ARRAY_BUFFER);
+    /*** use draw elements end ***/
+
+
+}
+
 
 
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect
@@ -568,15 +632,18 @@ GLfloat gCubeVertexData2[216] =
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     glBindVertexArrayOES(_vertexArray);
+    glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _faceIndiceBufferIBO);
     
     
     // Render the object with GLKit
     [self.effect prepareToDraw];
     
-    if([pmModel getBaseMeshGLArraySize] == 0)
+    if([pmModel getBaseMeshVertexNormalArraySize] == 0)
         glDrawArrays(GL_TRIANGLES, 0, 36);
-    else
-        glDrawArrays(GL_TRIANGLES, 0, [pmModel getBaseMeshGLArraySize] / (6 * sizeof(float)));
+    else{
+        glDrawElements(GL_TRIANGLES, currentRecoveredFace * 3 , GL_UNSIGNED_INT, 0);
+    }
     
    
 }
