@@ -8,8 +8,11 @@
 
 #import <Foundation/Foundation.h>
 #import "PMStruct.h"
+#include <set>
+#include <pair.h>
 
-
+typedef std::set<int>          UpdatePartIndex;
+typedef std::pair<UpdatePartIndex *, UpdatePartIndex *> UpdateInfo;
 
 @interface ProgressiveMeshModel : NSObject{
     NSData *baseMeshChunk;
@@ -21,11 +24,13 @@
     GLsizei baseMeshGLArraySize;
     
     GLfloat * BASE_MESH_VERTEX_NORMAL_ARRAY;
+    void * currentOffset;
+    
     GLsizei BASE_MESH_VERTEX_NORMAL_ARRAY_SIZE;
     GLubyte * BASE_MESH_INDICE_ARRAY;
     GLsizei BASE_MESH_INDICE_ARRAY_SIZE;
     
-    GLubyte * MESH_INDICE_ARRAY;
+    unsigned int * MESH_INDICE_ARRAY;
     GLsizei MESH_INDICE_ARRAY_SIZE;
     
     GLubyte * verticeGLArray;
@@ -38,8 +43,17 @@
     
     GLubyte * VerticeNormalGLArray;
     
+    GLsizei TOTAL_VERTEX_NORMAL_ARRAY_SIZE;
     
+    GLsizei TOTAL_FACE_INDICE_BUFFER_SIZE;
     
+    GLsizei BASE_MESH_INDICE_BUFFER_SIZE;
+    
+    int currentRecoveredFaceNumber;
+    
+    UpdatePartIndex updatePartIndex;
+    UpdatePartIndex indicePartIndex;
+    UpdateInfo updateInfo;
     
     PMInfoIter pmiter;
     int currentPointer;
@@ -70,11 +84,8 @@
 //setter
 - (void) setBaseMeshChunk:(NSData*) data;
 
-- (GLubyte *) getBaseMeshGLArray;
-- (GLsizei ) getBaseMeshGLArraySize;
 
-- (GLubyte *) getVerticePositionGLArray;
-- (GLubyte *) getVerticeNormalGLArray;
+
 - (GLsizei ) getCurrentFaceNumber;
 
 
@@ -93,14 +104,23 @@
 
 - (void) incCurrentPointer: (int) times;
 
-- (void) refine: (int) steps;
-
 - (void) clear;
 
 - (GLfloat *) getBaseMeshVertexNormalArray;
 
 - (GLsizei) getBaseMeshVertexNormalArraySize;
 
-- (GLubyte *) getMeshIndiceArray;
+- (unsigned int *) getMeshIndiceArray;
 
+- (int) getMeshIndiceArraySize;
+
+- (GLsizei ) getBaseMeshIndiceBufferSize;
+
+- (GLsizei) getTotalVertexNormalArraySize;
+
+- (GLsizei) getTotalFaceIndiceBufferSize;
+
+- (UpdateInfo *) refineWithOffset: (int) steps: (int &) offset: (int &) size;
+
+- (int) getCurrentRecoveredFacesNumber;
 @end
