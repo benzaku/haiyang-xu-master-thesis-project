@@ -9,38 +9,17 @@
 #ifndef PMStreamServer_PMLoader_h
 #define PMStreamServer_PMLoader_h
 
-
+/*
 #include <OpenMesh/Core/Mesh/Attributes.hh>
 #include <OpenMesh/Core/IO/BinaryHelper.hh>
 #include <OpenMesh/Core/IO/MeshIO.hh>
 #include <OpenMesh/Core/Mesh/TriMesh_ArrayKernelT.hh>
+ */
 #include <string>
+#include "MC.h"
+#include "PMTypes.h"
 
-
-using namespace OpenMesh;
-using namespace OpenMesh::Attributes;
-
-struct MyTraits : public OpenMesh::DefaultTraits
-{
-    VertexAttributes  ( OpenMesh::Attributes::Normal       |
-                       OpenMesh::Attributes::Status       );
-    EdgeAttributes    ( OpenMesh::Attributes::Status       );
-    HalfedgeAttributes( OpenMesh::Attributes::PrevHalfedge );
-    FaceAttributes    ( OpenMesh::Attributes::Normal       |
-                       OpenMesh::Attributes::Status       );  
-};
-
-
-typedef OpenMesh::TriMesh_ArrayKernelT<MyTraits>  MyMesh;
-
-struct PMInfo 
-{
-    MyMesh::Point        p0;
-    MyMesh::VertexHandle v0, v1, vl, vr;
-};
-typedef std::vector<PMInfo>          PMInfoContainer;
-typedef PMInfoContainer::iterator    PMInfoIter;
-
+#define PM_REPO "./pm_repo/"
 
 class PMLoader 
 {
@@ -71,7 +50,17 @@ public:
     
     PMInfoContainer getPMInfos();
     
+    void enableVolume();
+    
+    void disableVolume();
+    
+    void setUseVolume(bool useornot);
+    
 private:
+    
+    void loadFromPMFile();
+    
+    void loadFromRawVolume();
         
     PMInfoContainer   pminfos_;
     PMInfoIter        pmiter_;                                              //pm info iterator
@@ -81,6 +70,8 @@ private:
     MyMesh*           mesh_ptr;
     
     std::string pmFileName;
+    
+    bool              useVolume = false;
     
     int               baseMeshChunkSize;
     char*             baseMeshChunk;
