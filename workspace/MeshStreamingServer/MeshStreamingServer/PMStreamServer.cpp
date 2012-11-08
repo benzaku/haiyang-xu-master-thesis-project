@@ -46,6 +46,7 @@ void PMStreamServer::defineOptions(Poco::Util::OptionSet& options){
     ServerApplication::defineOptions(options);
     options.addOption(Option("help", "h", "display help information on command line arguments").required(false).repeatable(false));
     options.addOption(Option("file", "f", "add a file to send", false, "fileName", true).required(false).repeatable(false));
+    options.addOption(Option("volume", "v", "read from volume", false, "volume", false).required(false).repeatable(false));
 }
 
 void PMStreamServer::handleOption(const std::string& name, const std::string &value){
@@ -55,6 +56,9 @@ void PMStreamServer::handleOption(const std::string& name, const std::string &va
         _helpRequested = true;
     if (name == "file") {
         PMFileName = value;
+    }
+    if (name == "volume") {
+        useVolume = true;
     }
     
 }
@@ -85,6 +89,7 @@ int PMStreamServer::main(const std::vector<std::string> &args){
         pmFileHandler->setFileName(PMFileName);
         
         pmLoader = new PMLoader(PMFileName);
+        pmLoader->setUseVolume(useVolume);
         pmLoader->loadPM();
         pmLoader->getBaseMeshChunk();
         pmFileHandler->setPMLoader(pmLoader);

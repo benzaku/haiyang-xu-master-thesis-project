@@ -48,6 +48,7 @@ private:
     std::string PMFileName;
     PMFileHandler* pmFileHandler;
     PMLoader* pmLoader;
+    bool useVolume = false;
     
 };
 

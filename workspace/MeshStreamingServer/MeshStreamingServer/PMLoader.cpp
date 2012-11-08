@@ -31,8 +31,122 @@ PMLoader::~PMLoader()
     
 }
 
+inline
+std::string&
+replace_extension( std::string& _s, const std::string& _e )
+{
+    std::string::size_type dot = _s.rfind(".");
+    if (dot == std::string::npos)
+    { _s += "." + _e; }
+    else
+    { _s = _s.substr(0,dot+1)+_e; }
+    return _s;
+}
+
+inline
+std::string
+basename(const std::string& _f)
+{
+    std::string::size_type dot = _f.rfind("/");
+    if (dot == std::string::npos)
+        return _f;
+    return _f.substr(dot+1, _f.length()-(dot+1));
+}
+
+
 void
-PMLoader::loadPM()
+PMLoader::loadPM(){
+    if(useVolume){
+        loadFromRawVolume();
+    } else {
+        loadFromPMFile();
+    }
+}
+
+void
+PMLoader::loadFromRawVolume(){
+    std::ifstream::pos_type size;
+    char * memblock;
+    MarchingCubes<unsigned char> mc;
+    MyMesh::Point p;
+    MyMesh::Normal normal;
+    
+    std::ifstream file (this->pmFileName.c_str(), std::ios::in|std::ios::binary|std::ios::ate);
+    
+    if (file.is_open())
+    {
+        size = file.tellg();
+        memblock = new char [size];
+        file.seekg (0, std::ios::beg);
+        file.read (memblock, size);
+        file.close();
+        
+        std::cout << "the complete file content is in memory\n";
+        
+        mc.SetVolume(128, 128, 128, (unsigned char *)memblock);
+        mc.Process(20);
+        Isosurface *isoSurface = mc.m_Isosurface;
+        delete[] memblock;
+        mesh_.clear();
+        mesh_.request_vertex_normals();
+        mesh_.request_face_normals();
+        
+        for(int i = 0; i < isoSurface->iVertices; i ++){
+            p[0] = isoSurface->vfVertices[i][0];
+            p[1] = isoSurface->vfVertices[i][1];
+            p[2] = isoSurface->vfVertices[i][2];
+            mesh_.add_vertex(p);
+            
+            normal[0] = isoSurface->vfNormals[i][0];
+            normal[1] = isoSurface->vfNormals[i][1];
+            normal[2] = isoSurface->vfNormals[i][2];
+            mesh_.set_normal(mesh_.vertex_handle(i), normal);
+        }
+        
+        for (int i = 0; i < isoSurface->iTriangles; i ++) {
+            mesh_.add_face(mesh_.vertex_handle(isoSurface->viTriangles[i][0]),
+                          mesh_.vertex_handle(isoSurface->viTriangles[i][2]),
+                          mesh_.vertex_handle(isoSurface->viTriangles[i][1]));
+        }
+        
+        
+        std::cout << "Vertices:\t" << mesh_.n_vertices() << std::endl;
+        std::cout << "Faces:\t" << mesh_.n_faces() << std::endl;
+        
+        // Decimation
+        
+        OpenMesh::Utils::Timer t;
+        DecimaterProgMesh decimater(mesh_);
+        
+        
+        ModProgMesh::Handle        modPM;
+        ModBalancer::Handle        modB;
+        ModNormalFlipping::Handle  modNF;
+        
+        decimater.add(modPM);
+        std::cout << "w/  progressive mesh module\n";
+        decimater.add(modB);
+        std::cout << "w/  balancer module\n";
+        
+        decimater.initialize();
+        t.start();
+        size_t ds = decimater.decimate();
+        t.stop();
+        std::cout << "decimater counts : " << ds << "\nin time : " << t.as_string()<< std::endl;
+        std::string newFileName = replace_extension(this->pmFileName, "pm");
+        decimater.module(modPM).write( newFileName );
+        decimater.module(modPM);
+        size_t s = decimater.module(modPM).infolist().size();
+        std::cout<< s<< std::endl;
+        this->pmFileName = newFileName;
+        loadFromPMFile();
+    }
+    
+
+}
+
+void
+PMLoader::loadFromPMFile()
 {
     
     MyMesh::Point  p;
@@ -294,3 +408,19 @@ MyMesh*
 PMLoader::getBaseMesh(){
     return mesh_ptr;
 }
+
+void
+PMLoader::enableVolume(){
+    useVolume = true;
+}
+
+void
+PMLoader::disableVolume(){
+    useVolume = false;
+}
+
+void
+PMLoader::setUseVolume(bool useornot){
+    useVolume = useornot;
+}
+
