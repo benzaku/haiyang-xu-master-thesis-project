@@ -145,8 +145,26 @@ GLfloat gCubeVertexData2[216] =
     int currentRecoveredFace;
     
     
-    float center[3];
-    float radius;
+    float objCenter[3];
+    float objRadius;
+    
+    GLKVector3 _anchor_position;
+    GLKVector3 _current_position;
+    GLKQuaternion _quatStart;
+    GLKQuaternion _quat;
+    
+    GLKMatrix4 _rotMatrix;
+    
+    BOOL _slerping;
+    float _slerpCur;
+    float _slerpMax;
+    GLKQuaternion _slerpStart;
+    GLKQuaternion _slerpEnd;
+    
+    
+    // temp
+    GLuint _cubeBuffer;
+    
 }
 
 @property (strong, nonatomic) EAGLContext *context;
@@ -201,13 +219,13 @@ GLfloat gCubeVertexData2[216] =
     
     GLKView *view = (GLKView *)self.view;
     
-    
+    [self.view setMultipleTouchEnabled:YES];
     
     view.context = self.context;
     view.drawableDepthFormat = GLKViewDrawableDepthFormat24;
     
-    center[0] = 0, center[1] = 0; center[2] = 0;
-    radius = 1.0f;
+    objCenter[0] = 0, objCenter[1] = 0; objCenter[2] = 0;
+    objRadius = 1.0f;
     
     cur = 0;
     currentRecoveredFace = 0;
@@ -270,8 +288,8 @@ GLfloat gCubeVertexData2[216] =
     currentRecoveredFace = 0;
     [pmModel clear];
     pmModel = [[ProgressiveMeshModel alloc] init];
-    center[0] = 0, center[1] = 0; center[2] = 0;
-    radius = 1.0f;
+    objCenter[0] = 0, objCenter[1] = 0; objCenter[2] = 0;
+    objRadius = 1.0f;
     
     //[self setupGL];
 }
@@ -401,8 +419,8 @@ GLfloat gCubeVertexData2[216] =
             if(BaseMeshBufPointer >= [pmModel sizeBaseMesh]){
                 NSLog(@"Base Mesh transmitted!");
                 [pmModel setBaseMeshChunk:[[NSData alloc] initWithBytes:BaseMeshBuf length:[pmModel sizeBaseMesh]]];
-                center[0] = [pmModel center][0], center[1] = [pmModel center][1], center[2] = [pmModel center][2];
-                radius = [pmModel radius];
+                objCenter[0] = [pmModel center][0], objCenter[1] = [pmModel center][1], objCenter[2] = [pmModel center][2];
+                objRadius = [pmModel radius];
                 STATE = 7;
                 requestString = @"ACK_OK_BASE_MESH";
                 [socket writeData:[requestString dataUsingEncoding:NSUTF8StringEncoding] withTimeout:-1 tag:0];
@@ -484,7 +502,13 @@ GLfloat gCubeVertexData2[216] =
     
     glBindVertexArrayOES(0);
     
+    _rotMatrix = GLKMatrix4Identity;
+    _quat = GLKQuaternionMake(0, 0, 0, 1);
+    _quatStart = GLKQuaternionMake(0, 0, 0, 1);
     
+    UITapGestureRecognizer * dtRec = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTap:)];
+    dtRec.numberOfTapsRequired = 2;
+    [self.view addGestureRecognizer:dtRec];
     
     
     
@@ -509,12 +533,141 @@ GLfloat gCubeVertexData2[216] =
 
 - (void)update
 {
+    [self doRefinement];
+    
+    float aspect = fabsf(self.view.bounds.size.width / self.view.bounds.size.height);
+    GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0f), aspect, 0.1f, 10000.0f);
+    
+    self.effect.transform.projectionMatrix = projectionMatrix;
+    
+    if (_slerping) {
+        
+        _slerpCur += self.timeSinceLastUpdate;
+        float slerpAmt = _slerpCur / _slerpMax;
+        if (slerpAmt > 1.0) {
+            slerpAmt = 1.0;
+            _slerping = NO;
+        }
+        
+        _quat = GLKQuaternionSlerp(_slerpStart, _slerpEnd, slerpAmt);
+    }
+    
+    
+    
+    GLKMatrix4 baseModelViewMatrix = GLKMatrix4MakeTranslation(-objCenter[0] , -objCenter[1] , -objCenter[2] - objRadius * 5);
+    
+    GLKMatrix4 rotation = GLKMatrix4MakeWithQuaternion(_quat);
+    
+    baseModelViewMatrix = GLKMatrix4Multiply(baseModelViewMatrix, rotation);
+    
+    
+    
+    
+    self.effect.transform.modelviewMatrix = baseModelViewMatrix;
+    
+}
+
+- (GLKVector3) projectOntoSurface:(GLKVector3) touchPoint
+{
+    float radius = self.view.bounds.size.width/3;
+    
+    GLKVector3 center = GLKVector3Make(self.view.bounds.size.width/2, self.view.bounds.size.height/2, 0);
+    
+    GLKVector3 P = GLKVector3Subtract(touchPoint, center);
+    
+    // Flip the y-axis because pixel coords increase toward the bottom.
+    P = GLKVector3Make(P.x, P.y * -1, P.z);
+    
+    float radius2 = radius * radius;
+    float length2 = P.x*P.x + P.y*P.y;
+    
+    if (length2 <= radius2)
+        P.z = sqrt(radius2 - length2);
+    else
+    {
+        /*
+         P.x *= radius / sqrt(length2);
+         P.y *= radius / sqrt(length2);
+         P.z = 0;
+         */
+        P.z = radius2 / (2.0 * sqrt(length2));
+        float length = sqrt(length2 + P.z * P.z);
+        P = GLKVector3DivideScalar(P, length);
+    }
+    
+    return GLKVector3Normalize(P);
+}
+
+- (void)computeIncremental {
+    
+    GLKVector3 axis = GLKVector3CrossProduct(_anchor_position, _current_position);
+    float dot = GLKVector3DotProduct(_anchor_position, _current_position);
+    float angle = acosf(dot);
+    
+    GLKQuaternion Q_rot = GLKQuaternionMakeWithAngleAndVector3Axis(angle * 2, axis);
+    Q_rot = GLKQuaternionNormalize(Q_rot);
+    
+    // TODO: Do something with Q_rot...
+    _quat = GLKQuaternionMultiply(Q_rot, _quatStart);
+}
+
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    
+    if([touches count] == 1){
+        UITouch * touch = [touches anyObject];
+        CGPoint location = [touch locationInView:self.view];
+        
+        _anchor_position = GLKVector3Make(location.x, location.y, 0);
+        _anchor_position = [self projectOntoSurface:_anchor_position];
+        
+        _current_position = _anchor_position;
+        _quatStart = _quat;
+    }
+}
+
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+    
+    if([touches count] == 1){
+        UITouch * touch = [touches anyObject];
+        CGPoint location = [touch locationInView:self.view];
+        CGPoint lastLoc = [touch previousLocationInView:self.view];
+        CGPoint diff = CGPointMake(lastLoc.x - location.x, lastLoc.y - location.y);
+        
+        float rotX = -1 * GLKMathDegreesToRadians(diff.y / 2.0);
+        float rotY = -1 * GLKMathDegreesToRadians(diff.x / 2.0);
+        
+        bool isInvertible;
+        GLKVector3 xAxis = GLKMatrix4MultiplyVector3(GLKMatrix4Invert(_rotMatrix, &isInvertible), GLKVector3Make(1, 0, 0));
+        _rotMatrix = GLKMatrix4Rotate(_rotMatrix, rotX, xAxis.x, xAxis.y, xAxis.z);
+        GLKVector3 yAxis = GLKMatrix4MultiplyVector3(GLKMatrix4Invert(_rotMatrix, &isInvertible), GLKVector3Make(0, 1, 0));
+        _rotMatrix = GLKMatrix4Rotate(_rotMatrix, rotY, yAxis.x, yAxis.y, yAxis.z);
+        
+        
+        _current_position = GLKVector3Make(location.x, location.y, 0);
+        _current_position = [self projectOntoSurface:_current_position];
+        
+        [self computeIncremental];
+    }
+}
+
+- (void)doubleTap:(UITapGestureRecognizer *)tap {
+    
+    _slerping = YES;
+    _slerpCur = 0;
+    _slerpMax = 1.0;
+    _slerpStart = _quat;
+    _slerpEnd = GLKQuaternionMake(0, 0, 0, 1);
+    
+}
+
+
+- (void) doRefinement
+{
     int ooffset;
     int ssize;
     
     //determin refine steps
-    
-    
     if([pmModel getCurrentPointer] < [pmModel getDetailSize] && [pmModel getBaseMeshVertexNormalArraySize] != 0){
         
         if([pmModel getDetailSize] - [pmModel getCurrentPointer] > 25){
@@ -528,25 +681,10 @@ GLfloat gCubeVertexData2[216] =
         [detailRecoverProgress setProgress:(float)([pmModel getCurrentPointer]) / (float)([pmModel nDetailVertices])];
         
         //update center and radius
-        center[0] = [pmModel center][0], center[1] = [pmModel center][1], center[2] = [pmModel center][2];
-        radius = [pmModel radius];
+        objCenter[0] = [pmModel center][0], objCenter[1] = [pmModel center][1], objCenter[2] = [pmModel center][2];
+        objRadius = [pmModel radius];
         
     }
-    
-    
-    float aspect = fabsf(self.view.bounds.size.width / self.view.bounds.size.height);
-    GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(45.0f), aspect, 0.1f, 10000.0f);
-    
-    self.effect.transform.projectionMatrix = projectionMatrix;
-        
-    GLKMatrix4 baseModelViewMatrix = GLKMatrix4MakeTranslation(-center[0], -center[1], -center[2] - radius * 5);
-    
-    baseModelViewMatrix = GLKMatrix4Rotate(baseModelViewMatrix, _rotation, 0.0f, 1.0f, 0.0f);
-    
-    self.effect.transform.modelviewMatrix = /*modelViewMatrix*/ baseModelViewMatrix;
-    
-    _rotation += self.timeSinceLastUpdate * 0.5f;
-    
 }
 
 - (void) refinement: (int) steps: (int &) offset : (int &) size
@@ -614,6 +752,7 @@ GLfloat gCubeVertexData2[216] =
     
     // allocate enough space for indice vbo
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, [pmModel getTotalFaceIndiceBufferSize], 0, GL_STREAM_DRAW);
+    // allocate model + cube: 
     
     //map indice buffer
     GLvoid * ibo_buffer = glMapBufferOES(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY_OES);
@@ -621,7 +760,8 @@ GLfloat gCubeVertexData2[216] =
     glUnmapBufferOES(GL_ELEMENT_ARRAY_BUFFER);
     /*** use draw elements end ***/
 
-
+        
+    
 }
 
 
@@ -644,6 +784,7 @@ GLfloat gCubeVertexData2[216] =
     else{
         glDrawElements(GL_TRIANGLES, currentRecoveredFace * 3 , GL_UNSIGNED_INT, 0);
     }
+    
     
    
 }
