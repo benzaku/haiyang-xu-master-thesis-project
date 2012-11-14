@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		584FDD0B164D4F7A00687288 /* SettingTableViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 584FDD0A164D4F7A00687288 /* SettingTableViewController.mm */; };
 		589A5DB7161EFC9300C57821 /* NormalConeT.cc in Sources */ = {isa = PBXBuildFile; fileRef = 589A5D42161EFC9300C57821 /* NormalConeT.cc */; };
 		589A5DB8161EFC9300C57821 /* BinaryHelper.cc in Sources */ = {isa = PBXBuildFile; fileRef = 589A5D49161EFC9300C57821 /* BinaryHelper.cc */; };
 		589A5DB9161EFC9300C57821 /* IOManager.cc in Sources */ = {isa = PBXBuildFile; fileRef = 589A5D52161EFC9300C57821 /* IOManager.cc */; };
@@ -79,6 +80,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		584FDD09164D4F7A00687288 /* SettingTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingTableViewController.h; sourceTree = "<group>"; };
+		584FDD0A164D4F7A00687288 /* SettingTableViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SettingTableViewController.mm; sourceTree = "<group>"; };
 		589A5D3F161EFC9300C57821 /* Config.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Config.hh; sourceTree = "<group>"; };
 		589A5D40161EFC9300C57821 /* LoopSchemeMaskT.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = LoopSchemeMaskT.hh; sourceTree = "<group>"; };
 		589A5D41161EFC9300C57821 /* MathDefs.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MathDefs.hh; sourceTree = "<group>"; };
@@ -532,11 +535,13 @@
 				DD2484611619AE03000F2FBE /* MainStoryboard.storyboard */,
 				DD2484641619AE03000F2FBE /* ViewController.h */,
 				DD2484651619AE03000F2FBE /* ViewController.mm */,
-				DD24844D1619AE03000F2FBE /* Supporting Files */,
 				DDA4FC46161DA97E009EBB0A /* ProgressiveMeshModel.h */,
 				DDA4FC47161DA97E009EBB0A /* ProgressiveMeshModel.mm */,
 				DDA4FC55161DCBCA009EBB0A /* PMStruct.cpp */,
 				DDA4FC56161DCBCA009EBB0A /* PMStruct.h */,
+				DD24844D1619AE03000F2FBE /* Supporting Files */,
+				584FDD09164D4F7A00687288 /* SettingTableViewController.h */,
+				584FDD0A164D4F7A00687288 /* SettingTableViewController.mm */,
 			);
 			path = MeshStreamingClient_iOS;
 			sourceTree = "<group>";
@@ -727,6 +732,7 @@
 				589A5DD6161EFC9300C57821 /* SingletonT.cc in Sources */,
 				58C9A5C61626FFD700A36306 /* Shader.fsh in Sources */,
 				58C9A5C71626FFD700A36306 /* Shader.vsh in Sources */,
+				584FDD0B164D4F7A00687288 /* SettingTableViewController.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -831,6 +837,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_INPUT_FILETYPE = automatic;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MeshStreamingClient_iOS/MeshStreamingClient_iOS-Prefix.pch";
@@ -848,6 +856,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_INPUT_FILETYPE = automatic;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MeshStreamingClient_iOS/MeshStreamingClient_iOS-Prefix.pch";
