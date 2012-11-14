@@ -24,6 +24,11 @@
 		58B091781653F39A00A5140D /* second@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 58B091771653F39A00A5140D /* second@2x.png */; };
 		58B0917B1653F39A00A5140D /* FirstViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 58B091791653F39A00A5140D /* FirstViewController.xib */; };
 		58B0917E1653F39B00A5140D /* SecondViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 58B0917C1653F39B00A5140D /* SecondViewController.xib */; };
+		58B091951653F9FB00A5140D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58B091941653F9FB00A5140D /* OpenGLES.framework */; };
+		58B091971653FA0400A5140D /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58B091961653FA0400A5140D /* GLKit.framework */; };
+		58B091991653FA0C00A5140D /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58B091981653FA0C00A5140D /* CFNetwork.framework */; };
+		58B091A2165401B000A5140D /* ProgMeshGLKViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 58B091A0165401AF00A5140D /* ProgMeshGLKViewController.mm */; };
+		58B091A3165401B000A5140D /* ProgMeshGLKViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 58B091A1165401AF00A5140D /* ProgMeshGLKViewController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +55,12 @@
 		58B091771653F39A00A5140D /* second@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "second@2x.png"; sourceTree = "<group>"; };
 		58B0917A1653F39A00A5140D /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/FirstViewController.xib; sourceTree = "<group>"; };
 		58B0917D1653F39B00A5140D /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/SecondViewController.xib; sourceTree = "<group>"; };
+		58B091941653F9FB00A5140D /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		58B091961653FA0400A5140D /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
+		58B091981653FA0C00A5140D /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		58B0919F165401AF00A5140D /* ProgMeshGLKViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProgMeshGLKViewController.h; sourceTree = "<group>"; };
+		58B091A0165401AF00A5140D /* ProgMeshGLKViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ProgMeshGLKViewController.mm; sourceTree = "<group>"; };
+		58B091A1165401AF00A5140D /* ProgMeshGLKViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProgMeshGLKViewController.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +68,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				58B091991653FA0C00A5140D /* CFNetwork.framework in Frameworks */,
+				58B091971653FA0400A5140D /* GLKit.framework in Frameworks */,
+				58B091951653F9FB00A5140D /* OpenGLES.framework in Frameworks */,
 				58B091541653F39A00A5140D /* UIKit.framework in Frameworks */,
 				58B091561653F39A00A5140D /* Foundation.framework in Frameworks */,
 				58B091581653F39A00A5140D /* CoreGraphics.framework in Frameworks */,
@@ -69,6 +83,9 @@
 		58B091441653F39A00A5140D = {
 			isa = PBXGroup;
 			children = (
+				58B091981653FA0C00A5140D /* CFNetwork.framework */,
+				58B091961653FA0400A5140D /* GLKit.framework */,
+				58B091941653F9FB00A5140D /* OpenGLES.framework */,
 				58B091591653F39A00A5140D /* MeshStremingiOSClient */,
 				58B091521653F39A00A5140D /* Frameworks */,
 				58B091501653F39A00A5140D /* Products */,
@@ -96,18 +113,8 @@
 		58B091591653F39A00A5140D /* MeshStremingiOSClient */ = {
 			isa = PBXGroup;
 			children = (
-				58B091621653F39A00A5140D /* AppDelegate.h */,
-				58B091631653F39A00A5140D /* AppDelegate.m */,
-				58B0916B1653F39A00A5140D /* FirstViewController.h */,
-				58B0916C1653F39A00A5140D /* FirstViewController.m */,
-				58B0916E1653F39A00A5140D /* first.png */,
-				58B091701653F39A00A5140D /* first@2x.png */,
-				58B091721653F39A00A5140D /* SecondViewController.h */,
-				58B091731653F39A00A5140D /* SecondViewController.m */,
-				58B091751653F39A00A5140D /* second.png */,
-				58B091771653F39A00A5140D /* second@2x.png */,
-				58B091791653F39A00A5140D /* FirstViewController.xib */,
-				58B0917C1653F39B00A5140D /* SecondViewController.xib */,
+				58B0918A1653F78200A5140D /* Classes */,
+				58B091881653F72700A5140D /* View */,
 				58B0915A1653F39A00A5140D /* Supporting Files */,
 			);
 			path = MeshStremingiOSClient;
@@ -125,6 +132,75 @@
 				58B091691653F39A00A5140D /* Default-568h@2x.png */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		58B091881653F72700A5140D /* View */ = {
+			isa = PBXGroup;
+			children = (
+				58B0918F1653F80C00A5140D /* image */,
+				58B091A1165401AF00A5140D /* ProgMeshGLKViewController.xib */,
+				58B091791653F39A00A5140D /* FirstViewController.xib */,
+				58B0917C1653F39B00A5140D /* SecondViewController.xib */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		58B0918A1653F78200A5140D /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				58B091621653F39A00A5140D /* AppDelegate.h */,
+				58B091631653F39A00A5140D /* AppDelegate.m */,
+				58B0918E1653F7D900A5140D /* OpenMesh */,
+				58B0918D1653F7D100A5140D /* Core */,
+				58B0918C1653F7B700A5140D /* ViewController */,
+				58B0918B1653F7A800A5140D /* Model */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		58B0918B1653F7A800A5140D /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		58B0918C1653F7B700A5140D /* ViewController */ = {
+			isa = PBXGroup;
+			children = (
+				58B0919F165401AF00A5140D /* ProgMeshGLKViewController.h */,
+				58B091A0165401AF00A5140D /* ProgMeshGLKViewController.mm */,
+				58B0916B1653F39A00A5140D /* FirstViewController.h */,
+				58B0916C1653F39A00A5140D /* FirstViewController.m */,
+				58B091721653F39A00A5140D /* SecondViewController.h */,
+				58B091731653F39A00A5140D /* SecondViewController.m */,
+			);
+			name = ViewController;
+			sourceTree = "<group>";
+		};
+		58B0918D1653F7D100A5140D /* Core */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Core;
+			sourceTree = "<group>";
+		};
+		58B0918E1653F7D900A5140D /* OpenMesh */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = OpenMesh;
+			sourceTree = "<group>";
+		};
+		58B0918F1653F80C00A5140D /* image */ = {
+			isa = PBXGroup;
+			children = (
+				58B0916E1653F39A00A5140D /* first.png */,
+				58B091701653F39A00A5140D /* first@2x.png */,
+				58B091751653F39A00A5140D /* second.png */,
+				58B091771653F39A00A5140D /* second@2x.png */,
+			);
+			name = image;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -188,6 +264,7 @@
 				58B091781653F39A00A5140D /* second@2x.png in Resources */,
 				58B0917B1653F39A00A5140D /* FirstViewController.xib in Resources */,
 				58B0917E1653F39B00A5140D /* SecondViewController.xib in Resources */,
+				58B091A3165401B000A5140D /* ProgMeshGLKViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -202,6 +279,7 @@
 				58B091641653F39A00A5140D /* AppDelegate.m in Sources */,
 				58B0916D1653F39A00A5140D /* FirstViewController.m in Sources */,
 				58B091741653F39A00A5140D /* SecondViewController.m in Sources */,
+				58B091A2165401B000A5140D /* ProgMeshGLKViewController.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -326,6 +404,7 @@
 				58B091831653F39B00A5140D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
