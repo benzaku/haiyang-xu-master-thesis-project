@@ -14,6 +14,10 @@
 
 #import "ProgMeshGLKViewController.h"
 
+#import "ProgMeshModelTableViewController.h"
+
+
+
 @implementation AppDelegate
 
 - (void)dealloc
@@ -27,14 +31,20 @@
 {
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
     // Override point for customization after application launch.
-    
-    
     UIViewController *glkviewController = [[[ProgMeshGLKViewController alloc] initWithNibName:@"ProgMeshGLKViewController" bundle:nil] autorelease];
     
+    UIViewController *firstViewController = [[[FirstViewController alloc] initWithNibName:@"FirstViewController" bundle:nil] autorelease];
+    
+    UIViewController *progMeshTableViewController = [[[ProgMeshModelTableViewController alloc] initWithNibName:@"ProgMeshModelTableViewController" bundle:nil] autorelease];
+    
     self.tabBarController = [[[UITabBarController alloc] init] autorelease];
-    self.tabBarController.viewControllers = @[glkviewController];
+    self.tabBarController.viewControllers = @[glkviewController, progMeshTableViewController, firstViewController];
+    self.tabBarController.delegate = self;
     self.window.rootViewController = self.tabBarController;
     [self.window makeKeyAndVisible];
+    
+    
+    
     return YES;
 }
 
@@ -65,17 +75,20 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
-/*
+
 // Optional UITabBarControllerDelegate method.
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController
 {
+    
+    NSLog(@"asdf");
 }
-*/
+
 
 /*
 // Optional UITabBarControllerDelegate method.
 - (void)tabBarController:(UITabBarController *)tabBarController didEndCustomizingViewControllers:(NSArray *)viewControllers changed:(BOOL)changed
 {
+    NSLog(@"haha!");
 }
 */
 
