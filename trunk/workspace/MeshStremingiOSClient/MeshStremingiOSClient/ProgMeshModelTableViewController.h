@@ -8,6 +8,26 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ProgMeshModelTableViewController : UITableViewController
+#import "ProgMeshModelArray.h"
+
+#import "ProgMeshModel.h"
+
+@interface ProgMeshModelTableViewController : UITableViewController{
+    ProgMeshModelArray *_meshList;
+    ProgMeshModelArray *_volumeList;
+    
+    NSIndexPath *lastIndexPath;
+    
+    ProgMeshModel *_selectedProgMeshModel;
+}
+
+
+@property (nonatomic, strong) ProgMeshModel *selectedProgMeshModel;
+@property (retain, nonatomic) ProgMeshModelArray *meshList;
+@property (retain, nonatomic) ProgMeshModelArray *volumeList;
+@property (nonatomic, retain) NSIndexPath *lastIndexPath;
+
+
+
 
 @end
