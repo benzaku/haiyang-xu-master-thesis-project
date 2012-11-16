@@ -21,7 +21,7 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        self.title = NSLocalizedString(@"ProgMeshGLKView", @"ProgMeshGLKView");
+        self.title = NSLocalizedString(@"View", @"View");
         self.tabBarItem.image = [UIImage imageNamed:@"first"];
     }
     return self;

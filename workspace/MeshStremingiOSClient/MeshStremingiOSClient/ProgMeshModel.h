@@ -14,6 +14,8 @@
     NSString * _name;
 }
 
+- (id) initWithNameAndType:(NSString *) name: (NSString *) type;
+
 @property (strong, nonatomic) NSString *type;
 @property (strong, nonatomic) NSString *name;
 

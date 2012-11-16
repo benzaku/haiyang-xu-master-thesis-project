@@ -16,6 +16,9 @@
 
 #import "ProgMeshModelTableViewController.h"
 
+#import "ProgMeshModel.h"
+
+#import "ProgMeshModelArray.h"
 
 
 @implementation AppDelegate
@@ -35,7 +38,19 @@
     
     UIViewController *firstViewController = [[[FirstViewController alloc] initWithNibName:@"FirstViewController" bundle:nil] autorelease];
     
-    UIViewController *progMeshTableViewController = [[[ProgMeshModelTableViewController alloc] initWithNibName:@"ProgMeshModelTableViewController" bundle:nil] autorelease];
+    ProgMeshModelTableViewController *progMeshTableViewController = [[[ProgMeshModelTableViewController alloc] initWithNibName:@"ProgMeshModelTableViewController" bundle:nil] autorelease];
+    
+    
+    ProgMeshModel *mesh1 = [[[ProgMeshModel alloc] initWithNameAndType:@"mesh2" :@"MESH"] autorelease];
+    ProgMeshModel *mesh2 = [[[ProgMeshModel alloc] initWithNameAndType:@"mesh2" :@"MESH"] autorelease];
+    progMeshTableViewController.meshList = @[mesh1, mesh2];
+    
+    ProgMeshModel *vol1 = [[[ProgMeshModel alloc] initWithNameAndType:@"volume1" :@"VOLUME"] autorelease];
+    ProgMeshModel *vol2 = [[[ProgMeshModel alloc] initWithNameAndType:@"volume2" :@"VOLUME"] autorelease];
+    progMeshTableViewController.volumeList = @[vol1, vol2];
+    
+    //progMeshTableViewController.meshList = meshlist;
+    //progMeshTableViewController.volumeList = volumelist;
     
     self.tabBarController = [[[UITabBarController alloc] init] autorelease];
     self.tabBarController.viewControllers = @[glkviewController, progMeshTableViewController, firstViewController];

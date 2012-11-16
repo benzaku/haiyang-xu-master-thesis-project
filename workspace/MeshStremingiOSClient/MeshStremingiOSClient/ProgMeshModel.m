@@ -12,4 +12,13 @@
 
 @synthesize type = _type, name = _name;
 
+
+- (id) initWithNameAndType:(NSString *) name: (NSString *) type
+{
+    
+    _type = type;
+    _name = name;
+    return self;
+}
+
 @end
