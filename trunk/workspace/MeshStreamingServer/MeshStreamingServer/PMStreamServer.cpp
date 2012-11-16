@@ -10,6 +10,9 @@
 #include "PMStreamServer.h"
 #include "PMStreamServerHandler.h"
 #include "PMFileHandler.h"
+#include "PMRepository.h"
+
+
 #include "Poco/Util/HelpFormatter.h"
 #include "Poco/Net/ServerSocket.h"
 #include "Poco/Net/SocketAcceptor.h"
@@ -18,6 +21,9 @@
 
 #include <iostream>
 #include <fstream>
+#include <string>
+#include <string>
+#include <vector>
 
 using Poco::Util::HelpFormatter;
 using Poco::Net::ServerSocket;
@@ -84,6 +90,26 @@ int PMStreamServer::main(const std::vector<std::string> &args){
         //PMLoader pmLoader(PMFileName);
         
         //pmLoader.loadPM();
+        
+        /** test for PMRepository**/
+        PMRepository *pmrepo = new PMRepository();
+        
+        std::string ss("/Users/hyx/Development/MasterThesis/repository");
+        
+        pmrepo->setRepositoryDir(&ss);
+        
+        std::cout << *(pmrepo->getProgMeshDir())<< std::endl;
+        std::cout << *(pmrepo->getRepositoryDir())<< std::endl;
+        
+        
+        
+        
+        vector<string> list = pmrepo->readDirectory(*(pmrepo->getProgMeshDir()), "pm");
+        for(int i  = 0; i < list.size(); i ++){
+            std::cout<< list[i] << std::endl;
+        }
+        
+        /**/
         
         pmFileHandler = (PMFileHandler*)PMFileHandler::getInstance();
         pmFileHandler->setFileName(PMFileName);
