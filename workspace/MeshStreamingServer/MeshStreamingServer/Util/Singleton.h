@@ -23,6 +23,8 @@ public:
 private:
     static bool instanceFlag;
     static Singleton* single;
+    //Singleton();
+protected:
     Singleton();
 };
 
