@@ -8,12 +8,17 @@
 
 #import <Foundation/Foundation.h>
 #import "SocketHandler.h"
+#import "ServerInfo.h"
 
 @interface ProgMeshCentralController : NSObject{
     SocketHandler *_socketHandler;
+    
+    ServerInfo *_serverInfo;
 }
 
 
 @property (strong, nonatomic) SocketHandler *socketHandler;
+@property (strong, nonatomic) ServerInfo *serverInfo;
+
 
 @end

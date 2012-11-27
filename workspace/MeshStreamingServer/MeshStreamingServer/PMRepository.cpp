@@ -9,6 +9,9 @@
 #include "PMRepository.h"
 #include <string>
 #include <exception>
+#include <fstream>
+#include <Poco/StringTokenizer.h>
+#include <Poco/String.h>
 
 
 
@@ -46,13 +49,13 @@ PMRepository::getVolumeDir(){
 int
 PMRepository::getMeshNumber()
 {
-    return 0;
+    return meshNumber;
 }
 
 int
-PMRepository::getVolumeNumer()
+PMRepository::getVolumeNumber()
 {
-    return 0;
+    return volumeNumber;
 }
 
 
@@ -63,6 +66,9 @@ string * PMRepository::getProgMeshFileNames(){
 string *
 PMRepository::getVolumeFileNames()
 {
+    
+    
+    
     return NULL;
 }
 
@@ -76,6 +82,7 @@ PMRepository::initVar(){
     PROG_MESH = new string("mesh");
     VOLUME = new string("volume");
     FILE_SEPARATOR = new string("/");
+    volumeNumber = 0;
     
 }
 
@@ -122,9 +129,10 @@ PMRepository::readDirectory(const string &directoryLocation, const string &exten
         string entry( ent->d_name );
         string lcEntry( strToLower(entry) );
         
+        
         // Check extension matches (case insensitive)
         size_t pos = lcEntry.rfind(lcExtension);
-        if (pos!=string::npos && pos==lcEntry.length()-lcExtension.length()) {
+        if (pos!=string::npos && pos==lcEntry.length()-lcExtension.length() ) {
             result.push_back( entry );
         }
     }
@@ -135,5 +143,95 @@ PMRepository::readDirectory(const string &directoryLocation, const string &exten
     
     return result;
 }
+
+vector<string>
+PMRepository::getSubDirectories(const string &rootDirectoryLocation)
+{
+    vector<string> result;
+    DIR *dir;
+    struct dirent *ent;
+    
+    if((dir = opendir(rootDirectoryLocation.c_str())) == NULL){
+        throw std::exception();
+    }
+    
+    while ((ent = readdir(dir)) != NULL) {
+        string entry(ent->d_name);
+        string lcEntry(strToLower(entry));
+        if(ent->d_type == DT_DIR && strcmp(ent->d_name, ".") != 0 && strcmp(ent->d_name, "..") != 0){
+            result.push_back(entry);
+        }
+    }
+    if (closedir(dir) != 0) {
+        throw std::exception();
+    }
+    return result;
+}
+
+void
+PMRepository::initVolumeObjs()
+{
+    string * volRootDirName = getVolumeDir();
+    char currentVolRootDir[1024];
+    char filefullpath[1024];
+    vector<string> volDirNames = getSubDirectories(*volRootDirName);
+    string str1, str2;
+    for(int i = 0; i < volDirNames.size(); i ++){
+        strcpy(filefullpath, volRootDirName->c_str());
+        strcat(filefullpath, FILE_SEPARATOR->c_str());
+        strcat(filefullpath, volDirNames[i].c_str());
+        strcpy(currentVolRootDir, filefullpath);
+        strcat(filefullpath, FILE_SEPARATOR->c_str());
+        strcat(filefullpath, readDirectory(filefullpath, "dat")[0].c_str());
+        std::ifstream infile(filefullpath);
+        string line;
+        
+        while (std::getline(infile, line)) {
+            VolumeObj vObj;
+            vObj.RootDirPath = currentVolRootDir;
+            Poco::StringTokenizer stn(line, ":");
+            vObj.PropertiesMap.insert(std::pair<string, string>(Poco::trim(stn[0]), Poco::trim(stn[1])));
+            
+            volumeObjs.push_back(vObj);
+        }
+        infile.close();
+        
+    }
+    volumeNumber = (int)volumeObjs.size();
+    
+}
+
+void
+PMRepository::initMeshObjs()
+{
+    string * meshRootDirName = getProgMeshDir();
+    vector<string> meshDirNames = readDirectory(*meshRootDirName, "pm");
+    char filepath[1024];
+    for(int i = 0; i < meshDirNames.size(); i ++){
+        MeshObj mObj;
+        strcpy(filepath, meshRootDirName->c_str());
+        strcat(filepath, FILE_SEPARATOR->c_str());
+        strcat(filepath, meshDirNames[i].c_str());
+        
+        mObj.ObjectFilePath = filepath;
+        mObj.RootDirPath = *meshRootDirName;
+        
+        meshObjs.push_back(mObj);
+    }
+    meshNumber = (int) meshObjs.size();
+}
+
+vector<VolumeObj> *
+PMRepository::getVolumeObjs()
+{
+    return &volumeObjs;
+}
+
+vector<MeshObj> *
+PMRepository::getMeshObjs()
+{
+    return &meshObjs;
+}
+
 
 

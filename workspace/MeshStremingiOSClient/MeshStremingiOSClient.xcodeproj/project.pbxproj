@@ -14,6 +14,7 @@
 		587E2DF7165538F400F1FA1B /* ProgMeshModelHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 587E2DF6165538F400F1FA1B /* ProgMeshModelHandler.m */; };
 		587E2DFE16553A5000F1FA1B /* ProgMeshModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 587E2DFD16553A5000F1FA1B /* ProgMeshModel.m */; };
 		587E2E0116553B8000F1FA1B /* ProgMeshModelArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 587E2E0016553B8000F1FA1B /* ProgMeshModelArray.m */; };
+		588934AD165670750001BA27 /* ServerInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 588934AC165670750001BA27 /* ServerInfo.m */; };
 		58B091541653F39A00A5140D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58B091531653F39A00A5140D /* UIKit.framework */; };
 		58B091561653F39A00A5140D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58B091551653F39A00A5140D /* Foundation.framework */; };
 		58B091581653F39A00A5140D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58B091571653F39A00A5140D /* CoreGraphics.framework */; };
@@ -86,6 +87,8 @@
 		587E2DFD16553A5000F1FA1B /* ProgMeshModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProgMeshModel.m; sourceTree = "<group>"; };
 		587E2DFF16553B8000F1FA1B /* ProgMeshModelArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProgMeshModelArray.h; sourceTree = "<group>"; };
 		587E2E0016553B8000F1FA1B /* ProgMeshModelArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProgMeshModelArray.m; sourceTree = "<group>"; };
+		588934AB165670750001BA27 /* ServerInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServerInfo.h; sourceTree = "<group>"; };
+		588934AC165670750001BA27 /* ServerInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServerInfo.m; sourceTree = "<group>"; };
 		58B0914F1653F39A00A5140D /* MeshStremingiOSClient.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MeshStremingiOSClient.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		58B091531653F39A00A5140D /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		58B091551653F39A00A5140D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -344,6 +347,8 @@
 				587E2DFD16553A5000F1FA1B /* ProgMeshModel.m */,
 				587E2DFF16553B8000F1FA1B /* ProgMeshModelArray.h */,
 				587E2E0016553B8000F1FA1B /* ProgMeshModelArray.m */,
+				588934AB165670750001BA27 /* ServerInfo.h */,
+				588934AC165670750001BA27 /* ServerInfo.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -730,6 +735,7 @@
 				587E2DF7165538F400F1FA1B /* ProgMeshModelHandler.m in Sources */,
 				587E2DFE16553A5000F1FA1B /* ProgMeshModel.m in Sources */,
 				587E2E0116553B8000F1FA1B /* ProgMeshModelArray.m in Sources */,
+				588934AD165670750001BA27 /* ServerInfo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

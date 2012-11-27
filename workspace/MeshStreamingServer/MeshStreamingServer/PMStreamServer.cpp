@@ -11,6 +11,7 @@
 #include "PMStreamServerHandler.h"
 #include "PMFileHandler.h"
 #include "PMRepository.h"
+#include "ModelRepositoryHandler.h"
 
 
 #include "Poco/Util/HelpFormatter.h"
@@ -92,22 +93,18 @@ int PMStreamServer::main(const std::vector<std::string> &args){
         //pmLoader.loadPM();
         
         /** test for PMRepository**/
-        PMRepository *pmrepo = new PMRepository();
+        modelRepo = new PMRepository();
         
         std::string ss("/Users/hyx/Development/MasterThesis/repository");
         
-        pmrepo->setRepositoryDir(&ss);
+        modelRepo->setRepositoryDir(&ss);
         
-        std::cout << *(pmrepo->getProgMeshDir())<< std::endl;
-        std::cout << *(pmrepo->getRepositoryDir())<< std::endl;
+        modelRepo->initVolumeObjs();
+        modelRepo->initMeshObjs();
         
+        ModelRepositoryHandler *mrh = (ModelRepositoryHandler *)ModelRepositoryHandler::getInstance();
         
-        
-        
-        vector<string> list = pmrepo->readDirectory(*(pmrepo->getProgMeshDir()), "pm");
-        for(int i  = 0; i < list.size(); i ++){
-            std::cout<< list[i] << std::endl;
-        }
+        mrh->_PMRepository = modelRepo;
         
         /**/
         

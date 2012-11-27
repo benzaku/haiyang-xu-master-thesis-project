@@ -13,10 +13,12 @@
 
 - (id)init
 {
-    _socketHandler = [[SocketHandler alloc] init];
+    _socketHandler = [[[SocketHandler alloc] init] autorelease];
+    
+    _serverInfo = [[[ServerInfo alloc] init] autorelease];
     
     return self;
 }
 
-@synthesize socketHandler = _socketHandler;
+@synthesize socketHandler = _socketHandler, serverInfo = _serverInfo;
 @end

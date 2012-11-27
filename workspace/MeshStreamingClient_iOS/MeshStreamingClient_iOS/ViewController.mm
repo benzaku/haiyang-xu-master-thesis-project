@@ -263,6 +263,7 @@ GLfloat gCubeVertexData2[216] =
 
 
 - (IBAction)connect:(id)sender {
+    
     [socket disconnect];
     [progress setProgress:0];
     

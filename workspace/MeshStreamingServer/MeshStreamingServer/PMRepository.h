@@ -14,6 +14,8 @@
 #include <string>
 #include <vector>
 #include <dirent.h>
+#include "VolumeObj.h"
+#include "MeshObj.h"
 
 using namespace std;
 
@@ -25,6 +27,13 @@ private:
     string *PROG_MESH;
     string *VOLUME;
     string *FILE_SEPARATOR;
+    
+    int volumeNumber;
+    int meshNumber;
+    
+    vector<VolumeObj> volumeObjs;
+    
+    vector<MeshObj> meshObjs;
     
     void inline initVar();
     
@@ -39,11 +48,19 @@ public:
     void setRepositoryDir(string *repo);
     string *getProgMeshDir();
     string *getVolumeDir();
-int getMeshNumber();
-int getVolumeNumer();
-string * getProgMeshFileNames();
-string * getVolumeFileNames();
+    int getMeshNumber();
+    int getVolumeNumber();
+    string *getProgMeshFileNames();
+    string *getVolumeFileNames();
     vector<string> readDirectory(const string &directoryLocation, const string &extension);
+    vector<string> getSubDirectories(const string &rootDirectoryLocation);
+    
+    void initVolumeObjs();
+    
+    void initMeshObjs();
+    
+    vector<VolumeObj> * getVolumeObjs();
+    vector<MeshObj> * getMeshObjs();
 
 };
 

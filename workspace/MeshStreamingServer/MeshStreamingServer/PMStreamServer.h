@@ -17,6 +17,7 @@
 #include "Poco/Util/OptionSet.h"
 #include "PMFileHandler.h"
 #include "PMLoader.h"
+#include "PMRepository.h"
 
 using Poco::Util::ServerApplication;
 using Poco::Util::Option;
@@ -48,6 +49,9 @@ private:
     std::string PMFileName;
     PMFileHandler* pmFileHandler;
     PMLoader* pmLoader;
+    
+    PMRepository *modelRepo;
+    
     bool useVolume = false;
     
 };
