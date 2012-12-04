@@ -16,10 +16,23 @@
 #include <dirent.h>
 #include "VolumeObj.h"
 #include "MeshObj.h"
+#include "Poco/DOM/Document.h"
+#include "Poco/DOM/Element.h"
+#include "Poco/DOM/Text.h"
+#include "Poco/DOM/AutoPtr.h"
+#include "Poco/DOM/DOMWriter.h"
+#include "Poco/XML/XMLWriter.h"
+
+using Poco::XML::Document;
+using Poco::XML::Element;
+using Poco::XML::Text;
+using Poco::XML::AutoPtr;
+using Poco::XML::DOMWriter;
+using Poco::XML::XMLWriter;
 
 using namespace std;
 
-class PMRepository
+class PMRepository 
 {
 private:
     string *repositoryDir;    //repository directory path
@@ -31,9 +44,12 @@ private:
     int volumeNumber;
     int meshNumber;
     
-    vector<VolumeObj> volumeObjs;
+    char *modelListXmlString;
+    int modelListXmlStringLength;
     
-    vector<MeshObj> meshObjs;
+    vector<VolumeObj*> volumeObjs;
+    
+    vector<MeshObj*> meshObjs;
     
     void inline initVar();
     
@@ -59,9 +75,17 @@ public:
     
     void initMeshObjs();
     
-    vector<VolumeObj> * getVolumeObjs();
-    vector<MeshObj> * getMeshObjs();
-
+    vector<VolumeObj*> * getVolumeObjs();
+    vector<MeshObj*> * getMeshObjs();
+    
+    AutoPtr<Document> getModelObjectsXmlDocument();
+    
+    void generateModelListXmlInfo();
+    
+    char * getModelListXmlString();
+    
+    int getModelListXmlStringLength();
+    
 };
 
 #endif /* defined(__MeshStreamingServer__PMRepository__) */

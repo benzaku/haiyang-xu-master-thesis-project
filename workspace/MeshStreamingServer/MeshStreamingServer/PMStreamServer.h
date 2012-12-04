@@ -18,6 +18,7 @@
 #include "PMFileHandler.h"
 #include "PMLoader.h"
 #include "PMRepository.h"
+#include "ModelRepositoryHandler.h"
 
 using Poco::Util::ServerApplication;
 using Poco::Util::Option;
@@ -42,7 +43,9 @@ protected:
     
     void displayHelp();
     
-	int main(const std::vector<std::string>& args);	
+	int main(const std::vector<std::string>& args);
+    
+    void getModelListXmlInfo(char * xmlString, int &length);
 
 private:
     bool _helpRequested;
@@ -53,6 +56,11 @@ private:
     PMRepository *modelRepo;
     
     bool useVolume = false;
+    
+    char *modelListXmlString;
+    int modelListXmlStringLength;
+    
+    ModelRepositoryHandler *modelRepositoryHandler;
     
 };
 

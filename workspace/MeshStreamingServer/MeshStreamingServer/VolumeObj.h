@@ -11,8 +11,16 @@
 
 #include <iostream>
 #include <map>
+#include "Poco/DOM/Element.h"
+#include "Poco/DOM/AutoPtr.h"
+#include "Poco/DOM/Document.h"
+#include "Poco/Dom/Text.h"
 
 using namespace std;
+using Poco::XML::Element;
+using Poco::XML::AutoPtr;
+using Poco::XML::Document;
+using Poco::XML::Text;
 
 class VolumeObj{
 public:
@@ -30,6 +38,11 @@ public:
     string  RootDirPath;
     
     map<string, string>     PropertiesMap;
+    
+    VolumeObj();
+    ~VolumeObj();
+    
+    AutoPtr<Element> getXMLElement(AutoPtr<Document> &doc);
     
     
 };

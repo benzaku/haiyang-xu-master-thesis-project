@@ -13,6 +13,7 @@
 #include "Poco/Net/SocketReactor.h"
 #include "Poco/Net/SocketNotification.h"
 #include "PMFileHandler.h"
+#include "ModelRepositoryHandler.h"
 
 using Poco::Net::StreamSocket;
 using Poco::Net::SocketReactor;
@@ -42,6 +43,8 @@ private:
     SocketReactor&      _reactor;
     char*               _pBuffer;
     PMFileHandler*      _pmFH;
+    ModelRepositoryHandler* _mRH;
+    
     int                 _temp;
     char*               _tempContentPtr;
     int                 _templen;

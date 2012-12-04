@@ -22,6 +22,7 @@
 		5840D5BE165FBE3400CA167C /* MeshObj.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5840D5BC165FBE3400CA167C /* MeshObj.cpp */; };
 		5840D5C2165FC5B500CA167C /* ModelRepositoryHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5840D5C0165FC5B400CA167C /* ModelRepositoryHandler.cpp */; };
 		588934B516567DC60001BA27 /* PMRepository.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 588934B316567DC50001BA27 /* PMRepository.cpp */; };
+		58BA38371664EFBE00B11457 /* libPocoXML.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 58BA38361664EFBE00B11457 /* libPocoXML.dylib */; };
 		58C9A5D11627012600A36306 /* libOpenMeshCore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 58C9A5CF1627012600A36306 /* libOpenMeshCore.dylib */; };
 		58C9A5D21627012600A36306 /* libOpenMeshTools.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 58C9A5D01627012600A36306 /* libOpenMeshTools.dylib */; };
 /* End PBXBuildFile section */
@@ -70,6 +71,7 @@
 		5840D5C1165FC5B400CA167C /* ModelRepositoryHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModelRepositoryHandler.h; sourceTree = "<group>"; };
 		588934B316567DC50001BA27 /* PMRepository.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PMRepository.cpp; sourceTree = "<group>"; };
 		588934B416567DC50001BA27 /* PMRepository.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PMRepository.h; sourceTree = "<group>"; };
+		58BA38361664EFBE00B11457 /* libPocoXML.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libPocoXML.dylib; path = ../../../../../../../usr/local/lib/libPocoXML.dylib; sourceTree = "<group>"; };
 		58C9A5CF1627012600A36306 /* libOpenMeshCore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libOpenMeshCore.dylib; path = ../../../../../../../usr/local/lib/OpenMesh/libOpenMeshCore.dylib; sourceTree = "<group>"; };
 		58C9A5D01627012600A36306 /* libOpenMeshTools.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libOpenMeshTools.dylib; path = ../../../../../../../usr/local/lib/OpenMesh/libOpenMeshTools.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -79,6 +81,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				58BA38371664EFBE00B11457 /* libPocoXML.dylib in Frameworks */,
 				58C9A5D11627012600A36306 /* libOpenMeshCore.dylib in Frameworks */,
 				58C9A5D21627012600A36306 /* libOpenMeshTools.dylib in Frameworks */,
 				28D0AC89161885C3000D174C /* libPocoUtil.dylib in Frameworks */,
@@ -93,6 +96,7 @@
 		28D0AC3A1618815B000D174C = {
 			isa = PBXGroup;
 			children = (
+				58BA38361664EFBE00B11457 /* libPocoXML.dylib */,
 				58C9A5CF1627012600A36306 /* libOpenMeshCore.dylib */,
 				58C9A5D01627012600A36306 /* libOpenMeshTools.dylib */,
 				28D0AC88161885C3000D174C /* libPocoUtil.dylib */,
@@ -133,9 +137,9 @@
 				5818D2BF165F7E9700378191 /* VolumeObj.h */,
 				5840D5BC165FBE3400CA167C /* MeshObj.cpp */,
 				5840D5BD165FBE3400CA167C /* MeshObj.h */,
-				28D0AC7F161884D0000D174C /* Util */,
 				5840D5C0165FC5B400CA167C /* ModelRepositoryHandler.cpp */,
 				5840D5C1165FC5B400CA167C /* ModelRepositoryHandler.h */,
+				28D0AC7F161884D0000D174C /* Util */,
 			);
 			path = MeshStreamingServer;
 			sourceTree = "<group>";
