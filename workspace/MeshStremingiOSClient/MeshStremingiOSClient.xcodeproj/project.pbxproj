@@ -15,6 +15,17 @@
 		587E2DFE16553A5000F1FA1B /* ProgMeshModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 587E2DFD16553A5000F1FA1B /* ProgMeshModel.m */; };
 		587E2E0116553B8000F1FA1B /* ProgMeshModelArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 587E2E0016553B8000F1FA1B /* ProgMeshModelArray.m */; };
 		588934AD165670750001BA27 /* ServerInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 588934AC165670750001BA27 /* ServerInfo.m */; };
+		58AC96D1166D4DB1008E35D0 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 58AC96D0166D4DB1008E35D0 /* libxml2.dylib */; };
+		58AC96E8166D4FB3008E35D0 /* XmlHeaderHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 58AC96DF166D4FB3008E35D0 /* XmlHeaderHelper.m */; };
+		58AC96E9166D4FB3008E35D0 /* XmlParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 58AC96E1166D4FB3008E35D0 /* XmlParser.m */; };
+		58AC96EA166D4FB3008E35D0 /* TypeMapping.m in Sources */ = {isa = PBXBuildFile; fileRef = 58AC96E3166D4FB3008E35D0 /* TypeMapping.m */; };
+		58AC96EB166D4FB3008E35D0 /* GDataXMLNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 58AC96E5166D4FB3008E35D0 /* GDataXMLNode.m */; };
+		58AC96EC166D4FB3008E35D0 /* Util.m in Sources */ = {isa = PBXBuildFile; fileRef = 58AC96E7166D4FB3008E35D0 /* Util.m */; };
+		58AC96F0166D5203008E35D0 /* VolumeObj.m in Sources */ = {isa = PBXBuildFile; fileRef = 58AC96EF166D5203008E35D0 /* VolumeObj.m */; };
+		58AC96F3166D5486008E35D0 /* MeshObj.m in Sources */ = {isa = PBXBuildFile; fileRef = 58AC96F2166D5486008E35D0 /* MeshObj.m */; };
+		58AC96F6166D5594008E35D0 /* VolumeObjects.m in Sources */ = {isa = PBXBuildFile; fileRef = 58AC96F5166D5594008E35D0 /* VolumeObjects.m */; };
+		58AC96F9166D5677008E35D0 /* MeshObjects.m in Sources */ = {isa = PBXBuildFile; fileRef = 58AC96F8166D5677008E35D0 /* MeshObjects.m */; };
+		58AC96FC166D5790008E35D0 /* Models.m in Sources */ = {isa = PBXBuildFile; fileRef = 58AC96FB166D5790008E35D0 /* Models.m */; };
 		58B091541653F39A00A5140D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58B091531653F39A00A5140D /* UIKit.framework */; };
 		58B091561653F39A00A5140D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58B091551653F39A00A5140D /* Foundation.framework */; };
 		58B091581653F39A00A5140D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58B091571653F39A00A5140D /* CoreGraphics.framework */; };
@@ -71,6 +82,9 @@
 		58B092471654144E00A5140D /* SingletonT.cc in Sources */ = {isa = PBXBuildFile; fileRef = 58B092241654144E00A5140D /* SingletonT.cc */; };
 		58B0924D1654151300A5140D /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 58B0924A1654151300A5140D /* GCDAsyncSocket.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		58B0924E1654151300A5140D /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 58B0924C1654151300A5140D /* GCDAsyncUdpSocket.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		58BA382B1664CF5C00B11457 /* ConfigViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 58BA38291664CF5C00B11457 /* ConfigViewController.m */; };
+		58BA382C1664CF5C00B11457 /* ConfigViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 58BA382A1664CF5C00B11457 /* ConfigViewController.xib */; };
+		58BA383F1665058C00B11457 /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 58BA383E1665058B00B11457 /* Constants.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -89,6 +103,29 @@
 		587E2E0016553B8000F1FA1B /* ProgMeshModelArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProgMeshModelArray.m; sourceTree = "<group>"; };
 		588934AB165670750001BA27 /* ServerInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServerInfo.h; sourceTree = "<group>"; };
 		588934AC165670750001BA27 /* ServerInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServerInfo.m; sourceTree = "<group>"; };
+		5892CA021668C5F900DCADA8 /* CWLSynthesizeSingleton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CWLSynthesizeSingleton.h; sourceTree = "<group>"; };
+		5892CA041668DF9B00DCADA8 /* GCDSingleton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GCDSingleton.h; sourceTree = "<group>"; };
+		58AC96D0166D4DB1008E35D0 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
+		58AC96DE166D4FB3008E35D0 /* XmlHeaderHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XmlHeaderHelper.h; sourceTree = "<group>"; };
+		58AC96DF166D4FB3008E35D0 /* XmlHeaderHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XmlHeaderHelper.m; sourceTree = "<group>"; };
+		58AC96E0166D4FB3008E35D0 /* XmlParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XmlParser.h; sourceTree = "<group>"; };
+		58AC96E1166D4FB3008E35D0 /* XmlParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XmlParser.m; sourceTree = "<group>"; };
+		58AC96E2166D4FB3008E35D0 /* TypeMapping.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TypeMapping.h; sourceTree = "<group>"; };
+		58AC96E3166D4FB3008E35D0 /* TypeMapping.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TypeMapping.m; sourceTree = "<group>"; };
+		58AC96E4166D4FB3008E35D0 /* GDataXMLNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GDataXMLNode.h; sourceTree = "<group>"; };
+		58AC96E5166D4FB3008E35D0 /* GDataXMLNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GDataXMLNode.m; sourceTree = "<group>"; };
+		58AC96E6166D4FB3008E35D0 /* Util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Util.h; sourceTree = "<group>"; };
+		58AC96E7166D4FB3008E35D0 /* Util.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Util.m; sourceTree = "<group>"; };
+		58AC96EE166D5203008E35D0 /* VolumeObj.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VolumeObj.h; sourceTree = "<group>"; };
+		58AC96EF166D5203008E35D0 /* VolumeObj.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VolumeObj.m; sourceTree = "<group>"; };
+		58AC96F1166D5486008E35D0 /* MeshObj.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MeshObj.h; sourceTree = "<group>"; };
+		58AC96F2166D5486008E35D0 /* MeshObj.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MeshObj.m; sourceTree = "<group>"; };
+		58AC96F4166D5594008E35D0 /* VolumeObjects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VolumeObjects.h; sourceTree = "<group>"; };
+		58AC96F5166D5594008E35D0 /* VolumeObjects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VolumeObjects.m; sourceTree = "<group>"; };
+		58AC96F7166D5677008E35D0 /* MeshObjects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MeshObjects.h; sourceTree = "<group>"; };
+		58AC96F8166D5677008E35D0 /* MeshObjects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MeshObjects.m; sourceTree = "<group>"; };
+		58AC96FA166D578F008E35D0 /* Models.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Models.h; sourceTree = "<group>"; };
+		58AC96FB166D5790008E35D0 /* Models.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Models.m; sourceTree = "<group>"; };
 		58B0914F1653F39A00A5140D /* MeshStremingiOSClient.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MeshStremingiOSClient.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		58B091531653F39A00A5140D /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		58B091551653F39A00A5140D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -233,6 +270,11 @@
 		58B0924A1654151300A5140D /* GCDAsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncSocket.m; sourceTree = "<group>"; };
 		58B0924B1654151300A5140D /* GCDAsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncUdpSocket.h; sourceTree = "<group>"; };
 		58B0924C1654151300A5140D /* GCDAsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncUdpSocket.m; sourceTree = "<group>"; };
+		58BA38281664CF5B00B11457 /* ConfigViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConfigViewController.h; sourceTree = "<group>"; };
+		58BA38291664CF5C00B11457 /* ConfigViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConfigViewController.m; sourceTree = "<group>"; };
+		58BA382A1664CF5C00B11457 /* ConfigViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ConfigViewController.xib; sourceTree = "<group>"; };
+		58BA383D1665058B00B11457 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		58BA383E1665058B00B11457 /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -240,6 +282,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				58AC96D1166D4DB1008E35D0 /* libxml2.dylib in Frameworks */,
 				58B091991653FA0C00A5140D /* CFNetwork.framework in Frameworks */,
 				58B091971653FA0400A5140D /* GLKit.framework in Frameworks */,
 				58B091951653F9FB00A5140D /* OpenGLES.framework in Frameworks */,
@@ -261,9 +304,44 @@
 			name = Network;
 			sourceTree = "<group>";
 		};
+		58AC96DD166D4F9C008E35D0 /* WonderXML */ = {
+			isa = PBXGroup;
+			children = (
+				58AC96DE166D4FB3008E35D0 /* XmlHeaderHelper.h */,
+				58AC96DF166D4FB3008E35D0 /* XmlHeaderHelper.m */,
+				58AC96E0166D4FB3008E35D0 /* XmlParser.h */,
+				58AC96E1166D4FB3008E35D0 /* XmlParser.m */,
+				58AC96E2166D4FB3008E35D0 /* TypeMapping.h */,
+				58AC96E3166D4FB3008E35D0 /* TypeMapping.m */,
+				58AC96E4166D4FB3008E35D0 /* GDataXMLNode.h */,
+				58AC96E5166D4FB3008E35D0 /* GDataXMLNode.m */,
+				58AC96E6166D4FB3008E35D0 /* Util.h */,
+				58AC96E7166D4FB3008E35D0 /* Util.m */,
+			);
+			path = WonderXML;
+			sourceTree = "<group>";
+		};
+		58AC96ED166D51DC008E35D0 /* XMLObjectModel */ = {
+			isa = PBXGroup;
+			children = (
+				58AC96EE166D5203008E35D0 /* VolumeObj.h */,
+				58AC96EF166D5203008E35D0 /* VolumeObj.m */,
+				58AC96F1166D5486008E35D0 /* MeshObj.h */,
+				58AC96F2166D5486008E35D0 /* MeshObj.m */,
+				58AC96F4166D5594008E35D0 /* VolumeObjects.h */,
+				58AC96F5166D5594008E35D0 /* VolumeObjects.m */,
+				58AC96F7166D5677008E35D0 /* MeshObjects.h */,
+				58AC96F8166D5677008E35D0 /* MeshObjects.m */,
+				58AC96FA166D578F008E35D0 /* Models.h */,
+				58AC96FB166D5790008E35D0 /* Models.m */,
+			);
+			name = XMLObjectModel;
+			sourceTree = "<group>";
+		};
 		58B091441653F39A00A5140D = {
 			isa = PBXGroup;
 			children = (
+				58AC96D0166D4DB1008E35D0 /* libxml2.dylib */,
 				58B091981653FA0C00A5140D /* CFNetwork.framework */,
 				58B091961653FA0400A5140D /* GLKit.framework */,
 				58B091941653F9FB00A5140D /* OpenGLES.framework */,
@@ -319,6 +397,7 @@
 			isa = PBXGroup;
 			children = (
 				58B0918F1653F80C00A5140D /* image */,
+				58BA382A1664CF5C00B11457 /* ConfigViewController.xib */,
 				58B091A1165401AF00A5140D /* ProgMeshGLKViewController.xib */,
 				58B091791653F39A00A5140D /* FirstViewController.xib */,
 				58B0917C1653F39B00A5140D /* SecondViewController.xib */,
@@ -330,6 +409,7 @@
 		58B0918A1653F78200A5140D /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				58AC96DD166D4F9C008E35D0 /* WonderXML */,
 				58B092501654164C00A5140D /* Delegates */,
 				58B091AD1654144E00A5140D /* OpenMesh */,
 				58B092481654151300A5140D /* AsyncSocket */,
@@ -343,12 +423,17 @@
 		58B0918B1653F7A800A5140D /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				58AC96ED166D51DC008E35D0 /* XMLObjectModel */,
+				5892CA021668C5F900DCADA8 /* CWLSynthesizeSingleton.h */,
 				587E2DFC16553A5000F1FA1B /* ProgMeshModel.h */,
 				587E2DFD16553A5000F1FA1B /* ProgMeshModel.m */,
 				587E2DFF16553B8000F1FA1B /* ProgMeshModelArray.h */,
 				587E2E0016553B8000F1FA1B /* ProgMeshModelArray.m */,
 				588934AB165670750001BA27 /* ServerInfo.h */,
 				588934AC165670750001BA27 /* ServerInfo.m */,
+				58BA383D1665058B00B11457 /* Constants.h */,
+				58BA383E1665058B00B11457 /* Constants.m */,
+				5892CA041668DF9B00DCADA8 /* GCDSingleton.h */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -364,6 +449,8 @@
 				58B091731653F39A00A5140D /* SecondViewController.m */,
 				587E2DDB16551D5900F1FA1B /* ProgMeshModelTableViewController.h */,
 				587E2DDC16551D5900F1FA1B /* ProgMeshModelTableViewController.m */,
+				58BA38281664CF5B00B11457 /* ConfigViewController.h */,
+				58BA38291664CF5C00B11457 /* ConfigViewController.m */,
 			);
 			name = ViewController;
 			sourceTree = "<group>";
@@ -684,6 +771,7 @@
 				58B092351654144E00A5140D /* SR_binary_vector_of_string.inl in Resources */,
 				58B0923F1654144E00A5140D /* generate.sh in Resources */,
 				587E2DDF16551D5900F1FA1B /* ProgMeshModelTableViewController.xib in Resources */,
+				58BA382C1664CF5C00B11457 /* ConfigViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -736,6 +824,18 @@
 				587E2DFE16553A5000F1FA1B /* ProgMeshModel.m in Sources */,
 				587E2E0116553B8000F1FA1B /* ProgMeshModelArray.m in Sources */,
 				588934AD165670750001BA27 /* ServerInfo.m in Sources */,
+				58BA382B1664CF5C00B11457 /* ConfigViewController.m in Sources */,
+				58BA383F1665058C00B11457 /* Constants.m in Sources */,
+				58AC96E8166D4FB3008E35D0 /* XmlHeaderHelper.m in Sources */,
+				58AC96E9166D4FB3008E35D0 /* XmlParser.m in Sources */,
+				58AC96EA166D4FB3008E35D0 /* TypeMapping.m in Sources */,
+				58AC96EB166D4FB3008E35D0 /* GDataXMLNode.m in Sources */,
+				58AC96EC166D4FB3008E35D0 /* Util.m in Sources */,
+				58AC96F0166D5203008E35D0 /* VolumeObj.m in Sources */,
+				58AC96F3166D5486008E35D0 /* MeshObj.m in Sources */,
+				58AC96F6166D5594008E35D0 /* VolumeObjects.m in Sources */,
+				58AC96F9166D5677008E35D0 /* MeshObjects.m in Sources */,
+				58AC96FC166D5790008E35D0 /* Models.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -825,8 +925,12 @@
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MeshStremingiOSClient/MeshStremingiOSClient-Prefix.pch";
-				HEADER_SEARCH_PATHS = "${SRCROOT}/**";
+				HEADER_SEARCH_PATHS = (
+					"${SRCROOT}/**",
+					/usr/include/libxml2,
+				);
 				INFOPLIST_FILE = "MeshStremingiOSClient/MeshStremingiOSClient-Info.plist";
+				"OTHER_LDFLAGS[arch=*]" = "-lxml2";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -838,8 +942,12 @@
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MeshStremingiOSClient/MeshStremingiOSClient-Prefix.pch";
-				HEADER_SEARCH_PATHS = "${SRCROOT}/**";
+				HEADER_SEARCH_PATHS = (
+					"${SRCROOT}/**",
+					/usr/include/libxml2,
+				);
 				INFOPLIST_FILE = "MeshStremingiOSClient/MeshStremingiOSClient-Info.plist";
+				"OTHER_LDFLAGS[arch=*]" = "-lxml2";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};

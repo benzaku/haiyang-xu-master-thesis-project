@@ -13,6 +13,10 @@
     NSString *_serverPort;
 }
 
+- (void) configureHostAndPort:(NSString *) host: (NSString *) port;
+
+- (id) initWithHostAndPort:(NSString *) host: (NSString *) port;
+
 @property (strong, nonatomic) NSString *serverHost;
 @property (strong, nonatomic) NSString *serverPort;
 

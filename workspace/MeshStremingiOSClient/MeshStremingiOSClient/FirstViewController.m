@@ -8,6 +8,8 @@
 
 #import "FirstViewController.h"
 
+#import "AppDelegate.h"
+
 @interface FirstViewController ()
 
 @end
@@ -21,6 +23,9 @@
         self.title = NSLocalizedString(@"First", @"First");
         self.tabBarItem.image = [UIImage imageNamed:@"first"];
     }
+    
+    
+    
     return self;
 }
 							

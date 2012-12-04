@@ -17,6 +17,9 @@
 
 @implementation ProgMeshGLKViewController
 
+@synthesize progMeshCentralController = _progMeshCentralController;
+
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];

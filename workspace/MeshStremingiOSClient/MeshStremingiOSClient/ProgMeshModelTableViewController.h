@@ -10,7 +10,10 @@
 
 #import "ProgMeshModelArray.h"
 
+
 #import "ProgMeshModel.h"
+
+#import "Models.h"
 
 @interface ProgMeshModelTableViewController : UITableViewController{
     ProgMeshModelArray *_meshList;
@@ -19,6 +22,15 @@
     NSIndexPath *lastIndexPath;
     
     ProgMeshModel *_selectedProgMeshModel;
+    
+    
+    
+    Models *_models;
+    
+    NSMutableArray *_meshes;
+    
+    NSMutableArray *_volumes;
+
 }
 
 
@@ -27,7 +39,13 @@
 @property (retain, nonatomic) ProgMeshModelArray *volumeList;
 @property (nonatomic, retain) NSIndexPath *lastIndexPath;
 
+@property (retain, nonatomic) Models *models;
 
+@property (retain, nonatomic) NSMutableArray *meshes;
+
+@property (retain, nonatomic) NSMutableArray *volumes;
+
+- (void) resetTable;
 
 
 @end

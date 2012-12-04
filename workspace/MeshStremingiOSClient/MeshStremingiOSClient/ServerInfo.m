@@ -22,6 +22,12 @@
     
 }
 
+- (void) configureHostAndPort:(NSString *)host :(NSString *)port
+{
+    _serverHost = host;
+    _serverPort = port;
+}
+
 
 
 @end
