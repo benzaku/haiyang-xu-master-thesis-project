@@ -7,16 +7,20 @@
 //
 
 #import "SocketHandler.h"
+#import "ProgMeshCentralController.h"
+#import "Constants.h"
 
 @implementation SocketHandler{
     
 }
-@synthesize socket = _socket, host = _host, port = _port;
+@synthesize socket = _socket, host = _host, port = _port, _SOCKET_STATE = _socket_state;
 
 - (id)initWithHostAndPort: (NSString *) host: (NSString *) port
 {
     _socket = [[GCDAsyncSocket alloc]initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
     
+    _socket_state = SOCKET_NOT_CONNECTED_IDLE;
+
     _host = host;
     _port = port;
     
@@ -26,6 +30,11 @@
 - (id)init
 {
     _socket = [[GCDAsyncSocket alloc]initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
+    
+    _socket_state = SOCKET_NOT_CONNECTED_IDLE;
+    
+    //_host = [[NSString alloc] init];
+    //_port = [[NSString alloc] init];
     return self;
 }
 
@@ -47,21 +56,58 @@
 - (void) disconnetToServer
 {
     [_socket disconnect];
+    [[ProgMeshCentralController sharedInstance] setServerConnectionStatus:NO];
+    _socket_state = SOCKET_NOT_CONNECTED_IDLE;
 }
 
 - (BOOL) isConnected
 {
-    return [_socket isConnected];
+    if(_socket != nil)
+        return [_socket isConnected];
+    else
+        return NO;
 }
 
 -(void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port
 {
     NSLog(@"connected");
+
+    [[ProgMeshCentralController sharedInstance] setServerConnectionStatus:YES];
+    _socket_state = SOCKET_CONNECTED_IDLE;
+    [[ProgMeshCentralController sharedInstance] didConnectToServer];
 }
 
 -(void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
 {
     NSLog(@"get Data");
+    [[ProgMeshCentralController sharedInstance] readData:data withTag:tag :_socket_state];
+    
+    
 }
+
+-(void) configureHostAndPort:(NSString *)host :(NSString *)port
+{
+    _host = host;
+    _port = port;
+}
+
+- (void) socketSendMessageWithReadTimeOut:(NSString *) message : (enum SOCKET_STATE) nextState : (NSTimeInterval) timeout
+{
+    if (_socket_state == SOCKET_CONNECTED_IDLE) {
+        _socket_state = nextState;
+        [_socket writeData:[message dataUsingEncoding:NSUTF8StringEncoding] withTimeout:-1 tag:0];
+        [_socket readDataWithTimeout:timeout tag:0];
+    }
+}
+
+- (void) socketSendMessageWithReadTimeOutAndToLength:(NSString *) message : (enum SOCKET_STATE) nextState : (NSTimeInterval) timeout : (NSUInteger) length
+{
+    if (_socket_state == SOCKET_CONNECTED_IDLE) {
+        _socket_state = nextState;
+        [_socket writeData:[message dataUsingEncoding:NSUTF8StringEncoding] withTimeout:-1 tag:0];
+        [_socket readDataToLength:length withTimeout:timeout tag:0];
+    }
+}
+
 
 @end

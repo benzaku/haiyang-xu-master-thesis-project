@@ -20,8 +20,17 @@
 
 #import "ProgMeshModelArray.h"
 
+#import "ProgMeshCentralController.h"
+
+#import "ConfigViewController.h"
+
+#import "Constants.h"
+
 
 @implementation AppDelegate
+
+
+@synthesize progMeshCentralController = _progMeshCentralController;
 
 - (void)dealloc
 {
@@ -36,7 +45,10 @@
     // Override point for customization after application launch.
     UIViewController *glkviewController = [[[ProgMeshGLKViewController alloc] initWithNibName:@"ProgMeshGLKViewController" bundle:nil] autorelease];
     
-    UIViewController *firstViewController = [[[FirstViewController alloc] initWithNibName:@"FirstViewController" bundle:nil] autorelease];
+    UIViewController *configViewController = [[[ConfigViewController alloc] initWithNibName:@"ConfigViewController" bundle:nil] autorelease];
+    
+    
+    //((ConfigViewController *)configViewController).progMeshCentralController = _progMeshCentralController;
     
     ProgMeshModelTableViewController *progMeshTableViewController = [[[ProgMeshModelTableViewController alloc] initWithNibName:@"ProgMeshModelTableViewController" bundle:nil] autorelease];
     
@@ -47,15 +59,24 @@
     
     ProgMeshModel *vol1 = [[[ProgMeshModel alloc] initWithNameAndType:@"volume1" :@"VOLUME"] autorelease];
     ProgMeshModel *vol2 = [[[ProgMeshModel alloc] initWithNameAndType:@"volume2" :@"VOLUME"] autorelease];
-    progMeshTableViewController.volumeList = @[vol1, vol2];
+    //progMeshTableViewController.volumeList = @[vol1, vol2];
     
-    //progMeshTableViewController.meshList = meshlist;
-    //progMeshTableViewController.volumeList = volumelist;
     
     self.tabBarController = [[[UITabBarController alloc] init] autorelease];
-    self.tabBarController.viewControllers = @[glkviewController, progMeshTableViewController, firstViewController];
+    self.tabBarController.viewControllers = @[glkviewController, progMeshTableViewController, configViewController];
     self.tabBarController.delegate = self;
     self.window.rootViewController = self.tabBarController;
+    
+    _progMeshCentralController = [ProgMeshCentralController sharedInstance];
+    
+    SocketHandler * sh = [[SocketHandler alloc] init];
+    
+    [_progMeshCentralController setSocketHandler:sh];
+    
+    [_progMeshCentralController setConfigViewController:(ConfigViewController *)configViewController];
+    
+    [_progMeshCentralController setProgMeshModelTableViewController:progMeshTableViewController];
+    
     [self.window makeKeyAndVisible];
     
     
@@ -95,7 +116,9 @@
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController
 {
     
-    NSLog(@"asdf");
+    NSLog(@"%@ loaded", [viewController nibName]);
+    
+    
 }
 
 

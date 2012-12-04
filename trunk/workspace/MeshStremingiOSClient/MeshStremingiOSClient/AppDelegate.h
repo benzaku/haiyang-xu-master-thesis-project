@@ -8,12 +8,18 @@
 
 #import <UIKit/UIKit.h>
 
+#import "ProgMeshCentralController.h"
+
+
+
 @interface AppDelegate : UIResponder <UIApplicationDelegate, UITabBarControllerDelegate>{
-    
+    ProgMeshCentralController *_progMeshCentralController;
 }
 
 @property (strong, nonatomic) UIWindow *window;
 
 @property (strong, nonatomic) UITabBarController *tabBarController;
+
+@property (strong, atomic) ProgMeshCentralController *progMeshCentralController;
 
 @end

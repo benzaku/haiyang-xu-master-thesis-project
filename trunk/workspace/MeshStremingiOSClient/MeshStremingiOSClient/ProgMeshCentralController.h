@@ -7,18 +7,62 @@
 //
 
 #import <Foundation/Foundation.h>
+
+#import "XmlParser.h"
+
 #import "SocketHandler.h"
 #import "ServerInfo.h"
+
+#import "GCDSingleton.h"
+
+#import "ConfigViewController.h"
+
+#import "Constants.h"
+
+#import "ProgMeshModelTableViewController.h"
 
 @interface ProgMeshCentralController : NSObject{
     SocketHandler *_socketHandler;
     
     ServerInfo *_serverInfo;
+    
+    ConfigViewController * _configureViewController;
+    
+    ProgMeshModelTableViewController * _progMeshModelTableViewController;
+    
+    NSInteger modelListXMLStringLength;
+    
+    NSString * modelListXMLString;
 }
 
+- (id) initWithHostAndPort:(NSString *) host: (NSString *) port;
 
-@property (strong, nonatomic) SocketHandler *socketHandler;
-@property (strong, nonatomic) ServerInfo *serverInfo;
+- (void) configureHostAndPort:(NSString *) host: (NSString * ) port;
+
++ (id)sharedInstance;
+
+- (SocketHandler *) getSocketHandler;
+
+- (void) setSocketHandler:(SocketHandler *) newSocketHandler;
+
+- (ConfigViewController *) getConfigViewController;
+
+- (void) setConfigViewController: (ConfigViewController *) cvController;
+
+- (ProgMeshModelTableViewController *) getProgMeshModelTableViewController;
+
+- (void) setProgMeshModelTableViewController: (ProgMeshModelTableViewController *) pmmtvController;
+
+- (BOOL) isServerConnected;
+
+- (BOOL) setServerConnectionStatus: (BOOL) isConnected;
+
+- (void) readData: (NSData *) data withTag: (long) tag: (enum SOCKET_STATE) waitState;
+
+- (void) didConnectToServer;
+
+//@property (strong, atomic) SocketHandler *socketHandler;
+@property (strong, atomic) ServerInfo *serverInfo;
 
 
 @end

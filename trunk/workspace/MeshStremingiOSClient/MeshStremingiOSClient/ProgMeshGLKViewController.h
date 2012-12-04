@@ -7,7 +7,14 @@
 //
 
 #import <GLKit/GLKit.h>
+#import "ProgMeshCentralController.h"
 
-@interface ProgMeshGLKViewController : GLKViewController
+@interface ProgMeshGLKViewController : GLKViewController{
+    ProgMeshCentralController * _progMeshCentralController;
+
+}
+
+@property (strong, nonatomic) ProgMeshCentralController * progMeshCentralController;
+
 
 @end

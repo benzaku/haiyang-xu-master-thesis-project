@@ -8,6 +8,11 @@
 
 #import "ProgMeshModelTableViewController.h"
 #import "ProgMeshModel.h"
+#import "AppDelegate.h"
+#import "MeshObj.h"
+#import "VolumeObj.h"
+#import "MeshObjects.h"
+#import "VolumeObjects.h"
 
 @interface ProgMeshModelTableViewController (){
     
@@ -17,7 +22,7 @@
 
 @implementation ProgMeshModelTableViewController
 
-@synthesize meshList = _meshList, volumeList = _volumeList, selectedProgMeshModel = _selectedProgMesh, lastIndexPath;
+@synthesize meshList = _meshList, volumeList = _volumeList, selectedProgMeshModel = _selectedProgMesh, lastIndexPath, models = _models, meshes = _meshes, volumes = _volumes;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -66,10 +71,17 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    if(section == 0)
-        return _meshList.count;
-    else if(section == 1)
-        return _volumeList.count;
+    
+    if(_meshes == nil || _volumes == nil){
+        return 0;
+    }
+    
+    if(section == 0){
+        return _meshes.count;
+    }
+    else if(section == 1){
+        return _volumes.count;
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -89,18 +101,24 @@
         cell.accessoryType = UITableViewCellAccessoryNone;
     }
     
-    if(indexPath.section == 0){
+    
+    
+    if(indexPath.section == 0 && _meshes != nil){
         //mesh
-        ProgMeshModel *pmm = [_volumeList objectAtIndex:indexPath.row];
-        NSString *name = pmm.name;
+        MeshObj *mobj = [_meshes objectAtIndex:indexPath.row];
+        
+        NSString *name = mobj.ObjectFileName;
         cell.textLabel.text = name;
         
-    } else if(indexPath.section == 1){
+    } else if(indexPath.section == 1 && _volumes != nil){
         //volume
-        ProgMeshModel *pmm = [_volumeList objectAtIndex:indexPath.row];
-        NSString *name = pmm.name;
+        
+        VolumeObj *vobj = [_volumes objectAtIndex:indexPath.row];
+        
+        NSString *name = vobj.ObjectFileName;
         cell.textLabel.text = name;
     }
+    
     
     // Configure the cell...
     
@@ -173,7 +191,7 @@
 		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:MyIdentifier] autorelease];
 	}
     
-    
+    /*
     if(indexPath.section == 0){
         //mesh
         _selectedProgMeshModel = [_meshList objectAtIndex:indexPath.row];
@@ -185,11 +203,26 @@
         _selectedProgMeshModel = [_volumeList objectAtIndex:indexPath.row];
         NSLog(@"%@ selected!", _selectedProgMeshModel.name);
     }
+     */
     
     self.lastIndexPath = indexPath;
     
     [tableView reloadData];
     
 }
+
+- (void) resetTable
+{
+    [_meshes release];
+    _meshes = nil;
+    
+    [_volumes release];
+    _volumes = nil;
+    
+    [self.tableView reloadData];
+}
+
+
+
 
 @end
