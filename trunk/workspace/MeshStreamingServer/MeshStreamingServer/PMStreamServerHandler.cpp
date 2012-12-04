@@ -17,6 +17,7 @@
 #include "Poco/Util/ServerApplication.h"
 #include "Poco/NObserver.h"
 
+
 using Poco::Net::StreamSocket;
 using Poco::Net::SocketReactor;
 using Poco::Net::ReadableNotification;
@@ -35,9 +36,12 @@ PMStreamServerHandler::PMStreamServerHandler(StreamSocket& socket, SocketReactor
     
     _pmFH = (PMFileHandler*)PMFileHandler::getInstance();
     
+    _pmFH->getPMRepository()->generateModelListXmlInfo();
+
+    
     std::cout<<*(_pmFH->getFileName())<<std::endl;
     
-    _socket.sendBytes("HELLO", 5);
+    //_socket.sendBytes("HELLO", 5);
     
     //pmInfoChunk = new char[BUFFER_SIZE];
     
@@ -55,8 +59,8 @@ PMStreamServerHandler::~PMStreamServerHandler()
     try
     {
         app.logger().information("Disconnecting " + _socket.peerAddress().toString());
-        if(pmInfoChunk)
-            delete pmInfoChunk;
+        //if(pmInfoChunk)
+            //delete pmInfoChunk;
     }
     catch (...)
     {
@@ -84,7 +88,7 @@ void
 PMStreamServerHandler::handleRequest()
 {
     
-    //std::cout<<_pBuffer << std::endl;
+    std::cout<<_pBuffer << std::endl;
     if(strncmp(_pBuffer, "N_BASE_VERTICES", 15) == 0){
         _temp = _pmFH->getPMLoader()->getNBaseVertices();
         _tempContentPtr = (char *) &_temp;
@@ -161,6 +165,36 @@ PMStreamServerHandler::handleRequest()
         _socket.sendBytes(pmInfoChunk, totalDetailChunkSize);
         
         std::cout<< "PMInfo details sent... size = "<<totalDetailChunkSize << std::endl;
+        
+    }
+    
+    if (strncmp(_pBuffer, "SIZE_OF_MODEL_LIST", 18) == 0){
+        int length = _pmFH->getPMRepository()->getModelListXmlStringLength() * sizeof(char);
+        
+        _socket.sendBytes(&length,   sizeof(int));
+        
+    }
+    
+    if (strncmp(_pBuffer, "MODEL_LIST", 10) == 0){
+        std::cout<< "RETRIEVE MODEL LIST!" << std::endl;
+        
+        char * xmlstring = nullptr;
+        int length;
+        
+        //_pmFH->getPMRepository()->generateModelListXmlInfo();
+        
+        xmlstring = _pmFH->getPMRepository()->getModelListXmlString();
+        
+        length = _pmFH->getPMRepository()->getModelListXmlStringLength();
+        
+        
+        //pmInfoChunk = _pmFH->getPMLoader()->getDetailsChunk();
+        
+        std::cout << xmlstring << std::endl;
+        
+        _socket.sendBytes(xmlstring, length * sizeof(char));
+        
+        //std::cout<< "PMInfo details sent... size = "<<totalDetailChunkSize << std::endl;
         
     }
     

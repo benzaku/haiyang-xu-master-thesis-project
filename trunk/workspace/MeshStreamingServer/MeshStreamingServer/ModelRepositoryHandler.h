@@ -18,11 +18,14 @@ using namespace std;
 class ModelRepositoryHandler : public Singleton{
     
 public:
-    PMRepository *_PMRepository;
+    void setPMRepository(PMRepository * pmrepo);
+    
+    PMRepository * getPMRepository();
     
 private:
     ModelRepositoryHandler();
     ~ModelRepositoryHandler();
+    PMRepository *_PMRepository;
 };
 
 #endif /* defined(__MeshStreamingServer__ModelRepositoryHandler__) */

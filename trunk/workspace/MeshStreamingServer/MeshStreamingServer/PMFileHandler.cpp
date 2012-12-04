@@ -49,3 +49,16 @@ PMFileHandler::setPMLoader(PMLoader* pmLoader)
     this->pmLoader = pmLoader;
 }
 
+void
+PMFileHandler::setPMRepository(PMRepository * pmrepo)
+{
+    this->_PMRepository = pmrepo;
+}
+
+
+PMRepository *
+PMFileHandler::getPMRepository()
+{
+    return this->_PMRepository;
+}
+

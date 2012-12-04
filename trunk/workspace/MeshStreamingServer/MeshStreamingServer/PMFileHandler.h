@@ -15,6 +15,8 @@
 #include "unistd.h"
 #include "PMLoader.h"
 
+#include "PMRepository.h"
+
 using namespace std;
 
 class PMFileHandler : public Singleton
@@ -26,12 +28,18 @@ public:
     PMLoader* getPMLoader();
     void setPMLoader(PMLoader* pmLoader);
     
+    void setPMRepository(PMRepository * pmrepo);
+    
+    PMRepository * getPMRepository();
+    
 private:
     std::string * fileName;
     std::ifstream * pmFileStream;
     PMFileHandler();
     ~PMFileHandler();
     PMLoader* pmLoader;
+    
+    PMRepository *_PMRepository;
     
 };
 

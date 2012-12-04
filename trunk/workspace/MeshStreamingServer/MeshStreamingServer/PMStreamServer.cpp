@@ -23,8 +23,21 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <string>
 #include <vector>
+#include "Poco/DOM/Document.h"
+#include "Poco/DOM/Element.h"
+#include "Poco/DOM/Text.h"
+#include "Poco/DOM/AutoPtr.h"
+#include "Poco/DOM/DOMWriter.h"
+#include "Poco/XML/XMLWriter.h"
+
+using Poco::XML::Document;
+using Poco::XML::Element;
+using Poco::XML::Text;
+using Poco::XML::AutoPtr;
+using Poco::XML::DOMWriter;
+using Poco::XML::XMLWriter;
+
 
 using Poco::Util::HelpFormatter;
 using Poco::Net::ServerSocket;
@@ -93,7 +106,7 @@ int PMStreamServer::main(const std::vector<std::string> &args){
         //pmLoader.loadPM();
         
         /** test for PMRepository**/
-        modelRepo = new PMRepository();
+        modelRepo =  new PMRepository();
         
         std::string ss("/Users/hyx/Development/MasterThesis/repository");
         
@@ -102,9 +115,35 @@ int PMStreamServer::main(const std::vector<std::string> &args){
         modelRepo->initVolumeObjs();
         modelRepo->initMeshObjs();
         
-        ModelRepositoryHandler *mrh = (ModelRepositoryHandler *)ModelRepositoryHandler::getInstance();
+        vector<VolumeObj*> *vols = modelRepo->getVolumeObjs();
+        vector<MeshObj*> *meshes = modelRepo->getMeshObjs();
+        /*
+        for(int i = 0; i < vols->size(); i ++){
+            std::cout << (*vols)[i]->PropertiesMap.at("ObjectFileName")<< std::endl;
+            std::cout << (*vols)[i]->ObjectFilePath<< std::endl;
+            
+        }
+        */
         
-        mrh->_PMRepository = modelRepo;
+        for(int i = 0; i < meshes->size(); i ++){
+            std::cout << (*meshes)[i]->ObjectFileName << std::endl;
+            
+        }
+        
+        AutoPtr<Document> pDoc = modelRepo->getModelObjectsXmlDocument();
+        
+        modelRepo->generateModelListXmlInfo();
+        
+        
+        
+        modelListXmlString = modelRepo->getModelListXmlString();
+        
+        modelListXmlStringLength = modelRepo->getModelListXmlStringLength();
+        
+        
+
+        
+        
         
         /**/
         
@@ -117,6 +156,8 @@ int PMStreamServer::main(const std::vector<std::string> &args){
         pmLoader->getBaseMeshChunk();
         pmFileHandler->setPMLoader(pmLoader);
         
+        
+        pmFileHandler->setPMRepository(modelRepo);
         
         std::cout<<"Server Started" << std::endl;
         
@@ -131,6 +172,7 @@ int PMStreamServer::main(const std::vector<std::string> &args){
         SocketAcceptor<PMStreamServerHandler> acceptor(svs, reactor);
         // run the reactor in its own thread so that we can wait for 
         // a termination request
+        
         Thread thread;
         thread.start(reactor);
         // wait for CTRL-C or kill
@@ -144,6 +186,14 @@ int PMStreamServer::main(const std::vector<std::string> &args){
     }
     return Application::EXIT_OK;
 }
+
+void
+PMStreamServer::getModelListXmlInfo(char * xmlString, int &length)
+{
+    xmlString = this->modelListXmlString;
+    length = this->modelListXmlStringLength;
+}
+
 
 
 

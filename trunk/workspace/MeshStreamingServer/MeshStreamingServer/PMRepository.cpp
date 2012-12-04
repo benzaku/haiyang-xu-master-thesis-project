@@ -12,7 +12,10 @@
 #include <fstream>
 #include <Poco/StringTokenizer.h>
 #include <Poco/String.h>
+#include <iostream>
+#include <sstream>
 
+using namespace std;
 
 
 string*
@@ -176,6 +179,7 @@ PMRepository::initVolumeObjs()
     char filefullpath[1024];
     vector<string> volDirNames = getSubDirectories(*volRootDirName);
     string str1, str2;
+    char temp[512];
     for(int i = 0; i < volDirNames.size(); i ++){
         strcpy(filefullpath, volRootDirName->c_str());
         strcat(filefullpath, FILE_SEPARATOR->c_str());
@@ -186,14 +190,24 @@ PMRepository::initVolumeObjs()
         std::ifstream infile(filefullpath);
         string line;
         
+        VolumeObj *vObj = new VolumeObj();
+        
         while (std::getline(infile, line)) {
-            VolumeObj vObj;
-            vObj.RootDirPath = currentVolRootDir;
-            Poco::StringTokenizer stn(line, ":");
-            vObj.PropertiesMap.insert(std::pair<string, string>(Poco::trim(stn[0]), Poco::trim(stn[1])));
             
-            volumeObjs.push_back(vObj);
+            vObj->RootDirPath = currentVolRootDir;
+            Poco::StringTokenizer stn(line, ":");
+            vObj->PropertiesMap.insert(std::pair<string, string>(Poco::trim(stn[0]), Poco::trim(stn[1])));
+            
+            
         }
+        
+        
+        vObj->ObjectFileName = vObj->PropertiesMap.at("ObjectFileName");
+        strcpy(temp, volRootDirName->c_str());
+        strcat(temp, FILE_SEPARATOR->c_str());
+        strcat(temp, vObj->PropertiesMap.at("ObjectFileName").c_str());
+        vObj->ObjectFilePath = *(new string(temp));
+        volumeObjs.push_back(vObj);
         infile.close();
         
     }
@@ -208,30 +222,94 @@ PMRepository::initMeshObjs()
     vector<string> meshDirNames = readDirectory(*meshRootDirName, "pm");
     char filepath[1024];
     for(int i = 0; i < meshDirNames.size(); i ++){
-        MeshObj mObj;
+        MeshObj* mObj = new MeshObj();
         strcpy(filepath, meshRootDirName->c_str());
         strcat(filepath, FILE_SEPARATOR->c_str());
         strcat(filepath, meshDirNames[i].c_str());
         
-        mObj.ObjectFilePath = filepath;
-        mObj.RootDirPath = *meshRootDirName;
+        mObj->ObjectFilePath = filepath;
+        mObj->RootDirPath = *meshRootDirName;
+        mObj->ObjectFileName = meshDirNames[i];
         
         meshObjs.push_back(mObj);
     }
     meshNumber = (int) meshObjs.size();
 }
 
-vector<VolumeObj> *
+vector<VolumeObj*> *
 PMRepository::getVolumeObjs()
 {
     return &volumeObjs;
 }
 
-vector<MeshObj> *
+vector<MeshObj*> *
 PMRepository::getMeshObjs()
 {
     return &meshObjs;
 }
 
+
+AutoPtr<Document>
+PMRepository::getModelObjectsXmlDocument()
+{
+    
+    AutoPtr<Document> rootDoc = new Document;
+    
+    AutoPtr<Element> modelRoot = rootDoc->createElement("Models");
+    
+    AutoPtr<Element> rootVolElement = rootDoc->createElement("VolumeObjects");
+    
+    
+    for(int i = 0; i < volumeObjs.size(); i ++){
+        AutoPtr<Element> volElement = volumeObjs[i]->getXMLElement(rootDoc);
+        rootVolElement->appendChild(volElement);
+    }
+    modelRoot->appendChild(rootVolElement);
+    
+    AutoPtr<Element> rootMeshElement = rootDoc->createElement("MeshObjects");
+    for(int i = 0; i < meshObjs.size(); i ++){
+        AutoPtr<Element> meshElement = meshObjs[i]->getXMLElement(rootDoc);
+        rootMeshElement->appendChild(meshElement);
+    }
+    modelRoot->appendChild(rootMeshElement);
+    
+    rootDoc->appendChild(modelRoot);
+    
+    return rootDoc;
+}
+
+void
+PMRepository::generateModelListXmlInfo()
+{
+    
+    AutoPtr<Document> pDoc = this->getModelObjectsXmlDocument();
+    
+    
+    DOMWriter writer;
+    writer.setNewLine("\n");
+    writer.setOptions(XMLWriter::PRETTY_PRINT);
+    
+    
+    std::stringstream str;
+    
+    writer.writeNode(str, pDoc);
+    
+    modelListXmlString = (char *)(str.str().c_str());
+    
+    modelListXmlStringLength = (int)(str.str().length());
+    
+    std::cout<< str.str().size() <<" : " << str.str().size()<< std::endl;
+}
+
+char *
+PMRepository::getModelListXmlString()
+{
+    return this->modelListXmlString;
+}
+
+int PMRepository::getModelListXmlStringLength()
+{
+    return this->modelListXmlStringLength;
+}
 
 

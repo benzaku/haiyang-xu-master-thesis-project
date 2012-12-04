@@ -11,6 +11,15 @@
 
 #include <iostream>
 #include <string>
+#include "Poco/DOM/Element.h"
+#include "Poco/DOM/AutoPtr.h"
+#include "Poco/DOM/Document.h"
+#include "Poco/Dom/Text.h"
+
+using Poco::XML::Element;
+using Poco::XML::AutoPtr;
+using Poco::XML::Document;
+using Poco::XML::Text;
 
 using namespace std;
 
@@ -19,6 +28,11 @@ class MeshObj
 public:
     string  ObjectFilePath;
     string  RootDirPath;
+    string  ObjectFileName;
+    
+    MeshObj();
+    ~MeshObj();
+    AutoPtr<Element> getXMLElement(AutoPtr<Document> &doc);
 };
 
 #endif /* defined(__MeshStreamingServer__MeshObj__) */
