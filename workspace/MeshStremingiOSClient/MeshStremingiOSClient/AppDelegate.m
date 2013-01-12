@@ -26,6 +26,8 @@
 
 #import "Constants.h"
 
+#import "ModelTableNavigationViewController.h"
+
 
 @implementation AppDelegate
 
@@ -48,22 +50,16 @@
     UIViewController *configViewController = [[[ConfigViewController alloc] initWithNibName:@"ConfigViewController" bundle:nil] autorelease];
     
     
-    //((ConfigViewController *)configViewController).progMeshCentralController = _progMeshCentralController;
     
     ProgMeshModelTableViewController *progMeshTableViewController = [[[ProgMeshModelTableViewController alloc] initWithNibName:@"ProgMeshModelTableViewController" bundle:nil] autorelease];
     
     
-    ProgMeshModel *mesh1 = [[[ProgMeshModel alloc] initWithNameAndType:@"mesh2" :@"MESH"] autorelease];
-    ProgMeshModel *mesh2 = [[[ProgMeshModel alloc] initWithNameAndType:@"mesh2" :@"MESH"] autorelease];
-    progMeshTableViewController.meshList = @[mesh1, mesh2];
-    
-    ProgMeshModel *vol1 = [[[ProgMeshModel alloc] initWithNameAndType:@"volume1" :@"VOLUME"] autorelease];
-    ProgMeshModel *vol2 = [[[ProgMeshModel alloc] initWithNameAndType:@"volume2" :@"VOLUME"] autorelease];
-    //progMeshTableViewController.volumeList = @[vol1, vol2];
+    ModelTableNavigationViewController *modelTableNavigationViewController = [[ModelTableNavigationViewController alloc] initWithRootViewController:progMeshTableViewController];
+        
     
     
     self.tabBarController = [[[UITabBarController alloc] init] autorelease];
-    self.tabBarController.viewControllers = @[glkviewController, progMeshTableViewController, configViewController];
+    self.tabBarController.viewControllers = @[glkviewController, modelTableNavigationViewController, configViewController ];
     self.tabBarController.delegate = self;
     self.window.rootViewController = self.tabBarController;
     

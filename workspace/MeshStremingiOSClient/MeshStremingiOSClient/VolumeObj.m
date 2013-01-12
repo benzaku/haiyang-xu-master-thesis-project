@@ -15,13 +15,32 @@
 @synthesize Format;
 @synthesize GridType;
 @synthesize NbrTags;
-@synthesize ObjectFileName;
+
+//@synthesize ObjectFileName;
+
 @synthesize ObjectModel;
 @synthesize ObjectType;
 @synthesize Resolution;
 @synthesize SliceThickness;
 @synthesize TaggedFileName;
 
+- (NSMutableDictionary *) getModelAttributesMap
+{
+    NSMutableDictionary *attrMap =
+    [[NSMutableDictionary alloc] initWithObjectsAndKeys:
+     ObjectFileName, @"ObjectFileName",
+     ObjectFilePath, @"ObjectFilePath",
+     TaggedFileName, @"TaggedFileName",
+     Resolution,     @"Resolution",
+     SliceThickness, @"SliceThickness",
+     Format,         @"Format",
+     NbrTags,        @"NbrTags",
+     ObjectType,     @"ObjectType",
+     ObjectModel,    @"ObjectModel",
+     GridType,       @"GridType",
+     nil];
+    return attrMap;
+}
 
 - (void)dealloc
 {
@@ -35,8 +54,8 @@
     GridType = nil;
     [NbrTags release];
     NbrTags = nil;
-    [ObjectFileName release];
-    ObjectFileName = nil;
+    //[ObjectFileName release];
+    //ObjectFileName = nil;
     [ObjectModel release];
     ObjectModel = nil;
     [ObjectType release];

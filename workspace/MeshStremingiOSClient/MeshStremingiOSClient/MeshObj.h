@@ -7,11 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "ModelObj.h"
 
-@interface MeshObj : NSObject{
+@interface MeshObj : ModelObj{
     NSString *ObjectFilePath;
     NSString *RootDirPath;
-    NSString *ObjectFileName;
+    //NSString *ObjectFileName;
 }
 
 @property (nonatomic, copy) NSString *ObjectFilePath;
