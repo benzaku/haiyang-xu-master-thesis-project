@@ -13,6 +13,9 @@
 #import "VolumeObj.h"
 #import "MeshObjects.h"
 #import "VolumeObjects.h"
+#import "ModelDetailViewController.h"
+#import "ModelObj.h"
+#import <UIKit/UIColor.h>
 
 @interface ProgMeshModelTableViewController (){
     
@@ -28,7 +31,7 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        self.title = NSLocalizedString(@"Model", @"Model");
+        self.title = NSLocalizedString(@"Models", @"Models");
         self.tabBarItem.image = [UIImage imageNamed:@"first"];
     }
     return self;
@@ -94,11 +97,17 @@
     
     if ([indexPath compare:self.lastIndexPath] == NSOrderedSame)
     {
-        cell.accessoryType = UITableViewCellAccessoryCheckmark;
+        [cell setSelected:YES];
+        cell.textLabel.textColor = [UIColor blueColor];
+        cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+        [cell setHighlighted:YES];
+        [cell setSelected:YES];
+        
     }
     else
     {
-        cell.accessoryType = UITableViewCellAccessoryNone;
+        cell.textLabel.textColor = [UIColor blackColor];
+        cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
     }
     
     
@@ -118,6 +127,7 @@
         NSString *name = vobj.ObjectFileName;
         cell.textLabel.text = name;
     }
+    
     
     
     // Configure the cell...
@@ -222,6 +232,31 @@
     [self.tableView reloadData];
 }
 
+- (void) tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
+{
+    NSLog(@"Button number : %d", indexPath.row );
+    
+    ModelObj *model;
+    switch (indexPath.section) {
+        case 0:
+            model = [_meshes objectAtIndex:indexPath.row];
+            break;
+            
+        case 1:
+            model = [_volumes objectAtIndex:indexPath.row];
+            break;
+        default:
+            break;
+    }
+    
+    ModelDetailViewController *modelDetailViewController = [[ModelDetailViewController alloc] initWithNibName:@"ModelDetailViewController" bundle:[NSBundle mainBundle]];
+    
+    modelDetailViewController.aModel = model;
+    
+    [self.navigationController pushViewController:modelDetailViewController animated:YES];
+    [modelDetailViewController release];
+    modelDetailViewController = nil;
+}
 
 
 

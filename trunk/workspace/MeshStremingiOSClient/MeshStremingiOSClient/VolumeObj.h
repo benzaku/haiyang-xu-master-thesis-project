@@ -7,14 +7,17 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "ModelObj.h"
 
-@interface VolumeObj : NSObject{
+@interface VolumeObj : ModelObj{
     NSString *ObjectFilePath;
     NSString *RootDirPath;
     NSString *Format;
     NSString *GridType;
     NSString *NbrTags;
-    NSString *ObjectFileName;
+    
+    //NSString *ObjectFileName;
+    
     NSString *ObjectModel;
     NSString *ObjectType;
     NSString *Resolution;
@@ -27,7 +30,10 @@
 @property (nonatomic, copy) NSString *Format;
 @property (nonatomic, copy) NSString *GridType;
 @property (nonatomic, copy) NSString *NbrTags;
+
+
 @property (nonatomic, copy) NSString *ObjectFileName;
+
 @property (nonatomic, copy) NSString *ObjectModel;
 @property (nonatomic, copy) NSString *ObjectType;
 @property (nonatomic, copy) NSString *Resolution;

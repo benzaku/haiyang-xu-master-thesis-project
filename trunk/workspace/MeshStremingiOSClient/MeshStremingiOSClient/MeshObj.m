@@ -12,7 +12,17 @@
 
 @synthesize ObjectFilePath;
 @synthesize RootDirPath;
-@synthesize ObjectFileName;
+//@synthesize ObjectFileName;
+
+- (NSMutableDictionary *) getModelAttributesMap
+{
+    NSMutableDictionary * attrMap = [[NSMutableDictionary alloc] initWithObjectsAndKeys:
+                                    ObjectFileName, @"ObjectFileName", 
+                                    ObjectFilePath, @"ObjectFilePath",
+                                    RootDirPath,    @"RootDirPath",    
+                                     nil];
+    return attrMap;
+}
 
 - (void) dealloc
 {
@@ -22,8 +32,8 @@
     [RootDirPath release];
     RootDirPath = nil;
     
-    [ObjectFileName release];
-    ObjectFileName = nil;
+    //[ObjectFileName release];
+    //ObjectFileName = nil;
     
     [super dealloc];
 }

@@ -85,6 +85,11 @@
 		58BA382B1664CF5C00B11457 /* ConfigViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 58BA38291664CF5C00B11457 /* ConfigViewController.m */; };
 		58BA382C1664CF5C00B11457 /* ConfigViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 58BA382A1664CF5C00B11457 /* ConfigViewController.xib */; };
 		58BA383F1665058C00B11457 /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 58BA383E1665058B00B11457 /* Constants.m */; };
+		58D7D630166E18F500392661 /* ModelDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 58D7D62E166E18F500392661 /* ModelDetailViewController.m */; };
+		58D7D631166E18F500392661 /* ModelDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 58D7D62F166E18F500392661 /* ModelDetailViewController.xib */; };
+		58D7D636166E1EDE00392661 /* ModelTableNavigationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 58D7D634166E1EDE00392661 /* ModelTableNavigationViewController.m */; };
+		58D7D637166E1EDE00392661 /* ModelTableNavigationViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 58D7D635166E1EDE00392661 /* ModelTableNavigationViewController.xib */; };
+		58D7D63A166E29DE00392661 /* ModelObj.m in Sources */ = {isa = PBXBuildFile; fileRef = 58D7D639166E29DE00392661 /* ModelObj.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -275,6 +280,14 @@
 		58BA382A1664CF5C00B11457 /* ConfigViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ConfigViewController.xib; sourceTree = "<group>"; };
 		58BA383D1665058B00B11457 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		58BA383E1665058B00B11457 /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
+		58D7D62D166E18F500392661 /* ModelDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModelDetailViewController.h; sourceTree = "<group>"; };
+		58D7D62E166E18F500392661 /* ModelDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ModelDetailViewController.m; sourceTree = "<group>"; };
+		58D7D62F166E18F500392661 /* ModelDetailViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ModelDetailViewController.xib; sourceTree = "<group>"; };
+		58D7D633166E1EDE00392661 /* ModelTableNavigationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModelTableNavigationViewController.h; sourceTree = "<group>"; };
+		58D7D634166E1EDE00392661 /* ModelTableNavigationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ModelTableNavigationViewController.m; sourceTree = "<group>"; };
+		58D7D635166E1EDE00392661 /* ModelTableNavigationViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ModelTableNavigationViewController.xib; sourceTree = "<group>"; };
+		58D7D638166E29DE00392661 /* ModelObj.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModelObj.h; sourceTree = "<group>"; };
+		58D7D639166E29DE00392661 /* ModelObj.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ModelObj.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -334,6 +347,8 @@
 				58AC96F8166D5677008E35D0 /* MeshObjects.m */,
 				58AC96FA166D578F008E35D0 /* Models.h */,
 				58AC96FB166D5790008E35D0 /* Models.m */,
+				58D7D638166E29DE00392661 /* ModelObj.h */,
+				58D7D639166E29DE00392661 /* ModelObj.m */,
 			);
 			name = XMLObjectModel;
 			sourceTree = "<group>";
@@ -398,6 +413,8 @@
 			children = (
 				58B0918F1653F80C00A5140D /* image */,
 				58BA382A1664CF5C00B11457 /* ConfigViewController.xib */,
+				58D7D62F166E18F500392661 /* ModelDetailViewController.xib */,
+				58D7D635166E1EDE00392661 /* ModelTableNavigationViewController.xib */,
 				58B091A1165401AF00A5140D /* ProgMeshGLKViewController.xib */,
 				58B091791653F39A00A5140D /* FirstViewController.xib */,
 				58B0917C1653F39B00A5140D /* SecondViewController.xib */,
@@ -451,6 +468,10 @@
 				587E2DDC16551D5900F1FA1B /* ProgMeshModelTableViewController.m */,
 				58BA38281664CF5B00B11457 /* ConfigViewController.h */,
 				58BA38291664CF5C00B11457 /* ConfigViewController.m */,
+				58D7D62D166E18F500392661 /* ModelDetailViewController.h */,
+				58D7D62E166E18F500392661 /* ModelDetailViewController.m */,
+				58D7D633166E1EDE00392661 /* ModelTableNavigationViewController.h */,
+				58D7D634166E1EDE00392661 /* ModelTableNavigationViewController.m */,
 			);
 			name = ViewController;
 			sourceTree = "<group>";
@@ -772,6 +793,8 @@
 				58B0923F1654144E00A5140D /* generate.sh in Resources */,
 				587E2DDF16551D5900F1FA1B /* ProgMeshModelTableViewController.xib in Resources */,
 				58BA382C1664CF5C00B11457 /* ConfigViewController.xib in Resources */,
+				58D7D631166E18F500392661 /* ModelDetailViewController.xib in Resources */,
+				58D7D637166E1EDE00392661 /* ModelTableNavigationViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -836,6 +859,9 @@
 				58AC96F6166D5594008E35D0 /* VolumeObjects.m in Sources */,
 				58AC96F9166D5677008E35D0 /* MeshObjects.m in Sources */,
 				58AC96FC166D5790008E35D0 /* Models.m in Sources */,
+				58D7D630166E18F500392661 /* ModelDetailViewController.m in Sources */,
+				58D7D636166E1EDE00392661 /* ModelTableNavigationViewController.m in Sources */,
+				58D7D63A166E29DE00392661 /* ModelObj.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
