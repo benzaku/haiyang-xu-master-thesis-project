@@ -201,24 +201,25 @@
 		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:MyIdentifier] autorelease];
 	}
     
-    /*
-    if(indexPath.section == 0){
-        //mesh
-        _selectedProgMeshModel = [_meshList objectAtIndex:indexPath.row];
-        NSLog(@"%@ selected!", _selectedProgMeshModel.name);
-        
-        
-    } else if(indexPath.section == 1){
-        //volume
-        _selectedProgMeshModel = [_volumeList objectAtIndex:indexPath.row];
-        NSLog(@"%@ selected!", _selectedProgMeshModel.name);
+    ModelObj *model;
+    switch (indexPath.section) {
+        case 0:
+            model = [_meshes objectAtIndex:indexPath.row];
+            break;
+            
+        case 1:
+            model = [_volumes objectAtIndex:indexPath.row];
+            break;
+        default:
+            break;
     }
-     */
+    
     
     self.lastIndexPath = indexPath;
     
     [tableView reloadData];
     
+    [[ProgMeshCentralController sharedInstance] didSelectModelToLoad:model];
 }
 
 - (void) resetTable
@@ -248,6 +249,7 @@
         default:
             break;
     }
+    
     
     ModelDetailViewController *modelDetailViewController = [[ModelDetailViewController alloc] initWithNibName:@"ModelDetailViewController" bundle:[NSBundle mainBundle]];
     

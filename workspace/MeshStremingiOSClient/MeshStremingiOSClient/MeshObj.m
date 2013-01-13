@@ -19,7 +19,8 @@
     NSMutableDictionary * attrMap = [[NSMutableDictionary alloc] initWithObjectsAndKeys:
                                     ObjectFileName, @"ObjectFileName", 
                                     ObjectFilePath, @"ObjectFilePath",
-                                    RootDirPath,    @"RootDirPath",    
+                                    RootDirPath,    @"RootDirPath",
+                                    Id,             @"Id",
                                      nil];
     return attrMap;
 }

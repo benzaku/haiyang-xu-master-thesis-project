@@ -33,6 +33,8 @@
     NSInteger modelListXMLStringLength;
     
     NSString * modelListXMLString;
+    
+    ModelObj * _currentSelectedModel;
 }
 
 - (id) initWithHostAndPort:(NSString *) host: (NSString *) port;
@@ -61,8 +63,10 @@
 
 - (void) didConnectToServer;
 
+- (void) didSelectModelToLoad: (ModelObj *) selectedModel;
+
 //@property (strong, atomic) SocketHandler *socketHandler;
 @property (strong, atomic) ServerInfo *serverInfo;
 
-
+@property (strong, atomic) ModelObj * currentSelectedModel;
 @end

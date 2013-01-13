@@ -26,6 +26,8 @@ static id SharedInstance;
     
     _serverInfo = [[[ServerInfo alloc] init] autorelease];
     
+    _currentSelectedModel = nil;
+    
     return self;
 }
 
@@ -130,6 +132,10 @@ static id SharedInstance;
     _socketHandler._SOCKET_STATE = SOCKET_CONNECTED_IDLE;
 
     switch (waitState) {
+        case SOCKET_WAIT_FOR_HELLO:
+            [self handleWaitForHelloFromServer:data];
+            break;
+            
         case SOCKET_WAIT_FOR_MODEL_LIST_SIZE:
             
             
@@ -140,11 +146,32 @@ static id SharedInstance;
             [self handleWaitForModelList:data];
             
             break;
+            
+        case SOCKET_WAIT_SERVER_LOAD_MODEL:
+            [self handleWaitForServerLoadModel:data];
+            break;
         default:
             break;
     }
     
+}
+
+- (void) handleWaitForServerLoadModel : (NSData *) data
+{
+    NSLog(@"get from server ... %@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+}
+
+- (void) handleWaitForHelloFromServer : (NSData *) data
+{
+    NSString *temp = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    if([HELLO_FROM_SERVER compare: temp]== NSOrderedSame){
+        NSLog(@"Received Server says HELLO");
+        [_socketHandler socketSendMessageWithReadTimeOut:COMMAND_REQUEST_MODEL_LIST_XML_SIZE :SOCKET_WAIT_FOR_MODEL_LIST_SIZE :-1];
+    } else{
+        NSLog(@"ERROR, Server returns illegal message : %@", temp);
     }
+}
+
 
 - (void) handleWaitForModelListSize: (NSData *) data
 {
@@ -193,11 +220,29 @@ static id SharedInstance;
     //retrieve mesh list
     NSLog(@"Start to retrieve model list size");
     
-    [_socketHandler socketSendMessageWithReadTimeOut:COMMAND_REQUEST_MODEL_LIST_XML_SIZE :SOCKET_WAIT_FOR_MODEL_LIST_SIZE :-1];
+    [_socketHandler socketWaitForMessageWithReadTimeOut:HELLO_FROM_SERVER :SOCKET_WAIT_FOR_HELLO :-1];
     
-    //[_socketHandler socketSendMessageWithReadTimeOut:COMMAND_REQUEST_MODEL_LIST_XML :SOCKET_WAIT_FOR_MODEL_LIST :-1];
+}
+
+- (void) didSelectModelToLoad: (ModelObj *) selectedModel
+{
+    _currentSelectedModel = selectedModel;
+    
+    [self requestServerLoadModel:[_currentSelectedModel.Id intValue]];
+    
+}
+
+- (void) requestServerLoadModel: (int) modelId
+{
+    int request_length = [COMMAND_REQUEST_LOAD_MODEL length] + sizeof(int);
+    char request[request_length];
+    strcpy(request, [COMMAND_REQUEST_LOAD_MODEL cStringUsingEncoding:NSUTF8StringEncoding]);
+    strncpy(&(request[[COMMAND_REQUEST_LOAD_MODEL length]]), (char *)&modelId, sizeof(int));
+    NSLog(@"id = %d", modelId);
+    [_socketHandler socketSendDataWithLengthAndReadTimeOut:[[NSData alloc] initWithBytes:request length:(request_length)] :SOCKET_WAIT_SERVER_LOAD_MODEL :-1];
 }
 
 
 @synthesize  serverInfo = _serverInfo;
+@synthesize  currentSelectedModel = _currentSelectedModel;
 @end

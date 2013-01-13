@@ -91,10 +91,21 @@
     _port = port;
 }
 
+- (void) socketSendDataWithLengthAndReadTimeOut:(NSData *) data : (enum SOCKET_STATE) nextState : (NSTimeInterval) timeout
+{
+    if (_socket_state == SOCKET_CONNECTED_IDLE) {
+        _socket_state = nextState;
+        
+        [_socket writeData:data withTimeout:timeout tag:0];
+        [_socket readDataWithTimeout:timeout tag:0];
+    }
+}
+
 - (void) socketSendMessageWithReadTimeOut:(NSString *) message : (enum SOCKET_STATE) nextState : (NSTimeInterval) timeout
 {
     if (_socket_state == SOCKET_CONNECTED_IDLE) {
         _socket_state = nextState;
+        
         [_socket writeData:[message dataUsingEncoding:NSUTF8StringEncoding] withTimeout:-1 tag:0];
         [_socket readDataWithTimeout:timeout tag:0];
     }
@@ -106,6 +117,14 @@
         _socket_state = nextState;
         [_socket writeData:[message dataUsingEncoding:NSUTF8StringEncoding] withTimeout:-1 tag:0];
         [_socket readDataToLength:length withTimeout:timeout tag:0];
+    }
+}
+
+- (void) socketWaitForMessageWithReadTimeOut: (NSString *) message : (enum SOCKET_STATE) nextState : (NSTimeInterval) timeout
+{
+    if (_socket_state == SOCKET_CONNECTED_IDLE) {
+        _socket_state = nextState;
+        [_socket readDataToLength:[message length] withTimeout:timeout tag:0];
     }
 }
 

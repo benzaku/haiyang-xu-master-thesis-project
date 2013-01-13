@@ -18,5 +18,5 @@
 @property (nonatomic, copy) NSString *ObjectFilePath;
 @property (nonatomic, copy) NSString *RootDirPath;
 @property (nonatomic, copy) NSString *ObjectFileName;
-
+@property (nonatomic, copy) NSString *Id;
 @end
