@@ -7,6 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		582DCAB816A242C3004BC474 /* conio.cc in Sources */ = {isa = PBXBuildFile; fileRef = 582DCA7A16A242C3004BC474 /* conio.cc */; };
+		582DCAB916A242C3004BC474 /* getopt.c in Sources */ = {isa = PBXBuildFile; fileRef = 582DCA7C16A242C3004BC474 /* getopt.c */; };
+		582DCABA16A242C3004BC474 /* Gnuplot.cc in Sources */ = {isa = PBXBuildFile; fileRef = 582DCA7F16A242C3004BC474 /* Gnuplot.cc */; };
+		582DCABB16A242C3004BC474 /* MeshCheckerT.cc in Sources */ = {isa = PBXBuildFile; fileRef = 582DCA8216A242C3004BC474 /* MeshCheckerT.cc */; };
+		582DCABC16A242C3004BC474 /* StripifierT.cc in Sources */ = {isa = PBXBuildFile; fileRef = 582DCA8516A242C3004BC474 /* StripifierT.cc */; };
+		582DCABD16A242C3004BC474 /* Timer.cc in Sources */ = {isa = PBXBuildFile; fileRef = 582DCA8816A242C3004BC474 /* Timer.cc */; };
+		582DCABF16A242C3004BC474 /* VFront.cc in Sources */ = {isa = PBXBuildFile; fileRef = 582DCA8E16A242C3004BC474 /* VFront.cc */; };
+		582DCAC016A242C3004BC474 /* VHierarchy.cc in Sources */ = {isa = PBXBuildFile; fileRef = 582DCA9016A242C3004BC474 /* VHierarchy.cc */; };
+		582DCAC116A242C3004BC474 /* VHierarchyNodeIndex.cc in Sources */ = {isa = PBXBuildFile; fileRef = 582DCA9316A242C3004BC474 /* VHierarchyNodeIndex.cc */; };
+		582DCAC216A242C3004BC474 /* VHierarchyWindow.cc in Sources */ = {isa = PBXBuildFile; fileRef = 582DCA9516A242C3004BC474 /* VHierarchyWindow.cc */; };
+		582DCAC316A242C3004BC474 /* ViewingParameters.cc in Sources */ = {isa = PBXBuildFile; fileRef = 582DCA9716A242C3004BC474 /* ViewingParameters.cc */; };
+		582DCAC416A242C3004BC474 /* fileopen.xpm in Resources */ = {isa = PBXBuildFile; fileRef = 582DCA9A16A242C3004BC474 /* fileopen.xpm */; };
+		582DCAC516A242C3004BC474 /* fileprint.xpm in Resources */ = {isa = PBXBuildFile; fileRef = 582DCA9B16A242C3004BC474 /* fileprint.xpm */; };
+		582DCAC616A242C3004BC474 /* filesave.xpm in Resources */ = {isa = PBXBuildFile; fileRef = 582DCA9C16A242C3004BC474 /* filesave.xpm */; };
 		587E2DDE16551D5900F1FA1B /* ProgMeshModelTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 587E2DDC16551D5900F1FA1B /* ProgMeshModelTableViewController.m */; };
 		587E2DDF16551D5900F1FA1B /* ProgMeshModelTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 587E2DDD16551D5900F1FA1B /* ProgMeshModelTableViewController.xib */; };
 		587E2DEC16552BB900F1FA1B /* SocketHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 587E2DEB16552BB900F1FA1B /* SocketHandler.m */; };
@@ -93,6 +107,39 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		582DCA7916A242C3004BC474 /* Config.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Config.hh; sourceTree = "<group>"; };
+		582DCA7A16A242C3004BC474 /* conio.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = conio.cc; sourceTree = "<group>"; };
+		582DCA7B16A242C3004BC474 /* conio.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = conio.hh; sourceTree = "<group>"; };
+		582DCA7C16A242C3004BC474 /* getopt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = getopt.c; sourceTree = "<group>"; };
+		582DCA7D16A242C3004BC474 /* getopt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = getopt.h; sourceTree = "<group>"; };
+		582DCA7E16A242C3004BC474 /* GLConstAsString.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = GLConstAsString.hh; sourceTree = "<group>"; };
+		582DCA7F16A242C3004BC474 /* Gnuplot.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Gnuplot.cc; sourceTree = "<group>"; };
+		582DCA8016A242C3004BC474 /* Gnuplot.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Gnuplot.hh; sourceTree = "<group>"; };
+		582DCA8116A242C3004BC474 /* HeapT.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = HeapT.hh; sourceTree = "<group>"; };
+		582DCA8216A242C3004BC474 /* MeshCheckerT.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MeshCheckerT.cc; sourceTree = "<group>"; };
+		582DCA8316A242C3004BC474 /* MeshCheckerT.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MeshCheckerT.hh; sourceTree = "<group>"; };
+		582DCA8416A242C3004BC474 /* NumLimitsT.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = NumLimitsT.hh; sourceTree = "<group>"; };
+		582DCA8516A242C3004BC474 /* StripifierT.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StripifierT.cc; sourceTree = "<group>"; };
+		582DCA8616A242C3004BC474 /* StripifierT.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = StripifierT.hh; sourceTree = "<group>"; };
+		582DCA8716A242C3004BC474 /* TestingFramework.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TestingFramework.hh; sourceTree = "<group>"; };
+		582DCA8816A242C3004BC474 /* Timer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Timer.cc; sourceTree = "<group>"; };
+		582DCA8916A242C3004BC474 /* Timer.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Timer.hh; sourceTree = "<group>"; };
+		582DCA8C16A242C3004BC474 /* MeshTraits.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MeshTraits.hh; sourceTree = "<group>"; };
+		582DCA8D16A242C3004BC474 /* StreamingDef.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = StreamingDef.hh; sourceTree = "<group>"; };
+		582DCA8E16A242C3004BC474 /* VFront.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VFront.cc; sourceTree = "<group>"; };
+		582DCA8F16A242C3004BC474 /* VFront.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = VFront.hh; sourceTree = "<group>"; };
+		582DCA9016A242C3004BC474 /* VHierarchy.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VHierarchy.cc; sourceTree = "<group>"; };
+		582DCA9116A242C3004BC474 /* VHierarchy.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = VHierarchy.hh; sourceTree = "<group>"; };
+		582DCA9216A242C3004BC474 /* VHierarchyNode.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = VHierarchyNode.hh; sourceTree = "<group>"; };
+		582DCA9316A242C3004BC474 /* VHierarchyNodeIndex.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VHierarchyNodeIndex.cc; sourceTree = "<group>"; };
+		582DCA9416A242C3004BC474 /* VHierarchyNodeIndex.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = VHierarchyNodeIndex.hh; sourceTree = "<group>"; };
+		582DCA9516A242C3004BC474 /* VHierarchyWindow.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VHierarchyWindow.cc; sourceTree = "<group>"; };
+		582DCA9616A242C3004BC474 /* VHierarchyWindow.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = VHierarchyWindow.hh; sourceTree = "<group>"; };
+		582DCA9716A242C3004BC474 /* ViewingParameters.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ViewingParameters.cc; sourceTree = "<group>"; };
+		582DCA9816A242C3004BC474 /* ViewingParameters.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ViewingParameters.hh; sourceTree = "<group>"; };
+		582DCA9A16A242C3004BC474 /* fileopen.xpm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = fileopen.xpm; sourceTree = "<group>"; };
+		582DCA9B16A242C3004BC474 /* fileprint.xpm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = fileprint.xpm; sourceTree = "<group>"; };
+		582DCA9C16A242C3004BC474 /* filesave.xpm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = filesave.xpm; sourceTree = "<group>"; };
 		587E2DDB16551D5900F1FA1B /* ProgMeshModelTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProgMeshModelTableViewController.h; sourceTree = "<group>"; };
 		587E2DDC16551D5900F1FA1B /* ProgMeshModelTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProgMeshModelTableViewController.m; sourceTree = "<group>"; };
 		587E2DDD16551D5900F1FA1B /* ProgMeshModelTableViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProgMeshModelTableViewController.xib; sourceTree = "<group>"; };
@@ -308,6 +355,70 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		582DCA2816A242C2004BC474 /* Tools */ = {
+			isa = PBXGroup;
+			children = (
+				582DCA7716A242C2004BC474 /* Utils */,
+				582DCA8A16A242C3004BC474 /* VDPM */,
+			);
+			path = Tools;
+			sourceTree = "<group>";
+		};
+		582DCA7716A242C2004BC474 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				582DCA7916A242C3004BC474 /* Config.hh */,
+				582DCA7A16A242C3004BC474 /* conio.cc */,
+				582DCA7B16A242C3004BC474 /* conio.hh */,
+				582DCA7C16A242C3004BC474 /* getopt.c */,
+				582DCA7D16A242C3004BC474 /* getopt.h */,
+				582DCA7E16A242C3004BC474 /* GLConstAsString.hh */,
+				582DCA7F16A242C3004BC474 /* Gnuplot.cc */,
+				582DCA8016A242C3004BC474 /* Gnuplot.hh */,
+				582DCA8116A242C3004BC474 /* HeapT.hh */,
+				582DCA8216A242C3004BC474 /* MeshCheckerT.cc */,
+				582DCA8316A242C3004BC474 /* MeshCheckerT.hh */,
+				582DCA8416A242C3004BC474 /* NumLimitsT.hh */,
+				582DCA8516A242C3004BC474 /* StripifierT.cc */,
+				582DCA8616A242C3004BC474 /* StripifierT.hh */,
+				582DCA8716A242C3004BC474 /* TestingFramework.hh */,
+				582DCA8816A242C3004BC474 /* Timer.cc */,
+				582DCA8916A242C3004BC474 /* Timer.hh */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		582DCA8A16A242C3004BC474 /* VDPM */ = {
+			isa = PBXGroup;
+			children = (
+				582DCA8C16A242C3004BC474 /* MeshTraits.hh */,
+				582DCA8D16A242C3004BC474 /* StreamingDef.hh */,
+				582DCA8E16A242C3004BC474 /* VFront.cc */,
+				582DCA8F16A242C3004BC474 /* VFront.hh */,
+				582DCA9016A242C3004BC474 /* VHierarchy.cc */,
+				582DCA9116A242C3004BC474 /* VHierarchy.hh */,
+				582DCA9216A242C3004BC474 /* VHierarchyNode.hh */,
+				582DCA9316A242C3004BC474 /* VHierarchyNodeIndex.cc */,
+				582DCA9416A242C3004BC474 /* VHierarchyNodeIndex.hh */,
+				582DCA9516A242C3004BC474 /* VHierarchyWindow.cc */,
+				582DCA9616A242C3004BC474 /* VHierarchyWindow.hh */,
+				582DCA9716A242C3004BC474 /* ViewingParameters.cc */,
+				582DCA9816A242C3004BC474 /* ViewingParameters.hh */,
+				582DCA9916A242C3004BC474 /* xpm */,
+			);
+			path = VDPM;
+			sourceTree = "<group>";
+		};
+		582DCA9916A242C3004BC474 /* xpm */ = {
+			isa = PBXGroup;
+			children = (
+				582DCA9A16A242C3004BC474 /* fileopen.xpm */,
+				582DCA9B16A242C3004BC474 /* fileprint.xpm */,
+				582DCA9C16A242C3004BC474 /* filesave.xpm */,
+			);
+			path = xpm;
+			sourceTree = "<group>";
+		};
 		587E2DE5165528EF00F1FA1B /* Network */ = {
 			isa = PBXGroup;
 			children = (
@@ -502,6 +613,7 @@
 		58B091AD1654144E00A5140D /* OpenMesh */ = {
 			isa = PBXGroup;
 			children = (
+				582DCA2816A242C2004BC474 /* Tools */,
 				58B091AE1654144E00A5140D /* Core */,
 			);
 			path = OpenMesh;
@@ -795,6 +907,9 @@
 				58BA382C1664CF5C00B11457 /* ConfigViewController.xib in Resources */,
 				58D7D631166E18F500392661 /* ModelDetailViewController.xib in Resources */,
 				58D7D637166E1EDE00392661 /* ModelTableNavigationViewController.xib in Resources */,
+				582DCAC416A242C3004BC474 /* fileopen.xpm in Resources */,
+				582DCAC516A242C3004BC474 /* fileprint.xpm in Resources */,
+				582DCAC616A242C3004BC474 /* filesave.xpm in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -862,6 +977,17 @@
 				58D7D630166E18F500392661 /* ModelDetailViewController.m in Sources */,
 				58D7D636166E1EDE00392661 /* ModelTableNavigationViewController.m in Sources */,
 				58D7D63A166E29DE00392661 /* ModelObj.m in Sources */,
+				582DCAB816A242C3004BC474 /* conio.cc in Sources */,
+				582DCAB916A242C3004BC474 /* getopt.c in Sources */,
+				582DCABA16A242C3004BC474 /* Gnuplot.cc in Sources */,
+				582DCABB16A242C3004BC474 /* MeshCheckerT.cc in Sources */,
+				582DCABC16A242C3004BC474 /* StripifierT.cc in Sources */,
+				582DCABD16A242C3004BC474 /* Timer.cc in Sources */,
+				582DCABF16A242C3004BC474 /* VFront.cc in Sources */,
+				582DCAC016A242C3004BC474 /* VHierarchy.cc in Sources */,
+				582DCAC116A242C3004BC474 /* VHierarchyNodeIndex.cc in Sources */,
+				582DCAC216A242C3004BC474 /* VHierarchyWindow.cc in Sources */,
+				582DCAC316A242C3004BC474 /* ViewingParameters.cc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
