@@ -10,6 +10,7 @@
 
 @implementation ModelObj
 @synthesize ObjectFileName;
+@synthesize Id;
 
 
 - (void) dealloc
@@ -17,6 +18,10 @@
     [ObjectFileName release];
     ObjectFileName = nil;
     
+    [Id release];
+    Id = nil;
+    
     [super dealloc];
 }
+
 @end

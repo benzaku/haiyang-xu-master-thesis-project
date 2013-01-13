@@ -34,8 +34,11 @@
 
 - (void) socketSendMessageWithReadTimeOut:(NSString *) message : (enum SOCKET_STATE) nextState : (NSTimeInterval) timeout;
 
+- (void) socketSendDataWithLengthAndReadTimeOut:(NSData *) data : (enum SOCKET_STATE) nextState : (NSTimeInterval) timeout;
+
 - (void) socketSendMessageWithReadTimeOutAndToLength:(NSString *) message : (enum SOCKET_STATE) nextState : (NSTimeInterval) timeout : (NSUInteger) length;
 
+- (void) socketWaitForMessageWithReadTimeOut: (NSString *) message : (enum SOCKET_STATE) nextState : (NSTimeInterval) timeout;
 
 
 @end
