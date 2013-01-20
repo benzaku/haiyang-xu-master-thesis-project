@@ -123,7 +123,8 @@ GLfloat gCubeVertexData2[216] =
     -0.5f, 0.5f, -0.5f,        0.0f, 0.0f, -1.0f
 };
 
-
+const int number_of_details_per_transmission = 100;
+char pm_details_request[2 * sizeof(int) + 8];
 
 @interface ViewController (){
     GLuint _program;
@@ -320,6 +321,7 @@ GLfloat gCubeVertexData2[216] =
     NSString *requestString;
     size_t receivedSizeT;
     NSComparisonResult compareResult;
+    
     int nByteToWait;
     switch (STATE) {
         case 0:
@@ -447,7 +449,12 @@ GLfloat gCubeVertexData2[216] =
                 STATE = 8;
                 
                 requestString = @"PMDETAIL";
+                //strcpy(pm_details_request, [requestString cStringUsingEncoding:NSUTF8StringEncoding]);
+                //strncpy(&(pm_details_request[8]), (char *)&number_of_details_per_transmission, sizeof(int));
+                
                 [socket writeData:[requestString dataUsingEncoding:NSUTF8StringEncoding] withTimeout:-1 tag:0];
+                //[socket writeData:[[NSData alloc] initWithBytesNoCopy:pm_details_request length:8 + sizeof(int)] withTimeout:-1 tag:0];
+                
                 [socket readDataToLength:2400 withTimeout:-1 tag:0];
             }
             
@@ -555,12 +562,17 @@ GLfloat gCubeVertexData2[216] =
     
     
     
-    GLKMatrix4 baseModelViewMatrix = GLKMatrix4MakeTranslation(-objCenter[0] , -objCenter[1] , -objCenter[2] - objRadius * 5);
+    GLKMatrix4 baseModelViewMatrix = GLKMatrix4MakeTranslation(objCenter[0] , objCenter[1] , objCenter[2] - objRadius * 5);
     
     GLKMatrix4 rotation = GLKMatrix4MakeWithQuaternion(_quat);
     
     baseModelViewMatrix = GLKMatrix4Multiply(baseModelViewMatrix, rotation);
     
+    baseModelViewMatrix = GLKMatrix4Translate(baseModelViewMatrix, -objCenter[0] , -objCenter[1] , -objCenter[2]);
+    
+    GLKMatrix4 transM = GLKMatrix4MakeTranslation(-objCenter[0] , -objCenter[1] , -objCenter[2]);
+    
+    baseModelViewMatrix = GLKMatrix4Multiply(transM, baseModelViewMatrix);
     
     
     
@@ -728,10 +740,12 @@ GLfloat gCubeVertexData2[216] =
         
     /**** use draw elements ***/
     GLubyte * data = (GLubyte *)[pmModel getBaseMeshVertexNormalArray];
-    
+
     GLsizei size = [pmModel getBaseMeshVertexNormalArraySize] * sizeof(float);
     
-    glDeleteBuffers(1, &_vertexBuffer);
+    
+    
+    //glDeleteBuffers(1, &_vertexBuffer);
     glGenBuffers(1, &_vertexBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
     glBufferData(GL_ARRAY_BUFFER, [pmModel getTotalVertexNormalArraySize] * sizeof(float), 0, GL_DYNAMIC_DRAW);
@@ -772,7 +786,7 @@ GLfloat gCubeVertexData2[216] =
     glClearColor(0.65f, 0.65f, 0.65f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    glBindVertexArrayOES(_vertexArray);
+    //glBindVertexArrayOES(_vertexArray);
     glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _faceIndiceBufferIBO);
     
