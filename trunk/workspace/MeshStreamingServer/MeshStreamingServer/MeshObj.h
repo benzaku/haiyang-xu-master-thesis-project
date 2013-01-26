@@ -16,6 +16,7 @@
 #include "Poco/DOM/Document.h"
 #include "Poco/Dom/Text.h"
 
+
 using Poco::XML::Element;
 using Poco::XML::AutoPtr;
 using Poco::XML::Document;
@@ -23,15 +24,25 @@ using Poco::XML::Text;
 
 using namespace std;
 
+#define SPM    "SPM"
+#define PM      "PM"
+#define UNKNOWTYPE  "UNKNOW"
+
 class MeshObj
 {
 public:
     string  ObjectFilePath;
     string  RootDirPath;
     string  ObjectFileName;
+    int     Id;
+    string  IdAsString;
+    string  MeshType;
     
     MeshObj();
     ~MeshObj();
+    
+    void setMeshType(std::string &ext);
+    
     AutoPtr<Element> getXMLElement(AutoPtr<Document> &doc);
 };
 

@@ -14,6 +14,7 @@
 #include "Poco/Net/SocketNotification.h"
 #include "PMFileHandler.h"
 #include "ModelRepositoryHandler.h"
+#include "VDPMFileHandler.h"
 
 using Poco::Net::StreamSocket;
 using Poco::Net::SocketReactor;
@@ -38,18 +39,29 @@ private:
         BUFFER_SIZE = 65536
         //BUFFER_SIZE = 65536
     };
+    enum
+    {
+        PM_STATE, VDPM_STATE, VOL_STATE, NONE_STATE
+    };
+    
+    int STREAM_STATE;
     
     StreamSocket        _socket;
     SocketReactor&      _reactor;
     char*               _pBuffer;
     PMFileHandler*      _pmFH;
     ModelRepositoryHandler* _mRH;
+    VDPMFileHandler*    _vdpmFH;
     
     int                 _temp;
     char*               _tempContentPtr;
     int                 _templen;
     char*               pmInfoChunk;
     
+    
+    bool handleLoadModelRequest(int modelId);
+    
+    int  getSPMBaseInfoDataSize();
     
     void handleRequest();
 

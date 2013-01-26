@@ -41,6 +41,8 @@ private:
     string *VOLUME;
     string *FILE_SEPARATOR;
     
+    int incrementalId;
+    
     int volumeNumber;
     int meshNumber;
     
@@ -52,6 +54,8 @@ private:
     vector<MeshObj*> meshObjs;
     
     void inline initVar();
+    
+    
     
     
 public:
