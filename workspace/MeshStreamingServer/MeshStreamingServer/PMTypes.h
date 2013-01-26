@@ -26,6 +26,8 @@ using namespace OpenMesh;
 using namespace OpenMesh::Attributes;
 using namespace OpenMesh::Decimater;
 
+
+
 struct MyTraits : public OpenMesh::DefaultTraits
 {
     VertexAttributes  ( OpenMesh::Attributes::Normal       |
@@ -37,7 +39,10 @@ struct MyTraits : public OpenMesh::DefaultTraits
 };
 
 
+
 typedef OpenMesh::TriMesh_ArrayKernelT<MyTraits>  MyMesh;
+
+
 
 struct PMInfo
 {

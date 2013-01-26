@@ -12,6 +12,7 @@
 #include "PMFileHandler.h"
 #include "PMRepository.h"
 #include "ModelRepositoryHandler.h"
+#include "VDPMLoader.h"
 
 
 #include "Poco/Util/HelpFormatter.h"
@@ -98,14 +99,7 @@ int PMStreamServer::main(const std::vector<std::string> &args){
     }
     else
     {
-        /*
-         * open file
-         */
-        //PMLoader pmLoader(PMFileName);
         
-        //pmLoader.loadPM();
-        
-        /** test for PMRepository**/
         modelRepo =  new PMRepository();
         
         std::string ss("/Users/hyx/Development/MasterThesis/repository");
@@ -117,13 +111,7 @@ int PMStreamServer::main(const std::vector<std::string> &args){
         
         vector<VolumeObj*> *vols = modelRepo->getVolumeObjs();
         vector<MeshObj*> *meshes = modelRepo->getMeshObjs();
-        /*
-        for(int i = 0; i < vols->size(); i ++){
-            std::cout << (*vols)[i]->PropertiesMap.at("ObjectFileName")<< std::endl;
-            std::cout << (*vols)[i]->ObjectFilePath<< std::endl;
-            
-        }
-        */
+        
         
         for(int i = 0; i < meshes->size(); i ++){
             std::cout << (*meshes)[i]->ObjectFileName << std::endl;
@@ -134,6 +122,7 @@ int PMStreamServer::main(const std::vector<std::string> &args){
         
         modelRepo->generateModelListXmlInfo();
         
+       
         
         
         modelListXmlString = modelRepo->getModelListXmlString();
@@ -141,9 +130,8 @@ int PMStreamServer::main(const std::vector<std::string> &args){
         modelListXmlStringLength = modelRepo->getModelListXmlStringLength();
         
         
-
-        
-        
+        VDPMLoader vdpmLoader;
+        vdpmLoader.openVDPM("/Users/hyx/Development/MasterThesis/repository/mesh/bunny.spm");
         
         /**/
         
@@ -158,7 +146,9 @@ int PMStreamServer::main(const std::vector<std::string> &args){
         
         
         pmFileHandler->setPMRepository(modelRepo);
+        //mrHandler->setPMRepository(modelRepo);
         
+                
         std::cout<<"Server Started" << std::endl;
         
         // get parameters from configuration file

@@ -7,6 +7,8 @@
 //
 
 #include "PMRepository.h"
+#include <stdlib.h>
+#include <stdio.h>;
 #include <string>
 #include <exception>
 #include <fstream>
@@ -14,6 +16,7 @@
 #include <Poco/String.h>
 #include <iostream>
 #include <sstream>
+#include <time.h>
 
 using namespace std;
 
@@ -37,6 +40,24 @@ PMRepository::getProgMeshDir(){
     str->append(*PROG_MESH);
     
     return str;
+}
+
+inline
+std::string
+get_extension( std::string& _s)
+{
+    std::string::size_type dot = _s.rfind(".");
+    
+    return _s.substr(dot+1);
+    
+}
+
+void stringToUpper(string &s)
+{
+    for(unsigned int l = 0; l < s.length(); l++)
+    {
+        s[l] = toupper(s[l]);
+    }
 }
 
 string*
@@ -86,7 +107,8 @@ PMRepository::initVar(){
     VOLUME = new string("volume");
     FILE_SEPARATOR = new string("/");
     volumeNumber = 0;
-    
+    srand( (unsigned int)time(NULL) );
+    incrementalId = rand();
 }
 
 PMRepository::~PMRepository(){
@@ -200,7 +222,16 @@ PMRepository::initVolumeObjs()
             
             
         }
+        incrementalId ++;
         
+        ostringstream convert;   // stream used for the conversion
+        
+        convert << incrementalId;
+        
+        vObj->PropertiesMap.insert(std::pair<string, string>("Id", convert.str()));
+        vObj->Id = incrementalId;
+        
+        vObj->PropertiesMap.insert(std::pair<string, string>("ModelType", "VOL"));
         
         vObj->ObjectFileName = vObj->PropertiesMap.at("ObjectFileName");
         strcpy(temp, volRootDirName->c_str());
@@ -230,6 +261,22 @@ PMRepository::initMeshObjs()
         mObj->ObjectFilePath = filepath;
         mObj->RootDirPath = *meshRootDirName;
         mObj->ObjectFileName = meshDirNames[i];
+        
+        std::string f(filepath);
+        
+        std::string ext = get_extension(f);
+        stringToUpper(ext);
+        std::cout << "extension : " << ext << std::endl;
+        
+        mObj->setMeshType(ext);
+        
+        incrementalId ++;
+        mObj->Id = incrementalId;
+        
+        ostringstream convert;   // stream used for the conversion
+        
+        convert << incrementalId;
+        mObj->IdAsString = convert.str();
         
         meshObjs.push_back(mObj);
     }

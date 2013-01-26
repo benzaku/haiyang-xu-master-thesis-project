@@ -18,6 +18,7 @@
 		28D0AC85161884D0000D174C /* Singleton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28D0AC7E161884D0000D174C /* Singleton.cpp */; };
 		28D0AC89161885C3000D174C /* libPocoUtil.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 28D0AC88161885C3000D174C /* libPocoUtil.dylib */; };
 		5818D2C0165F7E9700378191 /* VolumeObj.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5818D2BE165F7E9700378191 /* VolumeObj.cpp */; };
+		582DC9CC16A2355F004BC474 /* VDPMLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 582DC9CA16A2355F004BC474 /* VDPMLoader.cpp */; };
 		583C4F7416494993006AF99A /* MC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 583C4F7116494993006AF99A /* MC.cpp */; };
 		5840D5BE165FBE3400CA167C /* MeshObj.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5840D5BC165FBE3400CA167C /* MeshObj.cpp */; };
 		5840D5C2165FC5B500CA167C /* ModelRepositoryHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5840D5C0165FC5B400CA167C /* ModelRepositoryHandler.cpp */; };
@@ -25,6 +26,7 @@
 		58BA38371664EFBE00B11457 /* libPocoXML.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 58BA38361664EFBE00B11457 /* libPocoXML.dylib */; };
 		58C9A5D11627012600A36306 /* libOpenMeshCore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 58C9A5CF1627012600A36306 /* libOpenMeshCore.dylib */; };
 		58C9A5D21627012600A36306 /* libOpenMeshTools.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 58C9A5D01627012600A36306 /* libOpenMeshTools.dylib */; };
+		58CB3A1816A2EFF2000B9C8B /* VDPMFileHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 58CB3A1616A2EFF2000B9C8B /* VDPMFileHandler.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -59,6 +61,8 @@
 		28D0AC88161885C3000D174C /* libPocoUtil.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libPocoUtil.dylib; path = ../../../../../../../usr/local/lib/libPocoUtil.dylib; sourceTree = "<group>"; };
 		5818D2BE165F7E9700378191 /* VolumeObj.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VolumeObj.cpp; sourceTree = "<group>"; };
 		5818D2BF165F7E9700378191 /* VolumeObj.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VolumeObj.h; sourceTree = "<group>"; };
+		582DC9CA16A2355F004BC474 /* VDPMLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VDPMLoader.cpp; sourceTree = "<group>"; };
+		582DC9CB16A2355F004BC474 /* VDPMLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VDPMLoader.h; sourceTree = "<group>"; };
 		583C4F6F16494993006AF99A /* StdDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StdDefines.h; sourceTree = "<group>"; };
 		583C4F7016494993006AF99A /* Vectors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Vectors.h; sourceTree = "<group>"; };
 		583C4F7116494993006AF99A /* MC.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MC.cpp; sourceTree = "<group>"; };
@@ -74,6 +78,9 @@
 		58BA38361664EFBE00B11457 /* libPocoXML.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libPocoXML.dylib; path = ../../../../../../../usr/local/lib/libPocoXML.dylib; sourceTree = "<group>"; };
 		58C9A5CF1627012600A36306 /* libOpenMeshCore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libOpenMeshCore.dylib; path = ../../../../../../../usr/local/lib/OpenMesh/libOpenMeshCore.dylib; sourceTree = "<group>"; };
 		58C9A5D01627012600A36306 /* libOpenMeshTools.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libOpenMeshTools.dylib; path = ../../../../../../../usr/local/lib/OpenMesh/libOpenMeshTools.dylib; sourceTree = "<group>"; };
+		58CB3A1616A2EFF2000B9C8B /* VDPMFileHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VDPMFileHandler.cpp; sourceTree = "<group>"; };
+		58CB3A1716A2EFF2000B9C8B /* VDPMFileHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VDPMFileHandler.h; sourceTree = "<group>"; };
+		58EA34FD16B1AA0D00BFE8AC /* PublicIncludes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PublicIncludes.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,11 +125,10 @@
 		28D0AC481618815B000D174C /* MeshStreamingServer */ = {
 			isa = PBXGroup;
 			children = (
+				582DC9C516A2312B004BC474 /* VDPM */,
+				582DC9C416A23038004BC474 /* Model */,
+				582DC9C216A22FF4004BC474 /* PM */,
 				583C4F6D16494954006AF99A /* MC */,
-				28D0AC76161884D0000D174C /* PMFileHandler.cpp */,
-				28D0AC77161884D0000D174C /* PMFileHandler.h */,
-				28D0AC78161884D0000D174C /* PMLoader.cpp */,
-				28D0AC79161884D0000D174C /* PMLoader.h */,
 				28D0AC7A161884D0000D174C /* PMStreamServer.cpp */,
 				28D0AC7B161884D0000D174C /* PMStreamServer.h */,
 				28D0AC7C161884D0000D174C /* PMStreamServerHandler.cpp */,
@@ -130,13 +136,8 @@
 				28D0AC7E161884D0000D174C /* Singleton.cpp */,
 				28D0AC491618815B000D174C /* main.cpp */,
 				28D0AC4B1618815B000D174C /* MeshStreamingServer.1 */,
-				583C4F7B16496264006AF99A /* PMTypes.h */,
 				588934B316567DC50001BA27 /* PMRepository.cpp */,
 				588934B416567DC50001BA27 /* PMRepository.h */,
-				5818D2BE165F7E9700378191 /* VolumeObj.cpp */,
-				5818D2BF165F7E9700378191 /* VolumeObj.h */,
-				5840D5BC165FBE3400CA167C /* MeshObj.cpp */,
-				5840D5BD165FBE3400CA167C /* MeshObj.h */,
 				5840D5C0165FC5B400CA167C /* ModelRepositoryHandler.cpp */,
 				5840D5C1165FC5B400CA167C /* ModelRepositoryHandler.h */,
 				28D0AC7F161884D0000D174C /* Util */,
@@ -150,6 +151,41 @@
 				28D0AC80161884D0000D174C /* Singleton.h */,
 			);
 			path = Util;
+			sourceTree = "<group>";
+		};
+		582DC9C216A22FF4004BC474 /* PM */ = {
+			isa = PBXGroup;
+			children = (
+				583C4F7B16496264006AF99A /* PMTypes.h */,
+				28D0AC76161884D0000D174C /* PMFileHandler.cpp */,
+				28D0AC77161884D0000D174C /* PMFileHandler.h */,
+				28D0AC78161884D0000D174C /* PMLoader.cpp */,
+				28D0AC79161884D0000D174C /* PMLoader.h */,
+				58EA34FD16B1AA0D00BFE8AC /* PublicIncludes.h */,
+			);
+			name = PM;
+			sourceTree = "<group>";
+		};
+		582DC9C416A23038004BC474 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				5818D2BE165F7E9700378191 /* VolumeObj.cpp */,
+				5818D2BF165F7E9700378191 /* VolumeObj.h */,
+				5840D5BC165FBE3400CA167C /* MeshObj.cpp */,
+				5840D5BD165FBE3400CA167C /* MeshObj.h */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		582DC9C516A2312B004BC474 /* VDPM */ = {
+			isa = PBXGroup;
+			children = (
+				582DC9CA16A2355F004BC474 /* VDPMLoader.cpp */,
+				582DC9CB16A2355F004BC474 /* VDPMLoader.h */,
+				58CB3A1616A2EFF2000B9C8B /* VDPMFileHandler.cpp */,
+				58CB3A1716A2EFF2000B9C8B /* VDPMFileHandler.h */,
+			);
+			name = VDPM;
 			sourceTree = "<group>";
 		};
 		583C4F6D16494954006AF99A /* MC */ = {
@@ -226,6 +262,8 @@
 				5818D2C0165F7E9700378191 /* VolumeObj.cpp in Sources */,
 				5840D5BE165FBE3400CA167C /* MeshObj.cpp in Sources */,
 				5840D5C2165FC5B500CA167C /* ModelRepositoryHandler.cpp in Sources */,
+				582DC9CC16A2355F004BC474 /* VDPMLoader.cpp in Sources */,
+				58CB3A1816A2EFF2000B9C8B /* VDPMFileHandler.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -288,6 +326,7 @@
 		28D0AC501618815B000D174C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_CXX_LIBRARY = "compiler-default";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -300,6 +339,7 @@
 		28D0AC511618815B000D174C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_CXX_LIBRARY = "compiler-default";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",

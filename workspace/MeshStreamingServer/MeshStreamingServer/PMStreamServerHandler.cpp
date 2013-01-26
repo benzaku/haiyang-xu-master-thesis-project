@@ -16,6 +16,7 @@
 #include "Poco/Net/SocketNotification.h"
 #include "Poco/Util/ServerApplication.h"
 #include "Poco/NObserver.h"
+#include "PublicIncludes.h"
 
 
 using Poco::Net::StreamSocket;
@@ -38,16 +39,20 @@ PMStreamServerHandler::PMStreamServerHandler(StreamSocket& socket, SocketReactor
     
     _pmFH->getPMRepository()->generateModelListXmlInfo();
 
+    _mRH = (ModelRepositoryHandler *) ModelRepositoryHandler::getInstance();
+    
+    _vdpmFH = (VDPMFileHandler *) VDPMFileHandler::getInstance();
+    //_mRH->getPMRepository()->generateModelListXmlInfo();
     
     std::cout<<*(_pmFH->getFileName())<<std::endl;
     
-    //_socket.sendBytes("HELLO", 5);
+    _socket.sendBytes("HELLO", 5, 0);
     
     //pmInfoChunk = new char[BUFFER_SIZE];
     
     //_socket.sendBytes(pmInfoChunk, 5242880);
     
-    
+    STREAM_STATE = NONE_STATE;
     
     std::cout<< "Send Finish!" << std::endl;
     
@@ -74,7 +79,9 @@ void
 PMStreamServerHandler::onReadable(const AutoPtr<Poco::Net::ReadableNotification> &pNf)
 {
     int n = _socket.receiveBytes(_pBuffer, BUFFER_SIZE);
+    
     if (n > 0){
+        std::cout << "receive length = " << n << std::endl;
         handleRequest();
     }
     
@@ -88,7 +95,7 @@ void
 PMStreamServerHandler::handleRequest()
 {
     
-    std::cout<<_pBuffer << std::endl;
+    //std::cout<<_pBuffer << std::endl;
     if(strncmp(_pBuffer, "N_BASE_VERTICES", 15) == 0){
         _temp = _pmFH->getPMLoader()->getNBaseVertices();
         _tempContentPtr = (char *) &_temp;
@@ -156,6 +163,8 @@ PMStreamServerHandler::handleRequest()
     }
     if (strncmp(_pBuffer, "PMDETAIL", 8) == 0){
         std::cout<< "Start to send PMDETAIL" << std::endl;
+        int nnn = (int)_pBuffer[8];
+        std::cout << "nnn = " << nnn << std::endl;
         int chunkSize = sizeof(MyMesh::Point) + 3 * sizeof(unsigned int);
         int totalDetailChunkSize = _pmFH->getPMLoader()->getNDetailVertices() * chunkSize;
         //char* details = _pmFH->getPMLoader()->getDetailsChunk();
@@ -198,9 +207,109 @@ PMStreamServerHandler::handleRequest()
         
     }
     
+    if (strncmp(_pBuffer, "LOAD_MODEL", 10) == 0){
+        std::cout << "load model" << std::endl;
+        int *id = (int *)&(_pBuffer[10]);
+        std::cout << "nnn = " << *id << std::endl;
+        
+        bool success = handleLoadModelRequest(*id);
+        
+        if (success) {
+            _socket.sendBytes("load", 4);
+        } else {
+            _socket.sendBytes("fail", 4);
+        }
+    }
+    
+    if (strncmp(_pBuffer, "SPM_BASE_INFO_DATA_SIZE", 23) == 0) {
+        std::cout << "retrieve spm base info data size" << std::endl;
+        
+        char ss[sizeof(int)];
+        int size = getSPMBaseInfoDataSize();
+        memcpy(ss, &size, sizeof(int));
+        _socket.sendBytes(ss, sizeof(int));
+    }
+    
+    if (strncmp(_pBuffer, "SPM_BASE_INFORMATION_DATA", 25) == 0){
+        std::cout << "retrieve spm base information data" << std::endl;
+        _socket.sendBytes(this->_vdpmFH->getVDPMLoader()->get_base_info_data(), this->_vdpmFH->getVDPMLoader()->get_base_info_data_size());
+    }
+    
+    if (strncmp(_pBuffer, "SYNC_SPM_VIEWING_PARAMS", 23) == 0){
+        std::cout << "sync spm viewing params" << std::endl;
+        viewparam vp;
+        memcpy(&vp, &(_pBuffer[23]), sizeof(viewparam));
+        this->_vdpmFH->getVDPMLoader()->update_viewing_parameters(vp.modelViewMatrix, vp.aspect, vp.fovy, vp.tolerance_square);
+        
+        data_chunk *data = this->_vdpmFH->getVDPMLoader()->adaptive_refinement();
+        std::cout << data->size << std::endl;
+        char header_size[8 + sizeof(int)];
+        strncpy(header_size, data->HEADER, 8);
+        memcpy(&header_size[8], &(data->size), sizeof(int));
+        _socket.sendBytes(header_size, 8 + sizeof(int));
+        if(data->size > 0)
+            _socket.sendBytes(data->data, data->size);
+        
+    }
 }
 
-void 
+int
+PMStreamServerHandler::getSPMBaseInfoDataSize()
+{
+    
+    int size = 0;
+    if (this->_vdpmFH->getVDPMLoader()->isMeshLoaded()) {
+        size = this->_vdpmFH->getVDPMLoader()->calculateSPMBaseInfoDataSize();
+        return size;
+    }
+    
+    
+    
+    return size;
+    
+}
+
+
+bool
+PMStreamServerHandler::handleLoadModelRequest(int modelId)
+{
+    vector<MeshObj *> *meshes = this->_pmFH->getPMRepository()->getMeshObjs();
+    vector<VolumeObj *> *vols = this->_pmFH->getPMRepository()->getVolumeObjs();
+    
+    for (int i = 0; i < meshes->size(); i ++) {
+        if(modelId == meshes->at(i)->Id){
+            std::cout << "found! mesh!" << std::endl;
+            
+            if(meshes->at(i)->MeshType == PM){
+            
+                _pmFH->setFileName(meshes->at(i)->ObjectFilePath);
+                _pmFH->setPMLoader(new PMLoader(*_pmFH->getFileName()));
+                _pmFH->getPMLoader()->loadPM();
+                return true;
+            }
+            else if(meshes->at(i)->MeshType == SPM){
+                std::cout << "load spm" << std::endl;
+                
+                _vdpmFH->setVDPMLoader(new VDPMLoader(meshes->at(i)->ObjectFilePath));
+                _vdpmFH->getVDPMLoader()->loadVDPM();
+                
+                std::cout << "size : " << sizeof(*_vdpmFH->getVDPMLoader()) << std::endl;
+                return true;
+            }
+            return false;
+        }
+    }
+    
+    for (int i = 0; i < vols->size(); i ++){
+        if(modelId == vols->at(i)->Id){
+            std::cout << "found! vol!" << std::endl;
+            return true;
+        }
+    }
+}
+
+
+void
 PMStreamServerHandler::onShutdown(const AutoPtr<ShutdownNotification>& pNf)
 {
     

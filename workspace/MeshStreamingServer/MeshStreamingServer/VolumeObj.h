@@ -36,6 +36,7 @@ public:
     
     string  ObjectFilePath;
     string  RootDirPath;
+    int     Id;
     
     map<string, string>     PropertiesMap;
     

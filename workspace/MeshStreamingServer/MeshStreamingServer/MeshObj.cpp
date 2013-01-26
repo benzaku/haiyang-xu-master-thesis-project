@@ -17,6 +17,20 @@ MeshObj::~MeshObj()
     
 }
 
+void
+MeshObj::setMeshType(std::string &ext)
+{
+    if(ext.compare(PM) == 0){
+        MeshType = PM;
+    }
+    else if(ext.compare(SPM) == 0){
+        MeshType = SPM;
+    } else{
+        MeshType = UNKNOWTYPE;
+    }
+    
+}
+
 AutoPtr<Element>
 MeshObj::getXMLElement(AutoPtr<Document> &doc)
 {
@@ -35,6 +49,16 @@ MeshObj::getXMLElement(AutoPtr<Document> &doc)
     AutoPtr<Text> fileName = doc->createTextNode(this->ObjectFileName);
     objectFileName->appendChild(fileName);
     aMesh->appendChild(objectFileName);
+    
+    AutoPtr<Element> objectFileId = doc->createElement("Id");
+    AutoPtr<Text> fileId = doc->createTextNode(this->IdAsString);
+    objectFileId->appendChild(fileId);
+    aMesh->appendChild(objectFileId);
+    
+    AutoPtr<Element> meshType = doc->createElement("ModelType");
+    AutoPtr<Text> type = doc->createTextNode(this->MeshType);
+    meshType->appendChild(type);
+    aMesh->appendChild(meshType);
     
     
     return aMesh;
