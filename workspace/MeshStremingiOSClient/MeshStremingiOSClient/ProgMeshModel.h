@@ -7,14 +7,58 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "ModelObj.h"
+
 
 
 @interface ProgMeshModel : NSObject{
     NSString * _type;
     NSString * _name;
+    
+    GLfloat * BASE_MESH_VERTEX_NORMAL_ARRAY;
+    GLsizei BASE_MESH_VERTEX_NORMAL_ARRAY_SIZE;                //length of whole data chunk
+    
+    GLsizei TOTAL_VERTEX_NORMAL_ARRAY_SIZE;
+    
+    GLsizei currentVerticeIdx;
+    int nCurrentVertices;
+    
+    unsigned int * MESH_INDICE_ARRAY;
+    GLsizei BASE_MESH_INDICE_BUFFER_SIZE;
+    GLsizei MESH_INDICE_ARRAY_SIZE;
+    GLsizei TOTAL_FACE_INDICE_BUFFER_SIZE;
+
+    float centroid_radius[4];
+    
+    int currentRecoveredFaceNumber;
+
 }
 
 - (id) initWithNameAndType:(NSString *) name: (NSString *) type;
+
+- (id) initWithModelObject: (ModelObj *) modelObj;
+
+- (void) loadBaseMeshInfo: (NSData *) baseMeshInfoData;
+
+- (GLfloat *) getBaseMeshVertexNormalArray;
+
+- (GLsizei) getBaseMeshVertexNormalArraySize;
+
+- (GLsizei) getTotalVertexNormalArraySize;
+
+- (GLsizei) getTotalFaceIndiceBufferSize;
+
+- (GLsizei) getBaseMeshIndiceBufferSize;
+
+
+- (unsigned int *) getMeshIndiceArray;
+
+- (float *) getCentroidAndRadius;
+
+- (int ) getCurrentRecoveredFaceNumber;
+
+- (void) setCurrentRecoveredFaceNumber: (int) crfnumber;
+
 
 @property (strong, nonatomic) NSString *type;
 @property (strong, nonatomic) NSString *name;

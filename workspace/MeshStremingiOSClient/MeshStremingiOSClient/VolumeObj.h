@@ -34,6 +34,7 @@
 
 @property (nonatomic, copy) NSString *ObjectFileName;
 @property (nonatomic, copy) NSString *Id;
+@property (nonatomic, copy) NSString *ModelType;
 
 @property (nonatomic, copy) NSString *ObjectModel;
 @property (nonatomic, copy) NSString *ObjectType;

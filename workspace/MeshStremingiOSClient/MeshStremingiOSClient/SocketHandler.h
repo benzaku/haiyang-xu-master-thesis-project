@@ -40,5 +40,7 @@
 
 - (void) socketWaitForMessageWithReadTimeOut: (NSString *) message : (enum SOCKET_STATE) nextState : (NSTimeInterval) timeout;
 
+- (void) socketWaitForDataWithLengthTimeout : (NSInteger) length: (enum SOCKET_STATE) nextState : (NSTimeInterval) timeout;
+
 
 @end

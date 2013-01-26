@@ -21,6 +21,7 @@
                                     ObjectFilePath, @"ObjectFilePath",
                                     RootDirPath,    @"RootDirPath",
                                     Id,             @"Id",
+                                    ModelType,        @"ModelType",
                                      nil];
     return attrMap;
 }
@@ -32,6 +33,8 @@
     
     [RootDirPath release];
     RootDirPath = nil;
+    
+    
     
     //[ObjectFileName release];
     //ObjectFileName = nil;

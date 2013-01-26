@@ -11,10 +11,12 @@
 @interface ModelObj : NSObject{
     NSString *ObjectFileName;
     NSString *Id;
+    NSString *ModelType;
 }
 
 @property (nonatomic, copy) NSString *ObjectFileName;
 @property (nonatomic, copy) NSString *Id;
+@property (nonatomic, copy) NSString *ModelType;
 
 - (NSMutableDictionary *) getModelAttributesMap;
 @end

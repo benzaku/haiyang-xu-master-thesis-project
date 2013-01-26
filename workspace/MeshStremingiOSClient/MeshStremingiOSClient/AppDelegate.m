@@ -28,6 +28,8 @@
 
 #import "ModelTableNavigationViewController.h"
 
+#import "GLRenderViewController.h"
+
 
 @implementation AppDelegate
 
@@ -45,9 +47,13 @@
 {
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
     // Override point for customization after application launch.
+#ifdef USE_FBO
+    UIViewController *glRenderViewController = [[[GLRenderViewController alloc] initWithNibName:@"GLRenderViewController" bundle:nil] autorelease];
+#else
     UIViewController *glkviewController = [[[ProgMeshGLKViewController alloc] initWithNibName:@"ProgMeshGLKViewController" bundle:nil] autorelease];
-    
+#endif
     UIViewController *configViewController = [[[ConfigViewController alloc] initWithNibName:@"ConfigViewController" bundle:nil] autorelease];
+    
     
     
     
@@ -59,8 +65,14 @@
     
     
     self.tabBarController = [[[UITabBarController alloc] init] autorelease];
-    self.tabBarController.viewControllers = @[glkviewController, modelTableNavigationViewController, configViewController ];
+    
+#ifdef USE_FBO
+    self.tabBarController.viewControllers = @[glRenderViewController, modelTableNavigationViewController, configViewController];
+#else
+    self.tabBarController.viewControllers = @[glkviewController, modelTableNavigationViewController, configViewController];
+#endif
     self.tabBarController.delegate = self;
+    
     self.window.rootViewController = self.tabBarController;
     
     _progMeshCentralController = [ProgMeshCentralController sharedInstance];
@@ -73,6 +85,14 @@
     
     [_progMeshCentralController setProgMeshModelTableViewController:progMeshTableViewController];
     
+#ifdef USE_FBO
+    [_progMeshCentralController setGLRenderViewController:(GLRenderViewController *)glRenderViewController];
+#else
+    [_progMeshCentralController setProgMeshGLKViewController:(ProgMeshGLKViewController *)glkviewController];
+#endif
+    //[_progMeshCentralController setGLRenderViewController:(GLRenderViewController *)glRenderViewController];
+    
+    
     [self.window makeKeyAndVisible];
     
     
@@ -84,6 +104,7 @@
 {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+    
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
@@ -108,6 +129,8 @@
 }
 
 
+
+
 // Optional UITabBarControllerDelegate method.
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController
 {
@@ -118,12 +141,7 @@
 }
 
 
-/*
-// Optional UITabBarControllerDelegate method.
-- (void)tabBarController:(UITabBarController *)tabBarController didEndCustomizingViewControllers:(NSArray *)viewControllers changed:(BOOL)changed
-{
-    NSLog(@"haha!");
-}
-*/
+
+
 
 @end

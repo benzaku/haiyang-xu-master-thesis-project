@@ -79,10 +79,7 @@
 
 -(void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
 {
-    NSLog(@"get Data");
     [[ProgMeshCentralController sharedInstance] readData:data withTag:tag :_socket_state];
-    
-    
 }
 
 -(void) configureHostAndPort:(NSString *)host :(NSString *)port
@@ -127,6 +124,15 @@
         [_socket readDataToLength:[message length] withTimeout:timeout tag:0];
     }
 }
+
+- (void) socketWaitForDataWithLengthTimeout : (NSInteger) length: (enum SOCKET_STATE) nextState : (NSTimeInterval) timeout
+{
+    if (_socket_state == SOCKET_CONNECTED_IDLE) {
+        _socket_state = nextState;
+        [_socket readDataToLength:length withTimeout:timeout tag:0];
+    }
+}
+
 
 
 @end

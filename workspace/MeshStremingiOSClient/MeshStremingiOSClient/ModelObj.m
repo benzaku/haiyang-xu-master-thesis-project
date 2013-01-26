@@ -11,7 +11,7 @@
 @implementation ModelObj
 @synthesize ObjectFileName;
 @synthesize Id;
-
+@synthesize ModelType;
 
 - (void) dealloc
 {
@@ -21,7 +21,14 @@
     [Id release];
     Id = nil;
     
+    [ModelType release];
+    ModelType = nil;
+    
     [super dealloc];
 }
 
+- (NSMutableDictionary *) getModelAttributesMap
+{
+    return nil;
+}
 @end
