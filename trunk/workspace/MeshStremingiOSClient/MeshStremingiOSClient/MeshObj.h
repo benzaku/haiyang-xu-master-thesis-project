@@ -19,4 +19,5 @@
 @property (nonatomic, copy) NSString *RootDirPath;
 @property (nonatomic, copy) NSString *ObjectFileName;
 @property (nonatomic, copy) NSString *Id;
+@property (nonatomic, copy) NSString *ModelType;
 @end

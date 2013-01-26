@@ -39,6 +39,7 @@
      ObjectModel,    @"ObjectModel",
      GridType,       @"GridType",
      Id,             @"Id",
+     ModelType,      @"ModelType",
      nil];
     return attrMap;
 }

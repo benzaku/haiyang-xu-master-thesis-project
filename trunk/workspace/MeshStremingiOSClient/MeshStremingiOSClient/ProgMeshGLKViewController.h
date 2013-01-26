@@ -7,14 +7,37 @@
 //
 
 #import <GLKit/GLKit.h>
-#import "ProgMeshCentralController.h"
+
+
+
+#import "ProgMeshGLManager.h"
+#import "ProgMeshModel.h"
+#import "Constants.h"
+
+
+#import <OpenGLES/EAGLDrawable.h>
+#import <OpenGLES/ES1/gl.h>
+#import <OpenGLES/ES1/glext.h>
 
 @interface ProgMeshGLKViewController : GLKViewController{
-    ProgMeshCentralController * _progMeshCentralController;
-
+    ProgMeshGLManager *progMeshGLManager;
+    
+    ProgMeshModel *progMeshModel;
+    
+    enum PM_VIEW_STATUS _status;
 }
 
-@property (strong, nonatomic) ProgMeshCentralController * progMeshCentralController;
+- (void) setProgMeshGLManager : (ProgMeshGLManager *) pmglManager;
 
+- (ProgMeshGLManager *) getProgMeshGLManager;
+
+- (void) setProgMeshModel : (ProgMeshModel *) pmModel;
+
+- (ProgMeshModel *) getProgMeshModel;
+
+- (void) setScenePosition : (float *) centroidAndRadius;
+
+
+@property (atomic, assign) enum PM_VIEW_STATUS status;
 
 @end

@@ -21,6 +21,11 @@
 
 #import "ProgMeshModelTableViewController.h"
 
+#import "ProgMeshGLKViewController.h"
+
+#import "GLRenderViewController.h"
+
+
 @interface ProgMeshCentralController : NSObject{
     SocketHandler *_socketHandler;
     
@@ -30,11 +35,21 @@
     
     ProgMeshModelTableViewController * _progMeshModelTableViewController;
     
+    ProgMeshGLKViewController * _progMeshGLKViewController;
+    
+    GLRenderViewController * _glRenderViewController;
+        
     NSInteger modelListXMLStringLength;
     
     NSString * modelListXMLString;
     
     ModelObj * _currentSelectedModel;
+    
+    int current_base_mesh_info_data_size;
+    
+    char * current_base_mesh_info_data;
+    
+    ProgMeshModel * _progMeshModel;
 }
 
 - (id) initWithHostAndPort:(NSString *) host: (NSString *) port;
@@ -55,6 +70,14 @@
 
 - (void) setProgMeshModelTableViewController: (ProgMeshModelTableViewController *) pmmtvController;
 
+- (ProgMeshGLKViewController *) getProgMeshGLKViewController;
+
+- (void) setGLRenderViewController : (GLRenderViewController *) glrvcontroller;
+
+- (GLRenderViewController *) getGLRenderViewController;
+
+- (void) setProgMeshGLKViewController : (ProgMeshGLKViewController *) pmmglkvController;
+
 - (BOOL) isServerConnected;
 
 - (BOOL) setServerConnectionStatus: (BOOL) isConnected;
@@ -65,8 +88,12 @@
 
 - (void) didSelectModelToLoad: (ModelObj *) selectedModel;
 
+- (void) syncViewingParametersToServer : (NSData *) viewing_parameters_;
+
 //@property (strong, atomic) SocketHandler *socketHandler;
 @property (strong, atomic) ServerInfo *serverInfo;
 
 @property (strong, atomic) ModelObj * currentSelectedModel;
+
+@property (strong, atomic) ProgMeshModel * progMeshModel;
 @end
