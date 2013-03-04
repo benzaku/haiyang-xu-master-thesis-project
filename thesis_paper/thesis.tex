@@ -20,7 +20,7 @@
 \documentclass[
 a4paper,     %% defines the paper size: a4paper (default), a5paper, letterpaper, ...
 % landscape,   %% sets the orientation to landscape
- twoside,     %% changes to a two-page-layout (alternatively: oneside)
+% twoside,     %% changes to a two-page-layout (alternatively: oneside)
 % twocolumn,   %% changes to a two-column-layout
  headsepline, %% add a horizontal line below the column title
 % footsepline, %% add a horizontal line above the page footer
@@ -33,10 +33,11 @@ a4paper,     %% defines the paper size: a4paper (default), a5paper, letterpaper,
 % 10pt         %% set default font size to 10 point
 % 11pt         %% set default font size to 11 point
 12pt,         %% set default font size to 12 point
-twoside, openleft
+oneside, openright
 %]{scrartcl}  %% article, see KOMA documentation (scrguide.dvi)
 ]{thesis}   %% \documentclass[12pt, a4paper, twoside]{thesis}
 
+%\documentclass[defaultstyle, 12pt]{thesis}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%
@@ -484,16 +485,21 @@ escapeinside={\%}{)}          % if you want to add a comment within your code
 %%% begin main document
 %%% structure: \section \subsection \subsubsection \paragraph \subparagraph
 %%%
-
 \pagenumbering{roman}
+%\cleardoublepage
+%\newpage\mbox{}\newpage
 \input{00_Cover}
-\input{00_Abstract}
-\newpage
+\newpage\mbox{}\newpage
+
 \input{00_Dedication}
-\newpage
+%\clearpage\mbox{}\clearpage
+\input{00_Abstract}
+%\clearpage\mbox{}\clearpage
+%\newpage
 %%% start a new page and display the table of contents
 \addtolength{\textheight}{9mm}
 \newpage
+
 \tableofcontents
 \addtolength{\textheight}{-9mm}
 \newpage
@@ -505,7 +511,7 @@ escapeinside={\%}{)}          % if you want to add a comment within your code
 %\listoftables
 
 
-\newpage
+%\newpage
 \pagenumbering{arabic}
 %\pagestyle{scrheadings}
 
