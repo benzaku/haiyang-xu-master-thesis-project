@@ -1,0 +1,564 @@
+%%% File-Information {{{
+%%% Filename: template_bericht.tex
+%%% Purpose: lab report, technical report, project report
+%%% Time-stamp: <2004-06-30 18:19:32 mp>
+%%% Authors: The LaTeX@TUG-Team [http://latex.tugraz.at/]:
+%%%          Karl Voit (vk), Michael Prokop (mp), Stefan Sollerer (ss)
+%%% History:
+%%%   20050914 (ss) correction of "backref=true" to "backref" due to hyperref documentation
+%%%   20040630 (mp) added comments to foldmethod at end of file
+%%%   20040625 (vk,ss) initial version
+%%%
+%%% Notes:
+%%%
+%%%
+%%%
+%%% }}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% main document {{{
+
+\documentclass[
+a4paper,     %% defines the paper size: a4paper (default), a5paper, letterpaper, ...
+% landscape,   %% sets the orientation to landscape
+ twoside,     %% changes to a two-page-layout (alternatively: oneside)
+% twocolumn,   %% changes to a two-column-layout
+ headsepline, %% add a horizontal line below the column title
+% footsepline, %% add a horizontal line above the page footer
+ titlepage,   %% only the titlepage (using titlepage-environment) appears on the first page (alternatively: notitlepage)
+% parskip,     %% insert an empty line between two paragraphs (alternatively: halfparskip, ...)
+% leqno,       %% equation numbers left (instead of right)
+% fleqn,       %% equation left-justified (instead of centered)
+% tablecaptionabove, %% captions of tables are above the tables (alternatively: tablecaptionbelow)
+% draft,       %% produce only a draft version (mark lines that need manual edition and don't show graphics)
+% 10pt         %% set default font size to 10 point
+% 11pt         %% set default font size to 11 point
+12pt,         %% set default font size to 12 point
+twoside, openleft
+%]{scrartcl}  %% article, see KOMA documentation (scrguide.dvi)
+]{thesis}   %% \documentclass[12pt, a4paper, twoside]{thesis}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%% packages
+%%%
+
+%%%
+%%% encoding and language set
+%%%
+
+%%% ngerman: language set to new-german
+%\usepackage{ngerman}
+
+%%% babel: language set (can cause some conflicts with package ngerman)
+%%%        use it only for multi-language documents or non-german ones
+%\usepackage[ngerman]{babel}
+
+%%% inputenc: coding of german special characters
+\usepackage[latin1]{inputenc}
+
+%%% fontenc, ae, aecompl: coding of characters in PDF documents
+\usepackage[T1]{fontenc}
+\usepackage{ae,aecompl}
+\usepackage{rotating}
+%%%
+%%% technical packages
+%%%
+
+%%% amsmath, amssymb, amstext: support for mathematics
+%\usepackage{amsmath,amssymb,amstext}
+
+%%% psfrag: replace PostScript fonts
+\usepackage{psfrag}
+
+%%% listings: include programming code
+%\usepackage{listings}
+
+%%% units: technical units
+%\usepackage{units}
+
+%%%
+%%% layout
+%%%
+
+%%% scrpage2: KOMA heading and footer
+%%% Note: if you don't use this package, please remove
+%%%       \pagestyle{scrheadings} and corresponding settings
+%%%       below too.
+\usepackage[automark]{scrpage2}
+
+%%%
+%%% landscape format (custom: ralf)
+%%%
+\usepackage{rotating}
+\usepackage{float}
+%%%
+%%% hyphenation (custom: ralf)
+%%%
+\hyphenation{english}
+
+%%%
+%%% subfigures (custom: ralf)
+%%%
+%\usepackage{subfig}  % -> ! LaTeX Error: Option clash for package caption.
+
+%%%
+%%% compact itemize with small spacing (custom: ralf)
+%%%
+\newenvironment{compact_itemize}{
+\begin{itemize}
+  \setlength{\itemsep}{1pt}
+  \setlength{\parskip}{0pt}
+  \setlength{\parsep}{0pt}
+}{\end{itemize}}
+\newenvironment{compact_enumerate}{
+\begin{enumerate}
+  \setlength{\itemsep}{1pt}
+  \setlength{\parskip}{0pt}
+  \setlength{\parsep}{0pt}
+}{\end{enumerate}}
+
+%%%
+%%% color (custom: ralf),
+%%%
+\usepackage{xcolor}
+%\definecolor{darkblue}{rgb}{0,0,.5}
+%\definecolor{lightblue}{rgb}{0.8,0.85,1}
+%\definecolor{darkgreen}{rgb}{0,.35,0}
+%\definecolor{darkgray}{gray}{.75}
+
+%%%
+%%% listings (custom: ralf)
+%%%
+\usepackage{listings}
+
+\definecolor{keywordcolor}{rgb}{0,0.35,0} %dark green
+\definecolor{functioncolor}{rgb}{0,0,1}  %blue
+\definecolor{stringcolor}{rgb}{0.4,0,0.4}  %dark magenta
+\definecolor{commentcolor}{rgb}{0,0,0}   %black
+
+
+
+
+%%%
+%%% listing style (custom: ralf)
+%%%
+\lstdefinestyle{custom}
+{
+    tabsize=2,
+    basicstyle=\scriptsize\ttfamily, %small footnotesize scriptsize %tiny
+    %backgroundcolor=\color{gray!30},
+    %
+    %numbers=left,
+    %numberstyle=\tiny,
+    %stepnumber=2, % skip every second linenumber
+    %numbersep=5pt, % distance to listing
+    %
+    frame=single, %frame=none|leftline|topline|bottomline|lines|single|shadowbox  / frame=subset of trblTRBL
+    frameround=tttt, %t = round, clockwise from top right
+    framerule=0pt, %rules without width, needed for filled background
+    %framexleftmargin=5mm,
+    %rulesepcolor=\color{blue},
+    %
+    showstringspaces=false, % no special string spaces
+    extendedchars=yes,
+    inputencoding=utf8
+}
+
+% activate standard listing style (custom: ralf)
+\lstset{style=custom}
+
+%%%
+%%% tikz (custom: ralf)
+%%%
+\usepackage{tikz}
+\usetikzlibrary{shapes.multipart,positioning,arrows,matrix,shapes.symbols,calc,chains}
+
+%%%
+%%% custom tikz rectangle (rounded with gradient from white to blue) (custom: ralf)
+%%%
+\tikzstyle customrectangle=[
+    % The shape:
+    rectangle, rounded corners=0.4cm,
+    % The size:
+    minimum width=8.5cm,
+    minimum height=0.8cm,
+    % The border:
+    very thick,
+    draw=blue!50!black!50, % 50% blue and 50% black,
+    % and that mixed with 50% white
+    % The filling:
+    top color=white, % a shading that is white at the top...
+    bottom color=blue!50!black!20, % and something else at the bottom
+    % Font
+    %font=\small\bfseries,
+    text width=8.5cm,
+    text centered,
+]
+
+
+%%%
+%%% customs (from anysl paper)
+%%%
+% \usepackage{color}
+% \usepackage{listings}
+\usepackage{array}
+\usepackage{amsmath}
+% \usepackage{tikz}
+
+% \usetikzlibrary{shapes.multipart,positioning,arrows,matrix,shapes.symbols,calc,chains}
+
+% seb's defines
+\setlength{\arraycolsep}{0.5mm}
+\def\<#1>{\texttt{#1}}
+\def\ie{i.e.}
+\def\eg{e.g.}
+\def\st{s.t.}
+\def\etal{et al.}
+\tikzstyle cfgnodewl=[circle, draw=black, fill=white, inner sep=1pt, minimum width=4pt]
+\tikzstyle cfgnode=[rectangle,draw,inner sep=4pt, minimum width=1.6cm,minimum height=12pt]
+\tikzstyle cfgedge=[-stealth,thick]
+\tikzstyle cfgpath=[style=cfgedge, snake=snake, segment amplitude=.4mm, segment length=2mm, line after snake=1mm]
+\tikzstyle cfgbe=[style=cfgedge, dashed]
+
+\newcommand{\loopedgeR}[2]{([xshift=3mm] #1.south) |- ([shift={(3mm, -3mm)}] #1.south east) -- ([shift={(3mm, 3mm)}] #2.north east) -| ([xshift=3mm] #2.north)}
+\newcommand{\loopedgeRM}[3]{([xshift=3mm] #1.south) |- ([shift={(3mm, -3mm)}] #1.south east) -- (#2) -- ([shift={(3mm, 3mm)}] #3.north east) -| ([xshift=3mm] #3.north)}
+\newcommand{\loopedgeL}[2]{([xshift=-3mm] #1.south) |- ([shift={(-3mm, -3mm)}] #1.south west) -- ([shift={(-3mm, 3mm)}] #2.north west) -| ([xshift=-3mm] #2.north)}
+
+\newcommand{\exgraph}[3]{
+	\draw (0,3.5)     node[cfgnode] (l1) { #1 };
+	\draw (1.2,1.8)   node[cfgnode] (l2) { #2 };
+	\draw (0,-0.1)    node[cfgnode] (l4) { #3 };
+	\draw[cfgedge] (l1) -- (l2);
+	\draw[cfgedge] (l2) -- (l4);
+	\draw[cfgedge] ([xshift=-3mm] l1.south) -- ([xshift=-3mm] l4.north);
+}
+
+\newcommand{\dedication}{
+\pagestyle{plain}
+        \chapter*{}
+        \addcontentsline{toc}{chapter}{}
+}
+
+%% Optional: the 'caption' package provides a nicer-looking replacement
+%% for the standard caption environment. With 'labelfont=bf,'textfont=it',
+%% caption labels are bold and caption text is italic.
+\usepackage[labelfont=bf,textfont=it]{caption}
+
+
+\usepackage{amssymb}%jetzt hab ich Quats
+\usepackage{setspace}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+%%%
+%%% PDF
+%%%
+
+%\usepackage{pstricks}
+%\usepackage{epsfig}
+%\usepackage{psfig}
+%\usepackage{pst-plot}
+\usepackage{ifpdf}
+%\usepackage{epstopdf}
+%%% Should be LAST usepackage-call!
+%%% For docu on that, see reference on package ``hyperref''
+\ifpdf%   (definitions for using pdflatex instead of latex)
+
+  %%% graphicx: support for graphics
+  %\usepackage[pdftex]{graphicx}
+ %\usepackage{graphicx}
+
+  \pdfcompresslevel=9
+
+  %%% hyperref (hyperlinks in PDF): for more options or more detailed
+  %%%          explanations, see the documentation of the hyperref-package
+  \usepackage[%
+    %%% general options
+    pdftex=true,      %% sets up hyperref for use with the pdftex program
+    %plainpages=false, %% set it to false, if pdflatex complains: ``destination with same identifier already exists''
+    %
+    %%% extension options
+    backref,      %% adds a backlink text to the end of each item in the bibliography
+    pagebackref=false, %% if true, creates backward references as a list of page numbers in the bibliography
+    colorlinks=true,   %% turn on colored links (true is better for on-screen reading, false is better for printout versions)
+    %
+    %%% PDF-specific display options
+    bookmarks=true,          %% if true, generate PDF bookmarks (requires two passes of pdflatex)
+    bookmarksopen=false,     %% if true, show all PDF bookmarks expanded
+    bookmarksnumbered=false, %% if true, add the section numbers to the bookmarks
+    %pdfstartpage={1},        %% determines, on which page the PDF file is opened
+    pdfpagemode=UseNone,
+    colorlinks=true,
+    citecolor=black,%
+    filecolor=black,%
+    linkcolor=black,%
+    urlcolor=black
+         %% None, UseOutlines (=show bookmarks), UseThumbs (show thumbnails), FullScreen
+  ]{hyperref}
+
+
+  %%% provide all graphics (also) in this format, so you don't have
+  %%% to add the file extensions to the \includegraphics-command
+  %%% and/or you don't have to distinguish between generating
+  %%% dvi/ps (through latex) and pdf (through pdflatex)
+  \DeclareGraphicsExtensions{.pdf}
+
+\else %else   (definitions for using latex instead of pdflatex)
+
+  %\usepackage[dvips]{graphicx}
+
+  \DeclareGraphicsExtensions{.eps}
+
+  \usepackage[%
+    dvips,           %% sets up hyperref for use with the dvips driver
+    colorlinks=false %% better for printout version; almost every hyperref-extension is eliminated by using dvips
+  ]{hyperref}
+
+\fi
+
+
+%%% sets the PDF-Information options
+%%% (see fields in Acrobat Reader: ``File -> Document properties -> Summary'')
+%%% Note: this method is better than as options of the hyperref-package (options are expanded correctly)
+\hypersetup{
+  pdftitle={morphableUI: A Framework...}, %%
+  pdfauthor={Andrey Krekhov}, %%
+  pdfsubject={Master's Thesis, Saarland University, March 2011}, %%
+  pdfcreator={}, %%
+  pdfproducer={}, %%
+  pdfkeywords={distributed interaction, automatic UI generation, distributed systems} %%
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%% user defined commands
+%%%
+
+%%% \mygraphics{}{}{}
+%% usage:   \mygraphics{width}{filename_without_extension}{caption}
+%% example: \mygraphics{0.7\textwidth}{rolling_grandma}{This is my grandmother on inlinescates}
+%% requires: package graphicx
+%% provides: including centered pictures/graphics with a boldfaced caption below
+%%
+\newcommand{\mygraphics}[3]{
+  \begin{center}
+    \includegraphics[width=#1, keepaspectratio=true]{#2} \\
+    \textbf{#3}
+  \end{center}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%% define the titlepage
+%%%
+
+% \subject{}   %% subject which appears above titlehead
+% \titlehead{Master Thesis, Saarland University} %% special heading for the titlepage
+
+%%% title
+%\title{Automatic Shader Packetization}
+
+%%% author(s)
+%\author{Ralf Karrenberg}
+
+%%% date
+%\date{Saarbr\"{u}cken, \today{}}
+
+% \publishers{}
+
+%\thanks{Thanks to ALL} %% use it instead of footnotes (only on titlepage)
+
+%\dedication{blah, blah} %% generates a dedication-page after titlepage
+
+
+%%% uncomment following lines, if you want to:
+%%% reuse the maketitle-entries for hyperref-setup
+%\newcommand\org@maketitle{}
+%\let\org@maketitle\maketitle
+%\def\maketitle{%
+%  \hypersetup{
+%    pdftitle={\@title},
+%    pdfauthor={\@author}
+%    pdfsubject={\@subject}
+%  }%
+%  \org@maketitle
+%}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%% set heading and footer
+%%%
+
+%%% scrheadings default:
+%%%      footer - middle: page number
+\setcounter{secnumdepth}{3} \setcounter{tocdepth}{2}
+\pagestyle{scrheadings}
+
+\setlength{\paperwidth}{21cm} \setlength{\paperheight}{29.7cm}
+
+
+%%% user specific
+%%% usage:
+%%% \position[heading/footer for the titlepage]{heading/footer for the rest of the document}
+
+%%% heading - left
+% \ihead[]{}
+
+%%% heading - center
+ \chead[]{}
+
+%%% heading - right
+% \ohead[]{}
+
+%%% footer - left
+% \ifoot[]{}
+
+%%% footer - center
+% \cfoot[]{}
+
+%%% footer - right
+% \ofoot[]{}
+%??????????
+\lstdefinelanguage{C++A}
+{
+    language=C++,
+    morekeywords={
+    akChain, IK_MODE, SMRKinematicJoint, akArmature, SMRVector3, EE_TYPE, TrackedData
+    }
+}
+
+\lstset{ %
+language=C++A,                % choose the language of the code
+basicstyle=\footnotesize,       % the size of the fonts that are used for the code
+stepnumber=1,                   % the step between two line-numbers. If it is 1 each line will be numbered
+numbersep=5pt,                  % how far the line-numbers are from the code
+backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
+showspaces=false,               % show spaces adding particular underscores
+showstringspaces=false,         % underline spaces within strings
+showtabs=false,                 % show tabs within strings adding particular underscores
+frame=single,   		% adds a frame around the code
+tabsize=2,  		% sets default tabsize to 2 spaces
+captionpos=b,   		% sets the caption-position to bottom
+breaklines=true,    	% sets automatic line breaking
+breakatwhitespace=false,    % sets if automatic breaks should only happen at whitespace
+escapeinside={\%}{)}          % if you want to add a comment within your code
+}
+
+\include{ivda-macros}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%% begin document
+%%%
+\begin{document}
+
+% \pagenumbering{roman} %% small roman page numbers
+
+%%% include the title
+% \thispagestyle{empty}  %% no header/footer (only) on this page
+% \maketitle
+
+%%% start a new page and display the table of contents
+% \newpage
+% \tableofcontents
+
+%%% start a new page and display the list of figures
+% \newpage
+% \listoffigures
+
+%%% start a new page and display the list of tables
+% \newpage
+% \listoftables
+
+%%% display the main document on a new page
+% \newpage
+
+% \pagenumbering{arabic} %% normal page numbers (include it, if roman was used above)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%% begin main document
+%%% structure: \section \subsection \subsubsection \paragraph \subparagraph
+%%%
+
+\pagenumbering{roman}
+\input{00_Cover}
+\input{00_Abstract}
+\newpage
+\input{00_Dedication}
+\newpage
+%%% start a new page and display the table of contents
+\addtolength{\textheight}{9mm}
+\newpage
+\tableofcontents
+\addtolength{\textheight}{-9mm}
+\newpage
+\thispagestyle{empty}
+%\pagestyle{empty}
+\clearpage\mbox{}\clearpage
+%\tableofcontents
+%\listoffigures
+%\listoftables
+
+
+\newpage
+\pagenumbering{arabic}
+%\pagestyle{scrheadings}
+
+
+\input{01_Introduction}
+\input{02_BasicConcepts}
+\input{03_SystemDesign}
+\input{04_SystemImplementation}
+\input{05_ExperimentalEvaluation}
+\input{06_Conclusion}
+
+
+
+
+
+
+
+
+%%%
+%%% end main document
+%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\appendix  %% include it, if something (bibliography, index, ...) follows below
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%% bibliography
+%%%
+%%% available styles: abbrv, acm, alpha, apalike, ieeetr, plain, siam, unsrt
+%%%
+\bibliographystyle{acm}
+%\bibliographystyle{alpha}
+%\bibliographystyle{apalike}
+
+%%% name of the bibliography file without .bib
+%%% e.g.: literatur.bib -> \bibliography{literatur}
+\bibliography{thesis}
+
+\end{document}
+%%% }}}
+%%% END OF FILE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Notice!
+%%% This file uses the outline-mode of emacs and the foldmethod of Vim.
+%%% Press 'zi' to unfold the file in Vim.
+%%% See ':help folding' for more information.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Local Variables:
+%% mode: outline-minor
+%% OPToutline-regexp: "%% .*"
+%% OPTeval: (hide-body)
+%% emerge-set-combine-versions-template: "%a\n%b\n"
+%% End:
+%% vim:foldmethod=marker
+
