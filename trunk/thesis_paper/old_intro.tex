@@ -1,0 +1,148 @@
+\chapter{Introduction}
+\label{chapter:introduction}
+
+% 	The introduction is, in principle, a more detailed abstract and an
+% 	introduction to the topic in general. Here is the opportunity to
+% 	motivate the topic more precisely, define the environment, discuss the
+% 	problem, previous work, and to give an overview of the paper. Usually,
+% 	the own, novel contributions are also summarized here. Some of these
+% 	aspect may form a separate (sub-)section if necessary and important
+% 	enough.
+
+% motivation
+%   environment/setting
+%   problem & definition of ideal solution if any
+%   previous approaches & deficiencies
+%   own approach
+%   situated where? (ideal/near which of the previous/...)
+%     contributions
+
+% section on LLVM etc.
+%   LLVM
+%     SSA
+%     terminology (blocks, instructions, branches ...)
+%     IR
+
+%   environment/setting
+Modern hardware architectures for CPUs and GPUs focus on exploiting parallelism:
+multiple processors are connected on the same chip and each processor itself can work on multiple values in parallel using SIMD instructions (Single Instruction, Multiple Data).
+
+A SIMD instruction performs an arithmetic or logic operation on multiple values in parallel, \eg~$N$ additions or~$N$ comparisons.
+In general, $N$ is flexible for types of different sizes:
+a SIMD register can store a fixed number of bytes that can \eg~hold $N$ single-precision or $N/2$ double-precision floating-point values.
+Throughout this thesis, we will use $N$ to refer to the number of single-precision data items a SIMD register of the target architecture can hold (in short: the \emph{SIMD width}).
+On current CPUs, $N$ is usually four (MMX, 3DNow!, SSE--SSE4, AltiVec). %, which allows to perform the same operation on four single-precision values at once.
+
+These vector or \emph{packet} instructions provide a significant performance boost to data-parallel algorithms.
+Examples are algorithms in image processing, data encoding and decoding, ray tracing, signal processing, or computer simulations in particle physics or climate models.
+
+Unfortunately, programming languages do not define a suitable abstraction for these instruction sets.
+The user is forced to explicitly use uncomfortable, non-portable intrinsics.
+Some languages even do not provide this option (\eg~Java only allows scalar processing, although the virtual machine might utilize available SIMD instructions).
+
+
+\paragraph{Parallelism \& Vectorization}
+We will shortly describe and distinguish the different notions of \emph{parallelization} and \emph{vectorization}.
+The next section defines \emph{packetization}.
+\begin{itemize}
+    \item
+        \emph{Parallelization} is a general term used to describe a transformation of scalar code to parallel code or to code that is executed in parallel.
+        This includes SIMD, SIMT (Single Instruction, Multiple Threads) and MIMD (Multiple Instruction, Multiple Data) computation models.
+        Where SIMD describes the execution of one instruction with multiple values on one processor that implements special instruction sets, SIMT performs the same computation using multiple threads that work on different scalar processor cores in parallel.
+        Modern GPU architectures mostly concentrate on this model of computation. %TODO: citation for GPU?
+
+        \emph{Parallelization} also includes transformation of code to a MIMD model where entirely independent parts of a program are executed in parallel on different processors.
+        This does not necessarily include any transformation of the scalar code itself.
+
+    \item
+        \emph{Vectorization} describes transformations that \emph{enable} parallelization by exposing data parallelism.
+        This is usually accomplished by so-called \emph{Loop Vectorization}, which comprises a number of local compiler optimizations that aim at exploiting the parallelism of loops.
+
+        An example for such an optimization is combining data of several unrolled loop iterations to vectors.
+        These can be exploited by vector instructions.
+
+        This field has been widely studied and a multitude of different optimization techniques have been developed.
+\end{itemize}
+
+
+\section{Automatic Packetization}
+\label{sec:introduction:automaticpacketization}
+%   definition
+%\emph{Packetization} describes the process of transforming scalar code to packet code of packet size $N$ \st~it computes the same results as if the scalar code was executed $n$ times in parallel.
+\emph{Packetization} (also: \emph{Data Parallelization} or \emph{SIMDfication}) describes the process of transforming scalar code, given by a control-flow graph (CFG)~$G$, into a CFG~$G'$ that works on $N$ scalar input values at once.
+%Execution of $G'$ has the same effects as $N$ executions of $G$---$G'$ is semantically equivalent to $N$ parallel instances of $G$.
+One execution of $G'$ is semantically equivalent to $N$ executions of $G$.
+The performance benefit of a packetized function comes from the utilization of SIMD instructions which are able to perform a single operation on~$N$ values in parallel.
+
+%   problem
+%Unfortunately, only simple arithmetic instructions can be translated one-to-one.
+Unfortunately, implementing packet code by hand is cumbersome and error prone.
+Replacing the usual arithmetic operators with their intrinsic counterparts is annoying but comparatively easy.
+The major difficulty is modelling control flow, which can quickly become very complex:
+
+%This is because different parts of a packet might execute different branches in an if-clause or iterate a loop a different number of times.
+Since we are executing $N$~instances of the scalar code in parallel, control-flow might diverge.
+For example, we might execute the then-branch of an if-then-else for some input values and the else-branch for others.
+The packetized code has to execute both branches and merge the contents of the variables according to the branch condition.
+In compiler construction, this is called \emph{predicated code}.
+
+Similar complications occur for loops.
+Each loop has to be iterated until the loop-exit condition is \texttt{false} for the \emph{last} element in the packet.
+This possibly involves operations that produce wrong values because the corresponding instance would have left the loop if it was executed in the scalar version.
+The effects of such operations have to be nullified during iteration in order to preserve correct results.
+%Some effects of a loop iteration might have to be nullified because some of the scalar instances of the function that are executed in parallel might already have exited the loop.
+Section~\ref{sec:introduction:packetterminology} describes terminology for this and Section~\ref{sec:automaticpacketization:loops} details our solution.\\
+
+%   previous approaches & deficiencies
+Currently, programmers only employ packet code if an application is very performance critical and the algorithm is compute-intensive and can be expressed in straight-line code.
+
+Compiler optimizations that try to automatically exploit parallelism in scalar programs are a topic of research since many years.
+However, they only target specific local constructs and do not transform entire functions or programs into packet code.
+Especially \emph{loop vectorization} is a widely applied technique that transforms loops to perform several iterations in parallel.\\
+
+True \emph{automatic packetization} of a whole function has only been implemented for compilers of a few domain-specific languages (like shading languages in the field of computer graphics).
+These however require the programmer to work on a special language with all kinds of restrictions and limited portability (see Chapter~\ref{chapter:relatedwork}).
+
+%   own approach
+To solve these problems, this thesis presents a source-language and target-architecture independent infrastructure for automatic packetization.
+
+\section{Contributions}
+\label{sec:introduction:contributions}
+
+In summary, our approach has the following advantages:
+\begin{itemize}
+    \item
+        We present a \emph{platform-independent} compiler pass that performs automatic packetization of a \emph{source-language independent} intermediate representation.
+        Consequently, functions can be written in a \emph{scalar fashion} in any language that compiles to the IR and are automatically packetized to any packet width for any SIMD architecture.
+        Chapter~\ref{chapter:automaticpacketization} presents the packetization algorithm in more detail.
+	\item
+		%The packetizer is as easy to use as a simple function call and does not require any knowledge of our system or compiler construction.
+        The packetizer provides a simple interface:
+		The user only has to implement a scalar function and provide a prototype for the corresponding packetized function. %TODO: signature?
+		The implementation of this prototype is automatically generated by the packetizer.
+    \item
+        %We perform packetization on the control-flow graph of an already \emph{optimized} function, not on the abstract syntax tree (AST).
+        %This allows us to perform aggressive optimization of the scalar source code that might even restructure the CFG.
+        Classic compiler transformations work on the abstract syntax tree (AST) because it is easy to use and code generation is simple.
+        However, the AST does not enable arbitrary optimizations, which is why we perform packetization on the control-flow graph (CFG) of a function instead.
+        This allows us to perform aggressive optimization of the scalar source code before packetization.
+        %We perform packetization on the control-flow graph (CFG) of a function instead, because the AST does not allow arbitrary optimizations.
+% 	\item
+% 		We neither invent a new programming language nor do we reinvent a whole compiler infrastructure.
+% 		We can reuse all frontends, optimizations and code generators provided by LLVM.
+% 		LLVM features a comprehensive set of classical and advanced compiler optimizations.
+% 		Own optimization passes can be added to LLVM ad lib.
+    \item
+        We evaluate our system in the context of real-time ray tracing.
+        The packetizer is employed to automatically transform scalar material shaders (programs responsible for the appearance of an object) into packet code.
+        The packetized shaders outperform their scalar counterparts by an average factor of 3.6 on a standard SSE architecture of SIMD width 4.
+        Chapter~\ref{chapter:casestudy} presents our results.
+\end{itemize}
+
+
+
+\section*{Outline}
+The thesis starts with a chapter on the required foundations and terminology, followed by an overview of the related previous work on data-parallel programming, automatic parallelization and shading languages.
+The main part introduces the automatic packetization algorithm and details its implementation.
+A case study shows the system's applicability in a real world scenario and the efficiency of the generated code.
+The thesis is finished by the conclusion and a brief discussion of possible future work. %including approaches to solve most of the present problems.
