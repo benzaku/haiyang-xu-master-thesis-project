@@ -34,7 +34,26 @@ In the last chapter, we will conclude this thesis. Future work will also be disc
 
 \section{Motivation}
 \label{section:motivation}
-\TODO{In this section the motivation of our project will be described.}
+%\TODO{In this section the motivation of our project will be described.}
+In this section, we will describe the motivation of this thesis. 
+
+\smallskip
+Nowadays, with the fast development of hardware and computing power, more and more complex geometry models are being used for viewing more details and better visual quality. 
+
+\smallskip
+Maybe 10 years ago, people may thought the Stanford Bunny model with almost 70,000 triangles would already enough to show its surface details. But today, with more powerful hardwares, models with much more triangles are becoming increasingly popular. For instance, models we use from \textbf{The Stanford 3D Scanning Repository\footnote{\label{S3DSR}\url{http://graphics.stanford.edu/data/3Dscanrep/}}} are almost with over 10 million triangles. People using those large models in various application such as 3D game, industrial design etc.
+ 
+\smallskip
+In the traditional local application scenario, with a desktop PC with a powerful GPU, we can view this kind of large scale geometry models easily. However, problems came out when we want to view them via internet. In the traditional local application scenario, the whole model is downloaded once and then being rendered to screen. This approach is intuitive and efficient when dealing with a model which is relatively small. But when models over hundreds megabytes are being transmitted over the internet, long waiting time becomes a problem. Under such circumstance, we will lose rendering quality and users' satisfactory as well. 
+
+\smallskip
+And meanwhile, another development trend of today's information technology is that everything is going mobilised! From the first iPhone, to Android, from the release of Microsoft's Surface tablet to the reborn of Blackberry 10. We can see that almost suddenly those handheld devices have dominated our life. You can see people using an iPad, Nexus 7 or Windows 8 table everywhere. And this also inspire us to build our project's application over a handheld device: iPad. 
+
+\smallskip
+With handheld devices, new problems are raised. There are various limitations of those handheld devices such as less powerful computing resource, smaller size of RAM, and limited network connectivity. It's already stressful for a desktop to view a large model in the traditional download-whole-once scenario, not to mention how difficult it would be for a mobile device. 
+
+\smallskip
+Therefore, intuitively \emph{streaming approach} has been raised into our mind. That is the motivation of this project. In our approach, a base, coarsen geometry model will be transmitted to the client side upon an initial connections attempt. And after that, model details will be transmitted and the client-side model will be refined on the fly. Similar to video stream on \textbf{Youtube\footnote{\label{UTUBE}\url{http://www.youtube.com/}} }. And after the refinement streaming is finished, we can get the original mesh. Users can view the model during the refinement process. 
 
 
 \section{Background}
