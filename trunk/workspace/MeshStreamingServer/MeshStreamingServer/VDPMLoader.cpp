@@ -191,6 +191,7 @@ VDPMLoader::openVDPM(const char* _filename)
         avs.r_sin_square = sin_square;
         
         vsplit_loaded.push_back(avs);
+        
     }
     
     ifs.close();
@@ -256,6 +257,7 @@ data_chunk* VDPMLoader::adaptive_refinement()
         if (vhierarchy_.is_leaf_node(node_handle) != true &&
             qrefine(node_handle) == true)
         {
+            //std::cout << "Need to force_vsplit " << node_handle.idx() << std::endl;
             force_vsplit(node_handle, vsplits_to_send);
         }
         /*
@@ -290,6 +292,7 @@ data_chunk* VDPMLoader::adaptive_refinement()
         std::cout << vsplits_to_send[0]->l_normal << std::endl;
     clear_vsplits_to_send(vsplits_to_send);
     vsplits_to_send.clear();
+    std::cout << "size of vfront : " << vfront_.size() << std::endl;
     return vsplits_data;
 }
 
@@ -367,37 +370,6 @@ VDPMLoader::vsplit(VHierarchyNodeHandle _node_handle,
     VDPMMesh::VertexHandle  v0 = vhierarchy_.vertex_handle(lchild_handle);
     VDPMMesh::VertexHandle  v1 = vhierarchy_.vertex_handle(rchild_handle);
     
-    //generate vsplit
-    /*
-    Vsplit *vs = (Vsplit *)malloc(sizeof(Vsplit));
-    vs->v0 = mesh_.point(vhierarchy_.vertex_handle(lchild_handle));
-    //vs->node_index = vhierarchy_.node_index(rchild_handle).value();
-    vs->node_index = vhierarchy_.node(_node_handle).node_index().value();
-    vs->fund_lcut_index = vhierarchy_.fund_lcut_index(lchild_handle).value();
-    vs->fund_rcut_index = vhierarchy_.fund_rcut_index(lchild_handle).value();
-    
-    vs->l_radius = vhierarchy_.node(lchild_handle).radius();
-    vs->l_normal = vhierarchy_.node(lchild_handle).normal();
-    vs->l_sin_square = vhierarchy_.node(lchild_handle).sin_square();
-    vs->l_mue_square = vhierarchy_.node(lchild_handle).mue_square();
-    vs->l_sigma_square = vhierarchy_.node(lchild_handle).sigma_square();
-    
-    vs->r_radius = vhierarchy_.node(rchild_handle).radius();
-    vs->r_normal = vhierarchy_.node(rchild_handle).normal();
-    vs->r_sin_square = vhierarchy_.node(rchild_handle).sin_square();
-    vs->r_mue_square = vhierarchy_.node(rchild_handle).mue_square();
-    vs->r_sigma_square = vhierarchy_.node(rchild_handle).sigma_square();
-    
-    Vsplit temp;
-    for(int i = 0; i < vsplit_loaded.size(); i ++){
-        if (vsplit_loaded[i].node_index == vs->node_index) {
-            temp = vsplit_loaded[i];
-        }
-    }
-    //if(splits.size() < 10)
-    std::cout << vs->v0 << std::endl << vs->l_normal << std::endl << vs->r_normal << std::endl;
-        splits.push_back(vs);
-    */
     append_vsplit(_node_handle, splits);
      
     mesh_.vertex_split(v0, v1, vl, vr);

@@ -79,8 +79,11 @@
 
 -(void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
 {
+    
+    //NSLog(@"dis read %d", data.length);
     [[ProgMeshCentralController sharedInstance] readData:data withTag:tag :_socket_state];
 }
+
 
 -(void) configureHostAndPort:(NSString *)host :(NSString *)port
 {
@@ -92,9 +95,20 @@
 {
     if (_socket_state == SOCKET_CONNECTED_IDLE) {
         _socket_state = nextState;
-        
+        NSLog(@"sending data ");
         [_socket writeData:data withTimeout:timeout tag:0];
         [_socket readDataWithTimeout:timeout tag:0];
+        
+        
+    }
+}
+
+- (void) socketSendDataWithReadTimeOutAndToLength:(NSData *) data : (enum SOCKET_STATE) nextState : (NSTimeInterval) timeout : (NSUInteger) length
+{
+    if (_socket_state == SOCKET_CONNECTED_IDLE) {
+        _socket_state = nextState;
+        [_socket writeData:data withTimeout:-1 tag:0];
+        [_socket readDataToLength:length withTimeout:timeout tag:0];
     }
 }
 
@@ -127,7 +141,7 @@
 
 - (void) socketWaitForDataWithLengthTimeout : (NSInteger) length: (enum SOCKET_STATE) nextState : (NSTimeInterval) timeout
 {
-    if (_socket_state == SOCKET_CONNECTED_IDLE) {
+    if (_socket_state == SOCKET_CONNECTED_IDLE || _socket_state == SOCKET_WAIT_FOR_SPM_VSPLIT_DATA) {
         _socket_state = nextState;
         [_socket readDataToLength:length withTimeout:timeout tag:0];
     }

@@ -77,4 +77,15 @@
 }
 
 
+- (int) getCurrentFaceNumberCanDraw
+{    
+    return currentFaceNumberCanDraw;
+}
+
+- (void) setCurrentFaceNumberCanDraw : (int) cfncd
+{
+    currentFaceNumberCanDraw = cfncd;
+}
+
+
 @end

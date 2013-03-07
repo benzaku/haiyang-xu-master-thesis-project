@@ -40,6 +40,7 @@
 		589A5DD4161EFC9300C57821 /* BaseProperty.cc in Sources */ = {isa = PBXBuildFile; fileRef = 589A5DA9161EFC9300C57821 /* BaseProperty.cc */; };
 		589A5DD5161EFC9300C57821 /* Endian.cc in Sources */ = {isa = PBXBuildFile; fileRef = 589A5DAC161EFC9300C57821 /* Endian.cc */; };
 		589A5DD6161EFC9300C57821 /* SingletonT.cc in Sources */ = {isa = PBXBuildFile; fileRef = 589A5DB3161EFC9300C57821 /* SingletonT.cc */; };
+		58C4098C16AC4534001440D2 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58C4098B16AC4534001440D2 /* QuartzCore.framework */; };
 		58C9A5BC1626FC9000A36306 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58C9A5BB1626FC9000A36306 /* GLKit.framework */; };
 		58C9A5BF1626FC9A00A36306 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58C9A5BE1626FC9A00A36306 /* OpenGLES.framework */; };
 		58C9A5C61626FFD700A36306 /* Shader.fsh in Sources */ = {isa = PBXBuildFile; fileRef = 58C9A5C41626FFD700A36306 /* Shader.fsh */; };
@@ -193,6 +194,7 @@
 		589A5DB4161EFC9300C57821 /* SingletonT.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SingletonT.hh; sourceTree = "<group>"; };
 		589A5DB5161EFC9300C57821 /* vector_cast.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = vector_cast.hh; sourceTree = "<group>"; };
 		589A5DB6161EFC9300C57821 /* vector_traits.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = vector_traits.hh; sourceTree = "<group>"; };
+		58C4098B16AC4534001440D2 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		58C9A5BB1626FC9000A36306 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
 		58C9A5BE1626FC9A00A36306 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		58C9A5C41626FFD700A36306 /* Shader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Shader.fsh; sourceTree = "<group>"; };
@@ -235,6 +237,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				58C4098C16AC4534001440D2 /* QuartzCore.framework in Frameworks */,
 				58C9A5BF1626FC9A00A36306 /* OpenGLES.framework in Frameworks */,
 				58C9A5BC1626FC9000A36306 /* GLKit.framework in Frameworks */,
 				DD24848D1619B0E5000F2FBE /* CFNetwork.framework in Frameworks */,
@@ -493,6 +496,7 @@
 		DD2484371619AE02000F2FBE = {
 			isa = PBXGroup;
 			children = (
+				58C4098B16AC4534001440D2 /* QuartzCore.framework */,
 				58C9A5BE1626FC9A00A36306 /* OpenGLES.framework */,
 				58C9A5BB1626FC9000A36306 /* GLKit.framework */,
 				DD24848C1619B0E5000F2FBE /* CFNetwork.framework */,

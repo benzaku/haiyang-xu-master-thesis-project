@@ -49,6 +49,7 @@ private:
     StreamSocket        _socket;
     SocketReactor&      _reactor;
     char*               _pBuffer;
+    int                 _tag;
     PMFileHandler*      _pmFH;
     ModelRepositoryHandler* _mRH;
     VDPMFileHandler*    _vdpmFH;
@@ -57,6 +58,9 @@ private:
     char*               _tempContentPtr;
     int                 _templen;
     char*               pmInfoChunk;
+    
+    data_chunk          *temp_data_chunk;
+    int                 current_idx;
     
     
     bool handleLoadModelRequest(int modelId);

@@ -93,6 +93,9 @@ public:
     void update_viewing_parameters(double mvmatrix[16], float aspect, float fovy, float tolerance_square);
     
     data_chunk* adaptive_refinement();
+    
+    std::vector<Vsplit>* get_vsplit_loaded(){ return &vsplit_loaded;};
+
 
 private:
     
@@ -154,7 +157,6 @@ private:
     data_chunk* convert_vsplit_list_to_data_chunk();
     
     void append_vsplit(VHierarchyNodeHandle node_handle, std::vector<Vsplit *>& splits);
-
 
 };
 

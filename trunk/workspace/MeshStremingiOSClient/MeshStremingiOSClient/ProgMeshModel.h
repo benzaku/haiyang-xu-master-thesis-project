@@ -31,6 +31,8 @@
     float centroid_radius[4];
     
     int currentRecoveredFaceNumber;
+    
+    int currentFaceNumberCanDraw;
 
 }
 
@@ -58,6 +60,10 @@
 - (int ) getCurrentRecoveredFaceNumber;
 
 - (void) setCurrentRecoveredFaceNumber: (int) crfnumber;
+
+- (int) getCurrentFaceNumberCanDraw;
+
+- (void) setCurrentFaceNumberCanDraw : (int) cfncd;
 
 
 @property (strong, nonatomic) NSString *type;

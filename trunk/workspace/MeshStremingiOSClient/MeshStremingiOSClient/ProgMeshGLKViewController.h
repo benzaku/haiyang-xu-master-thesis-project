@@ -25,6 +25,7 @@
     ProgMeshModel *progMeshModel;
     
     enum PM_VIEW_STATUS _status;
+    
 }
 
 - (void) setProgMeshGLManager : (ProgMeshGLManager *) pmglManager;
@@ -39,5 +40,7 @@
 
 
 @property (atomic, assign) enum PM_VIEW_STATUS status;
+@property (retain, nonatomic) IBOutlet UIProgressView *progress;
+- (IBAction)decrease_screen_error:(id)sender;
 
 @end

@@ -55,6 +55,7 @@ PMStreamServerHandler::PMStreamServerHandler(StreamSocket& socket, SocketReactor
     STREAM_STATE = NONE_STATE;
     
     std::cout<< "Send Finish!" << std::endl;
+    temp_data_chunk = NULL;
     
 }
 
@@ -89,13 +90,13 @@ PMStreamServerHandler::onReadable(const AutoPtr<Poco::Net::ReadableNotification>
         delete this;
 }
 
-
+#define VSPLIT_LENGTH   80
 
 void
 PMStreamServerHandler::handleRequest()
 {
     
-    //std::cout<<_pBuffer << std::endl;
+    //std::cout<<"pbuffer: "<<_pBuffer << std::endl;
     if(strncmp(_pBuffer, "N_BASE_VERTICES", 15) == 0){
         _temp = _pmFH->getPMLoader()->getNBaseVertices();
         _tempContentPtr = (char *) &_temp;
@@ -246,11 +247,36 @@ PMStreamServerHandler::handleRequest()
         char header_size[8 + sizeof(int)];
         strncpy(header_size, data->HEADER, 8);
         memcpy(&header_size[8], &(data->size), sizeof(int));
+        
+        if(temp_data_chunk != NULL){
+            free(temp_data_chunk->data);
+            free(temp_data_chunk);
+        }
+        temp_data_chunk = data;
+        current_idx = 0;
+        
         _socket.sendBytes(header_size, 8 + sizeof(int));
-        if(data->size > 0)
-            _socket.sendBytes(data->data, data->size);
+        //if(data->size > 0)
+          //  _socket.sendBytes(data->data, data->size);
+    }
+    if(strncmp(_pBuffer, "RETRIEVE_SPM_VSPLIT_DATA", 24) == 0){
+        std::cout << "retrieveing spm vsplit data size: "<< temp_data_chunk->size << std::endl;
+        int sent_bytes = _socket.sendBytes(temp_data_chunk->data, temp_data_chunk->size);
         
     }
+    if(strncmp(_pBuffer, "RETRIEVE_VSPLIT_DATA_IDX_NUM", 28) == 0){
+        //std::cout << "retrieveing spm vsplit data size: "<< temp_data_chunk->size << std::endl;
+        int idx_num[2];
+        memcpy(idx_num, &_pBuffer[28], 2 * sizeof(int));
+        //std::cout << idx_num[0] << " " << idx_num[1] << std::endl;
+        int sent_bytes = 0;
+        if(temp_data_chunk != NULL){
+            sent_bytes = _socket.sendBytes(&(temp_data_chunk->data[idx_num[0] * VSPLIT_LENGTH]), idx_num[1] * VSPLIT_LENGTH);
+        }
+        //std::cout << "byte sent " << sent_bytes << std::endl;
+
+    }
+    
 }
 
 int

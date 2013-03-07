@@ -50,6 +50,7 @@
     char * current_base_mesh_info_data;
     
     ProgMeshModel * _progMeshModel;
+    
 }
 
 - (id) initWithHostAndPort:(NSString *) host: (NSString *) port;
@@ -90,10 +91,12 @@
 
 - (void) syncViewingParametersToServer : (NSData *) viewing_parameters_;
 
+
 //@property (strong, atomic) SocketHandler *socketHandler;
 @property (strong, atomic) ServerInfo *serverInfo;
 
 @property (strong, atomic) ModelObj * currentSelectedModel;
 
 @property (strong, atomic) ProgMeshModel * progMeshModel;
+
 @end
