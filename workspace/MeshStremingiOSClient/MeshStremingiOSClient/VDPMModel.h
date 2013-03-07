@@ -12,10 +12,7 @@
 
 #include "AdditionalIncludes.h"
 
-#include <set.h>
 
-typedef std::set<int>          UpdatePartIndex;
-typedef std::pair<UpdatePartIndex *, UpdatePartIndex *> UpdateInfo;
 
 struct viewparam {
     double      modelViewMatrix[16];
@@ -49,7 +46,7 @@ struct viewparam {
     UpdatePartIndex indicePartIndex;
     UpdateInfo updateInfo;
 
-
+    VDPMMesh::Point BBMAX, BBMIN;
 }
 
 
@@ -73,9 +70,13 @@ struct viewparam {
 
 - (UpdateInfo *) update_mesh_with_vsplits:(NSData *) vsplits_data;
 
+- (void) decrease_tolerance_square;
+
 - (void) adaptive_refinement;
 
 - (NSData *) getViewingParameters;
+
+- (VDPMMesh *) getMesh;
 
 
 @end

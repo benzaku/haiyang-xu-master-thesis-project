@@ -44,6 +44,7 @@
 		582DCAC416A242C3004BC474 /* fileopen.xpm in Resources */ = {isa = PBXBuildFile; fileRef = 582DCA9A16A242C3004BC474 /* fileopen.xpm */; };
 		582DCAC516A242C3004BC474 /* fileprint.xpm in Resources */ = {isa = PBXBuildFile; fileRef = 582DCA9B16A242C3004BC474 /* fileprint.xpm */; };
 		582DCAC616A242C3004BC474 /* filesave.xpm in Resources */ = {isa = PBXBuildFile; fileRef = 582DCA9C16A242C3004BC474 /* filesave.xpm */; };
+		5833F3C816B41DA2002C8511 /* PMMemoryUpdateInformation.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5833F3C716B41DA2002C8511 /* PMMemoryUpdateInformation.mm */; };
 		583987AA16A49D0B008ED5A2 /* VDPMModel.mm in Sources */ = {isa = PBXBuildFile; fileRef = 583987A916A49D0B008ED5A2 /* VDPMModel.mm */; };
 		583987C216A4C6D7008ED5A2 /* AdditionalIncludes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 583987C016A4C6D7008ED5A2 /* AdditionalIncludes.cpp */; };
 		5839914316A56B14008ED5A2 /* Shader.fsh in Sources */ = {isa = PBXBuildFile; fileRef = 5839914116A56B14008ED5A2 /* Shader.fsh */; };
@@ -59,7 +60,6 @@
 		587E2DFE16553A5000F1FA1B /* ProgMeshModel.mm in Sources */ = {isa = PBXBuildFile; fileRef = 587E2DFD16553A5000F1FA1B /* ProgMeshModel.mm */; };
 		587E2E0116553B8000F1FA1B /* ProgMeshModelArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 587E2E0016553B8000F1FA1B /* ProgMeshModelArray.m */; };
 		588934AD165670750001BA27 /* ServerInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 588934AC165670750001BA27 /* ServerInfo.m */; };
-		58955D4D16B2E0C200AC310D /* UpdateInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 58955D4B16B2E0C200AC310D /* UpdateInfo.cpp */; };
 		589FB97616AC14580048E847 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 589FB97516AC14580048E847 /* QuartzCore.framework */; };
 		58AC96D1166D4DB1008E35D0 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 58AC96D0166D4DB1008E35D0 /* libxml2.dylib */; };
 		58AC96E8166D4FB3008E35D0 /* XmlHeaderHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 58AC96DF166D4FB3008E35D0 /* XmlHeaderHelper.m */; };
@@ -205,6 +205,8 @@
 		582DCA9A16A242C3004BC474 /* fileopen.xpm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = fileopen.xpm; sourceTree = "<group>"; };
 		582DCA9B16A242C3004BC474 /* fileprint.xpm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = fileprint.xpm; sourceTree = "<group>"; };
 		582DCA9C16A242C3004BC474 /* filesave.xpm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = filesave.xpm; sourceTree = "<group>"; };
+		5833F3C616B41DA2002C8511 /* PMMemoryUpdateInformation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PMMemoryUpdateInformation.h; sourceTree = "<group>"; };
+		5833F3C716B41DA2002C8511 /* PMMemoryUpdateInformation.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PMMemoryUpdateInformation.mm; sourceTree = "<group>"; };
 		583987A816A49D0B008ED5A2 /* VDPMModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VDPMModel.h; sourceTree = "<group>"; };
 		583987A916A49D0B008ED5A2 /* VDPMModel.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = VDPMModel.mm; sourceTree = "<group>"; };
 		583987C016A4C6D7008ED5A2 /* AdditionalIncludes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AdditionalIncludes.cpp; sourceTree = "<group>"; };
@@ -230,8 +232,6 @@
 		588934AC165670750001BA27 /* ServerInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServerInfo.m; sourceTree = "<group>"; };
 		5892CA021668C5F900DCADA8 /* CWLSynthesizeSingleton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CWLSynthesizeSingleton.h; sourceTree = "<group>"; };
 		5892CA041668DF9B00DCADA8 /* GCDSingleton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GCDSingleton.h; sourceTree = "<group>"; };
-		58955D4B16B2E0C200AC310D /* UpdateInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UpdateInfo.cpp; sourceTree = "<group>"; };
-		58955D4C16B2E0C200AC310D /* UpdateInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpdateInfo.h; sourceTree = "<group>"; };
 		589FB97516AC14580048E847 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		58AC96D0166D4DB1008E35D0 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		58AC96DE166D4FB3008E35D0 /* XmlHeaderHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XmlHeaderHelper.h; sourceTree = "<group>"; };
@@ -586,8 +586,8 @@
 				581DC6AB16AEEDA60036E94F /* GLEssentials */,
 				583987C016A4C6D7008ED5A2 /* AdditionalIncludes.cpp */,
 				583987C116A4C6D7008ED5A2 /* AdditionalIncludes.h */,
-				58955D4B16B2E0C200AC310D /* UpdateInfo.cpp */,
-				58955D4C16B2E0C200AC310D /* UpdateInfo.h */,
+				5833F3C616B41DA2002C8511 /* PMMemoryUpdateInformation.h */,
+				5833F3C716B41DA2002C8511 /* PMMemoryUpdateInformation.mm */,
 			);
 			name = Util;
 			sourceTree = "<group>";
@@ -1229,7 +1229,7 @@
 				581DC6D916AEEDA60036E94F /* sourceUtil.c in Sources */,
 				581DC6DA16AEEDA60036E94F /* vectorUtil.c in Sources */,
 				581DC6E516AEF4620036E94F /* MyOpenGLRenderer.m in Sources */,
-				58955D4D16B2E0C200AC310D /* UpdateInfo.cpp in Sources */,
+				5833F3C816B41DA2002C8511 /* PMMemoryUpdateInformation.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

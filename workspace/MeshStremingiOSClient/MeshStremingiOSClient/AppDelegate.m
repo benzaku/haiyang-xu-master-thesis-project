@@ -93,9 +93,9 @@
     //[_progMeshCentralController setGLRenderViewController:(GLRenderViewController *)glRenderViewController];
     
     
+    
+    
     [self.window makeKeyAndVisible];
-    
-    
     
     return YES;
 }

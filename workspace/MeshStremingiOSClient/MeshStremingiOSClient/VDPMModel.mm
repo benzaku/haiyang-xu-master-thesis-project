@@ -13,7 +13,9 @@
 #include <vector>
 
 
-@implementation VDPMModel
+@implementation VDPMModel{
+    
+}
 
 
 - (void) loadBaseMeshInfo:(NSData *)baseMeshInfoData
@@ -95,27 +97,33 @@
     vIt(mesh_.vertices_begin()),
     vEnd(mesh_.vertices_end());
     
-    VDPMMesh::Point bbMin, bbMax;
+    //VDPMMesh::Point bbMin, bbMax;
     
-    bbMin = bbMax = mesh_.point(vIt);
+    BBMIN = BBMAX = mesh_.point(vIt);
     for (; vIt!=vEnd; ++vIt)
     {
-        bbMin.minimize(mesh_.point(vIt));
-        bbMax.maximize(mesh_.point(vIt));
+        BBMIN.minimize(mesh_.point(vIt));
+        BBMAX.maximize(mesh_.point(vIt));
     }
     
     // set center and radius
-    VDPMMesh::Point cen = 0.5f*(bbMin + bbMax);
+    VDPMMesh::Point cen = 0.5f*(BBMIN + BBMAX);
     centroid_radius[0] = cen.data()[0];
     centroid_radius[1] = cen.data()[1];
     centroid_radius[2] = cen.data()[2];
     
-    centroid_radius[3] = 0.5*(bbMin - bbMax).norm();
+    centroid_radius[3] = 0.5*(BBMIN - BBMAX).norm();
     
     base_mesh_loaded_flag = true;
     
     NSLog(@"Base Mesh Load Finished!");
     NSLog(@"%d vertices, %d faces %d details", _n_base_vertices_, _n_base_faces_, _n_details_);
+    
+    //viewing_parameters_.decrease_tolerance();
+    //viewing_parameters_.decrease_tolerance();
+    //viewing_parameters_.decrease_tolerance();
+    //viewing_parameters_.decrease_tolerance();
+    //viewing_parameters_.decrease_tolerance();
     
 }
 
@@ -127,7 +135,7 @@
     _type = modelObj.ModelType;
     
     updateInfo.~pair();
-    
+    //viewing_parameters_.set_tolerance_square();
     return self;
 }
 
@@ -235,6 +243,7 @@
     }
     
     currentRecoveredFaceNumber = _n_base_faces_;
+    currentFaceNumberCanDraw = currentRecoveredFaceNumber;
     
 }
 
@@ -259,7 +268,8 @@
     int vfront_count = 0;
     for( vfront_.begin(); !vfront_.end();){
         VHierarchyNodeHandle node_handle = vfront_.node_handle(), parent_handle = vhierarchy_.parent_handle(node_handle);
-        if(vhierarchy_.is_leaf_node(node_handle) != true && [self qrefine:node_handle] == true){
+        //NSLog(@"node %d ", node_handle.idx());
+        if([self qrefine:node_handle] == true){
             NSLog(@"Need to force_vsplit %d", node_handle.idx());
             
         }
@@ -267,15 +277,27 @@
         //else if (vhierarchy_.is_root_node(node_handle) != true) &&
         
     }
+    //NSLog(@"size of vfront_ = %d", vfront_.size());
+}
+
+- (void) decrease_tolerance_square{
+    viewing_parameters_.decrease_tolerance();
+    viewing_parameters_.update_viewing_configurations();
 }
 
 - (void) update_viewing_parameters: (GLKMatrix4) _modelview_matrix  :(float) aspect: (float) fovy
 {
-    viewing_parameters_.set_modelview_matrix((double *)_modelview_matrix.m);
+    double mvm[16];
+    for(int i = 0; i < 16; i ++){
+        mvm[i] = _modelview_matrix.m[i];
+    }
+    viewing_parameters_.set_modelview_matrix(mvm);
     viewing_parameters_.set_aspect(aspect);
     viewing_parameters_.set_fovy(fovy);
-    
+    //viewing_parameters_.decrease_tolerance();
     viewing_parameters_.update_viewing_configurations();
+    
+    //NSLog(@"tolerance_square : %f", viewing_parameters_.tolerance_square());
 
 }
 
@@ -389,7 +411,7 @@
 
     Vsplit * splits = new Vsplit[n_split];
     [vsplits_data getBytes:splits length:vsplits_data.length];
-    std::cout << splits[0].l_normal << std::endl;
+    //std::cout << splits[0].l_normal << std::endl;
     
     for(int i = 0; i < n_split; i ++){
         Vsplit asplit = splits[i];
@@ -431,6 +453,11 @@
     }
     
     [self refine];
+    
+    //NSLog(@"size of vfront: %d", vfront_.size());
+    
+    
+    
     return &updateInfo;
 }
 
@@ -478,11 +505,12 @@
         }
     }
     
-    NSLog(@"size of vfront : %d", vfront_count);
+    //NSLog(@"size of vfront : %d", vfront_count);
     // free memories tagged as 'deleted'
     mesh_.garbage_collection(false, true, true);
+    mesh_.update_vertex_normals();
     mesh_.update_face_normals();
-    //updateInfo = std::make_pair(&updatePartIndex, &indicePartIndex);
+    updateInfo = std::make_pair(&updatePartIndex, &indicePartIndex);
 }
 
 - (void) force_vsplit: (VHierarchyNodeHandle) node_handle
@@ -527,8 +555,11 @@
     vfront_.remove(_node_handle);
     vfront_.add(lchild_handle);
     vfront_.add(rchild_handle);
-    //[self updateVetexNormalArray:nv11 :v0 :v1];
+    
+    [self updateVetexNormalArray:nv11 :v0 :v1];
 }
+
+VDPMMesh::Point temp_center;
 
 - (void) updateVetexNormalArray :   (int) nv11
 :(VDPMMesh::VertexHandle) v0 : (VDPMMesh::VertexHandle) v1
@@ -536,17 +567,26 @@
     int idx;
     int nv0 = 0, nv1 = 0;
     memcpy(&(BASE_MESH_VERTEX_NORMAL_ARRAY[nCurrentVertices * 3 * 2]), mesh_.point(v0).data(), 3 * sizeof(float));
+    
+    if(mesh_.point(v0).data()[0] == 0 && mesh_.point(v0).data()[1] == 0 && mesh_.point(v0).data()[2] == 0){
+        NSLog(@"illeagle!");
+    }
+    
     updatePartIndex.insert(nCurrentVertices * 3 * 2);
     
     nCurrentVertices ++;
     currentVerticeIdx ++;
     //currentRecoveredFaceNumber += 2;
-    /*
-    BBMAX.maximize(pminfo->p0);
-    BBMIN.minimize(pminfo->p0);
-    center = 0.5f*(BBMAX + BBMIN);
-    radius = 0.5*(BBMIN - BBMAX).norm();
-     */
+    
+    BBMAX.maximize(mesh_.point(v0));
+    BBMIN.minimize(mesh_.point(v0));
+    
+    temp_center = 0.5f*(BBMAX + BBMIN);
+    centroid_radius[3] = 0.5*(BBMIN - BBMAX).norm();
+    centroid_radius[0] = temp_center.data()[0];
+    centroid_radius[1] = temp_center.data()[1];
+    centroid_radius[2] = temp_center.data()[2];
+    
     //updating affected face normals and vertex normals
     // face normals
     for (VDPMMesh::VertexFaceIter vfiter = mesh_.vf_begin(v0); vfiter != mesh_.vf_end(v0); ++ vfiter) {
@@ -633,6 +673,18 @@
     }
 
 }
+- (VDPMMesh *) getMesh
+{
+    return &mesh_;
+}
+
+- (int) getCurrentFaceNumberCanDraw
+{
+    if(currentRecoveredFaceNumber != mesh_.n_faces())
+        NSLog(@"Calculated: %d, real : %d", currentRecoveredFaceNumber, mesh_.n_faces());
+    return currentFaceNumberCanDraw;
+}
+
 
 @synthesize mesh = _mesh;
 @synthesize n_base_vertices = _n_base_vertices_;

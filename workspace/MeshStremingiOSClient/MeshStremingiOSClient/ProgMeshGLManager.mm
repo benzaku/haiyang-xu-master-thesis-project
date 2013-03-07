@@ -7,6 +7,10 @@
 //
 
 #import "ProgMeshGLManager.h"
+#import "AdditionalIncludes.h"
+#include "VDPMModel.h"
+
+
 
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
@@ -39,7 +43,11 @@ GLfloat backgroundSquare[] =
 };
 
 
-@implementation ProgMeshGLManager
+@implementation ProgMeshGLManager{
+    std::vector<NSData *> vd_vsplits;
+    
+    int vd_vsplits_pointer;
+}
 
 - (void) setProgMeshModel : (ProgMeshModel *) pmModel
 {
@@ -75,6 +83,10 @@ GLfloat backgroundSquare[] =
     [self genderateAndBindFaceIndexBufferObject];
     [self createFaceIndexBufferMemSpace:faceIndexDataTotalSize];
     [self mapBaseMeshFaceIndexBufferData:faceIndexData :faceIndexDataSize];
+    
+    
+    
+    vd_vsplits_pointer = 0;
 }
 
 
@@ -117,7 +129,7 @@ GLfloat backgroundSquare[] =
 
 - (void) createFaceIndexBufferMemSpace: (GLsizei) totalSize
 {
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, totalSize, 0, GL_STREAM_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, totalSize, 0, GL_DYNAMIC_DRAW);
 
 }
 
@@ -328,8 +340,41 @@ GLfloat backgroundSquare[] =
     
 }
 
+- (void) draw3
+{
+    glClearColor(0.65f, 0.65f, 0.65f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glBindBuffer(GL_ARRAY_BUFFER, _VERTEX_NORMAL_BUFFER_OBJECT);
+
+    
+    glUseProgram(_Program);
+    
+    glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, 0, _modelViewProjectionMatrix.m);
+    glUniformMatrix3fv(uniforms[UNIFORM_NORMAL_MATRIX], 1, 0, _normalMatrix.m);
+    
+    VDPMMesh *mesh_ =  [(VDPMModel *)progMeshModel getMesh];
+    
+    VDPMMesh::ConstFaceIter   fIt(mesh_->faces_begin()), fEnd(mesh_->faces_end());
+    VDPMMesh::ConstFaceVertexIter     fvIt;
+    
+    
+    unsigned int idx[3];
+    
+    for(; fIt != fEnd; ++fIt){
+        fvIt = mesh_->cfv_iter(fIt.handle());
+        for(int i = 0; i < 3; i ++){
+            idx[i] = (fvIt.handle()).idx();
+            
+        }
+        glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, idx);
+        
+    }
+}
+
 - (void) draw2
 {
+    //if(!_duringVBOUpdating){
+    
     glClearColor(0.65f, 0.65f, 0.65f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
@@ -343,16 +388,91 @@ GLfloat backgroundSquare[] =
     glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, 0, _modelViewProjectionMatrix.m);
     glUniformMatrix3fv(uniforms[UNIFORM_NORMAL_MATRIX], 1, 0, _normalMatrix.m);
     
-    int facenumber = [progMeshModel getCurrentRecoveredFaceNumber];
-    
+    //int facenumber = [progMeshModel getCurrentRecoveredFaceNumber];
+    int facenumber = [progMeshModel getCurrentFaceNumberCanDraw];
     glDrawElements(GL_TRIANGLES, facenumber * 3, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+    
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    //}
     
     
 }
 
-- (void) update_vbo
+- (void) update_vbo: (void *) updateInfo
 {
+    _duringVBOUpdating = YES;
+    UpdatePartIndex * upi_array = ((UpdateInfo *)updateInfo)->first;
+    UpdatePartIndex * upi_indice = ((UpdateInfo *)updateInfo)->second;
     
+    glBindBuffer(GL_ARRAY_BUFFER, _VERTEX_NORMAL_BUFFER_OBJECT);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _FACE_INDEX_BUFFER_OBJECT);
+    for (UpdatePartIndex::iterator i = upi_array->begin(); i != upi_array->end(); i ++) {
+        glBufferSubData(GL_ARRAY_BUFFER, (*i) * sizeof(float), 3 * sizeof(float), &[progMeshModel getBaseMeshVertexNormalArray][*i]);
+    }
+    
+    glEnableVertexAttribArray(GLKVertexAttribPosition);
+    glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(0));
+    glEnableVertexAttribArray(GLKVertexAttribNormal);
+    glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(12));
+    
+    //update index
+    
+    
+    // allocate enough space for indice vbo
+    GLubyte * indice = (GLubyte *)&([progMeshModel getMeshIndiceArray][0]);
+    //currentRecoveredFace = [progMeshModel getCurrentRecoveredFacesNumber];
+    
+    for (UpdatePartIndex::iterator i = upi_indice->begin(); i != upi_indice->end(); i ++) {
+        glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, (*i) * sizeof(unsigned int), 3 * sizeof(unsigned int), &[progMeshModel getMeshIndiceArray][*i]);
+    }
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    _updateInfo = NULL;
+    
+    _duringVBOUpdating = NO;
+    
+}
+
+- (void) setUpdateInfo:(void *) updateInfo
+{
+    _updateInfo = updateInfo;
+}
+
+- (void *) getUpdateInfo
+{
+    return _updateInfo;
+}
+
+- (void *) get_vd_splits
+{
+    return (void *)&vd_vsplits;
+}
+
+- (void) try_to_refine: (int) number
+{
+    int cnt = 0;
+    while (vd_vsplits.size() > 0 && cnt < number) {
+        UpdateInfo *up_info = [(VDPMModel *)progMeshModel update_mesh_with_vsplits: vd_vsplits.front()];
+        vd_vsplits.erase(vd_vsplits.begin());
+        [self update_vbo:up_info];
+        cnt ++;
+    }
+    
+    [self setCentroidAndRadius:[(VDPMModel *) progMeshModel getCentroidAndRadius]];
+    [progMeshModel setCurrentFaceNumberCanDraw:[progMeshModel getCurrentRecoveredFaceNumber]];
+}
+
+- (void) try_to_refine
+{
+    while (vd_vsplits.size() > 0) {
+        UpdateInfo *up_info = [(VDPMModel *)progMeshModel update_mesh_with_vsplits: vd_vsplits.front()];
+        vd_vsplits.erase(vd_vsplits.begin());
+        [self update_vbo:up_info];
+    }
+    
+    [self setCentroidAndRadius:[(VDPMModel *) progMeshModel getCentroidAndRadius]];
+    [progMeshModel setCurrentFaceNumberCanDraw:[progMeshModel getCurrentRecoveredFaceNumber]];
 }
 
 
@@ -363,6 +483,8 @@ GLfloat backgroundSquare[] =
 @synthesize program = _Program;
 @synthesize modelViewProjectionMatrix = _modelViewProjectionMatrix;
 @synthesize normalMatrix = _normalMatrix;
+@synthesize viewingMatrix;
+@synthesize modelViewMatrix = _modelViewMatrix;
 
 @synthesize layer;
 

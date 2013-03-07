@@ -19,7 +19,7 @@ const double TRACKBALL_RADIUS = 0.6;
 @interface ProgMeshGLKViewController (){
     
     
-
+    
     GLuint _program;
     
     GLuint _vertexArray;
@@ -35,6 +35,8 @@ const double TRACKBALL_RADIUS = 0.6;
     GLKMatrix4 baseModelViewMatrix;
     
     GLKMatrix4 projectionMatrix;
+    
+    GLKMatrix4 _modelViewMatrix;
     
     //Quaternion things
     GLKMatrix4 _rotMatrix;
@@ -56,10 +58,10 @@ const double TRACKBALL_RADIUS = 0.6;
     
     //test frame buffer
     GLuint defaultFramebuffer, colorRenderbuffer;
-
+    
     GLint backWidth;
     GLint backHeight;
-
+    
 }
 
 
@@ -86,6 +88,10 @@ const double TRACKBALL_RADIUS = 0.6;
     }
     
     progMeshGLManager = [[ProgMeshGLManager alloc] init];
+    
+    progMeshGLManager.duringVBOUpdating = false;
+    
+    [progMeshGLManager setUpdateInfo:NULL];
     
     _status = PM_VIEW_STATUS_NONE;
     
@@ -129,7 +135,7 @@ const double TRACKBALL_RADIUS = 0.6;
     
     if ([self isViewLoaded] && ([[self view] window] == nil)) {
         self.view = nil;
-                
+        
         if ([EAGLContext currentContext] == self.context) {
             [EAGLContext setCurrentContext:nil];
         }
@@ -141,12 +147,12 @@ const double TRACKBALL_RADIUS = 0.6;
 - (void) setupGL
 {
     [EAGLContext setCurrentContext:self.context];
-        
+    
     [progMeshGLManager loadShaders:_program];
     
     self.effect = [progMeshGLManager createGLKBaseEffect];
     progMeshGLManager.layer = (CAEAGLLayer *)self.view.layer;
-        
+    
     //self.effect = [[GLKBaseEffect alloc] init];
     self.effect.light0.enabled = GL_TRUE;
     self.effect.light0.diffuseColor = GLKVector4Make(1.0f, 0.4f, 0.4f, 1.0f);
@@ -164,7 +170,7 @@ const double TRACKBALL_RADIUS = 0.6;
     UITapGestureRecognizer * dtRec = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTap:)];
     dtRec.numberOfTapsRequired = 2;
     [self.view addGestureRecognizer:dtRec];
-
+    
 }
 
 - (void)tearDownGL
@@ -192,7 +198,7 @@ float objRadius = 0;
 
 - (void)update
 {
-        
+    
     switch (_status) {
         case PM_VIEW_STATUS_NONE:
             //NSLog(@"PM_VIEW_STATUS_NONE");
@@ -201,8 +207,11 @@ float objRadius = 0;
         case PM_VIEW_STATUS_SPM_RENDER_BASE_MESH:
             //NSLog(@"PM_VIEW_STATUS_SPM_RENDER_BASE_MESH");
         {
-            //[(VDPMModel *)progMeshModel adaptive_refinement];
+            //[progMeshGLManager try_to_refine: 5];
 
+            
+            //[(VDPMModel *)progMeshModel adaptive_refinement];
+            
         }
             break;
             
@@ -211,6 +220,8 @@ float objRadius = 0;
     }
     
 }
+
+int ccnt = 0;
 
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect
 {
@@ -227,7 +238,6 @@ float objRadius = 0;
             
             
         {
-            
             if (_increasing) {
                 _curRed += 1.0 * self.timeSinceLastUpdate;
             } else {
@@ -259,32 +269,42 @@ float objRadius = 0;
                 
                 _quat = GLKQuaternionSlerp(_slerpStart, _slerpEnd, slerpAmt);
             }
-            
-            float d = zoomDistance / 120 * 0.2 * objRadius;
-            
-            GLKMatrix4 modelViewMatrix = GLKMatrix4MakeTranslation(objCenter[0], objCenter[1], objCenter[2] - 3 * objRadius + d);
-            
+            [self setScenePosition:[progMeshModel getCentroidAndRadius] ];
+            float * modelview_matrix_ = progMeshGLManager.modelViewMatrix.m;
+            Vec3f t(modelview_matrix_[0]*objCenter[0] +
+                    modelview_matrix_[4]*objCenter[1] +
+                    modelview_matrix_[8]*objCenter[2] +
+                    modelview_matrix_[12],
+                    modelview_matrix_[1]*objCenter[0] +
+                    modelview_matrix_[5]*objCenter[1] +
+                    modelview_matrix_[9]*objCenter[2] +
+                    modelview_matrix_[13],
+                    modelview_matrix_[2]*objCenter[0] +
+                    modelview_matrix_[6]*objCenter[1] +
+                    modelview_matrix_[10]*objCenter[2] +
+                    modelview_matrix_[14]);
+            GLKMatrix4 modelViewMatrix = progMeshGLManager.modelViewMatrix;
             GLKMatrix4 rotation = GLKMatrix4MakeWithQuaternion(_quat);
-            modelViewMatrix = GLKMatrix4Multiply(modelViewMatrix, rotation);
+            GLKMatrix4 temp = GLKMatrix4MakeTranslation(0, 0, 0);
+            temp = GLKMatrix4Translate(temp, t[0], t[1], t[2]);
+            temp = GLKMatrix4Multiply(temp, rotation);
+            temp = GLKMatrix4Translate(temp, -t[0], -t[1], -t[2]);
+            modelViewMatrix = GLKMatrix4Multiply(temp, modelViewMatrix);
             
-            
-            modelViewMatrix = GLKMatrix4Translate(modelViewMatrix, -objCenter[0] , -objCenter[1] , -objCenter[2]);
-            
-            GLKMatrix4 transM = GLKMatrix4MakeTranslation(-objCenter[0] , -objCenter[1] , -objCenter[2]);
-            
-            modelViewMatrix = GLKMatrix4Multiply(transM, modelViewMatrix);
-            
-            //self.effect.transform.modelviewMatrix = modelViewMatrix;
-            
-            
+            progMeshGLManager.modelViewMatrix = modelViewMatrix;
             
             progMeshGLManager.normalMatrix = GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3(modelViewMatrix), NULL);
             progMeshGLManager.modelViewProjectionMatrix = GLKMatrix4Multiply(projectionMatrix, modelViewMatrix);
-            //[progMeshGLManager draw:self.effect];
-                
+            _modelViewMatrix = modelViewMatrix;
             
-            [progMeshGLManager draw2];
-           
+            //[progMeshGLManager try_to_refine];
+            
+            if(ccnt % 3 == 0)
+                [progMeshGLManager draw2];
+            ccnt += 1;
+            //[progMeshGLManager draw3];
+            [self.view setUserInteractionEnabled:YES];
+            
             break;
         }
         default:
@@ -324,7 +344,24 @@ float objRadius = 0;
     objCenter[2] = centroidAndRadius[2];
     
     objRadius = centroidAndRadius[3];
-        
+    progMeshGLManager.modelViewMatrix = GLKMatrix4MakeTranslation(0, 0, 0);
+    float *modelview_matrix_ = progMeshGLManager.modelViewMatrix.m;
+    progMeshGLManager.modelViewMatrix =
+    GLKMatrix4Translate(progMeshGLManager.modelViewMatrix,
+                        -(modelview_matrix_[0]*objCenter[0] +
+                          modelview_matrix_[4]*objCenter[1] +
+                          modelview_matrix_[8]*objCenter[2] +
+                          modelview_matrix_[12]),
+                        -(modelview_matrix_[1]*objCenter[0] +
+                          modelview_matrix_[5]*objCenter[1] +
+                          modelview_matrix_[9]*objCenter[2] +
+                          modelview_matrix_[13]),
+                        -(modelview_matrix_[2]*objCenter[0] +
+                          modelview_matrix_[6]*objCenter[1] +
+                          modelview_matrix_[10]*objCenter[2] +
+                          modelview_matrix_[14] +
+                          3.0*objRadius) );
+    
 }
 
 void printMatrix4(GLKMatrix4 * m){
@@ -379,91 +416,96 @@ void printMatrix4(GLKMatrix4 * m){
 
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    
-    NSArray *allTouches = [[event allTouches] allObjects];
-
-    if ([allTouches count] == 1) {
+    if([[ProgMeshCentralController sharedInstance] getSocketHandler]._SOCKET_STATE == SOCKET_CONNECTED_IDLE){
         
+        NSArray *allTouches = [[event allTouches] allObjects];
         
-        UITouch * touch = [allTouches objectAtIndex:0];
-        CGPoint location = [touch locationInView:self.view];
-        
-        _anchor_position = GLKVector3Make(location.x, location.y, 0);
-        _anchor_position = [self projectOntoSurface:_anchor_position];
-        
-        _current_position = _anchor_position;
-        _quatStart = _quat;
-    } else if ([allTouches count] == 2)
-    {
-        //do nothing
-        
-    }
+        if ([allTouches count] == 1) {
+            
+            
+            UITouch * touch = [allTouches objectAtIndex:0];
+            CGPoint location = [touch locationInView:self.view];
+            
+            _anchor_position = GLKVector3Make(location.x, location.y, 0);
+            _anchor_position = [self projectOntoSurface:_anchor_position];
+            
+            _current_position = _anchor_position;
+            _quatStart = _quat;
+        } else if ([allTouches count] == 2)
+        {
+            //do nothing
+            
+        }}
 }
 
 - (void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    NSArray *allTouches = [[event allTouches] allObjects];
-    
-    if ([allTouches count] == 1) {
-        NSLog(@"1 finger ends");
+    if([[ProgMeshCentralController sharedInstance] getSocketHandler]._SOCKET_STATE == SOCKET_CONNECTED_IDLE){
+        NSArray *allTouches = [[event allTouches] allObjects];
         
-        [(VDPMModel *)progMeshModel update_viewing_parameters:progMeshGLManager.modelViewProjectionMatrix :fabsf(self.view.bounds.size.width / self.view.bounds.size.height) :45];
-        //update viewing parameters with server
-        
-        [[ProgMeshCentralController sharedInstance] syncViewingParametersToServer:[(VDPMModel *)progMeshModel getViewingParameters]];
-        
-    } else if ([allTouches count] == 2)
-    {
-        [(VDPMModel *)progMeshModel update_viewing_parameters:progMeshGLManager.modelViewProjectionMatrix :fabsf(self.view.bounds.size.width / self.view.bounds.size.height) :45];
-        NSLog(@"2 finger ends");
-
-        //do nothing
-        
+        if ([allTouches count] == 1) {
+            NSLog(@"1 finger ends");
+            
+            [(VDPMModel *)progMeshModel update_viewing_parameters:_modelViewMatrix :fabsf(self.view.bounds.size.width / self.view.bounds.size.height) :45];
+            //[(VDPMModel *) progMeshModel adaptive_refinement];
+            
+            //update viewing parameters with server
+            [[ProgMeshCentralController sharedInstance] syncViewingParametersToServer:[(VDPMModel *)progMeshModel getViewingParameters]];
+            
+        } else if ([allTouches count] == 2)
+        {
+            //[(VDPMModel *)progMeshModel update_viewing_parameters:progMeshGLManager.modelViewProjectionMatrix :fabsf(self.view.bounds.size.width / self.view.bounds.size.height) :45];
+            NSLog(@"2 finger ends");
+            
+            //do nothing
+            
+        }
     }
-
+    
 }
 
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-    
-    NSArray *allTouches = [[event allTouches] allObjects];
-    
-    if ([allTouches count] == 1) {
+    if([[ProgMeshCentralController sharedInstance] getSocketHandler]._SOCKET_STATE == SOCKET_CONNECTED_IDLE){
         
-        UITouch * touch = [allTouches objectAtIndex:0];
-        CGPoint location = [touch locationInView:self.view];
-        CGPoint lastLoc = [touch previousLocationInView:self.view];
-        CGPoint diff = CGPointMake(lastLoc.x - location.x, lastLoc.y - location.y);
+        NSArray *allTouches = [[event allTouches] allObjects];
         
-        float rotX = -1 * GLKMathDegreesToRadians(diff.y / 2.0);
-        float rotY = -1 * GLKMathDegreesToRadians(diff.x / 2.0);
-        
-        bool isInvertible;
-        GLKVector3 xAxis = GLKMatrix4MultiplyVector3(GLKMatrix4Invert(_rotMatrix, &isInvertible), GLKVector3Make(1, 0, 0));
-        _rotMatrix = GLKMatrix4Rotate(_rotMatrix, rotX, xAxis.x, xAxis.y, xAxis.z);
-        GLKVector3 yAxis = GLKMatrix4MultiplyVector3(GLKMatrix4Invert(_rotMatrix, &isInvertible), GLKVector3Make(0, 1, 0));
-        _rotMatrix = GLKMatrix4Rotate(_rotMatrix, rotY, yAxis.x, yAxis.y, yAxis.z);
-        
-        _current_position = GLKVector3Make(location.x, location.y, 0);
-        _current_position = [self projectOntoSurface:_current_position];
-        
-        [self computeIncremental];
-    } else if ([allTouches count] == 2){
-        UITouch *touchA = [allTouches objectAtIndex:0];
-        UITouch *touchB = [allTouches objectAtIndex:1];
-        
-        CGPoint pointA_ = [touchA locationInView:self.view];
-        CGPoint pointA = [touchA previousLocationInView:self.view];
-        
-        CGPoint pointB_ = [touchB locationInView:self.view];
-        CGPoint pointB = [touchB previousLocationInView:self.view];
-        
-        float disA_B_Now = sqrtf(((pointA_.x - pointB_.x) * (pointA_.x - pointB_.x) + (pointA_.y - pointB_.y) * (pointA_.y - pointB_.y)));
-        float disAB_Previous = sqrtf((pointA.x - pointB.x) * (pointA.x - pointB.x) + (pointA.y - pointB.y) * (pointA.y - pointB.y));
-        
-        zoomDistance += disA_B_Now - disAB_Previous;
-        
-    }
+        if ([allTouches count] == 1) {
+            
+            UITouch * touch = [allTouches objectAtIndex:0];
+            CGPoint location = [touch locationInView:self.view];
+            CGPoint lastLoc = [touch previousLocationInView:self.view];
+            CGPoint diff = CGPointMake(lastLoc.x - location.x, lastLoc.y - location.y);
+            
+            float rotX = -1 * GLKMathDegreesToRadians(diff.y / 2.0);
+            float rotY = -1 * GLKMathDegreesToRadians(diff.x / 2.0);
+            
+            bool isInvertible;
+            GLKVector3 xAxis = GLKMatrix4MultiplyVector3(GLKMatrix4Invert(_rotMatrix, &isInvertible), GLKVector3Make(1, 0, 0));
+            _rotMatrix = GLKMatrix4Rotate(_rotMatrix, rotX, xAxis.x, xAxis.y, xAxis.z);
+            GLKVector3 yAxis = GLKMatrix4MultiplyVector3(GLKMatrix4Invert(_rotMatrix, &isInvertible), GLKVector3Make(0, 1, 0));
+            _rotMatrix = GLKMatrix4Rotate(_rotMatrix, rotY, yAxis.x, yAxis.y, yAxis.z);
+            
+            _current_position = GLKVector3Make(location.x, location.y, 0);
+            _current_position = [self projectOntoSurface:_current_position];
+            
+            [self computeIncremental];
+        } else if ([allTouches count] == 2){
+            UITouch *touchA = [allTouches objectAtIndex:0];
+            UITouch *touchB = [allTouches objectAtIndex:1];
+            
+            CGPoint pointA_ = [touchA locationInView:self.view];
+            CGPoint pointA = [touchA previousLocationInView:self.view];
+            
+            CGPoint pointB_ = [touchB locationInView:self.view];
+            CGPoint pointB = [touchB previousLocationInView:self.view];
+            
+            float disA_B_Now = sqrtf(((pointA_.x - pointB_.x) * (pointA_.x - pointB_.x) + (pointA_.y - pointB_.y) * (pointA_.y - pointB_.y)));
+            float disAB_Previous = sqrtf((pointA.x - pointB.x) * (pointA.x - pointB.x) + (pointA.y - pointB.y) * (pointA.y - pointB.y));
+            
+            zoomDistance += disA_B_Now - disAB_Previous;
+            
+        }}
     
 }
 
@@ -478,4 +520,21 @@ void printMatrix4(GLKMatrix4 * m){
 }
 
 
+- (void)dealloc {
+    [_progress release];
+    [super dealloc];
+}
+- (IBAction)decrease_screen_error:(id)sender {
+    
+    NSLog(@"decrease screen error");
+    [(VDPMModel *) progMeshModel decrease_tolerance_square];
+    [(VDPMModel *)progMeshModel update_viewing_parameters:progMeshGLManager.modelViewProjectionMatrix :fabsf(self.view.bounds.size.width / self.view.bounds.size.height) :45];
+    [(VDPMModel *) progMeshModel adaptive_refinement];
+    
+    //update viewing parameters with server
+    if([[ProgMeshCentralController sharedInstance] getSocketHandler]._SOCKET_STATE == SOCKET_CONNECTED_IDLE)
+        [[ProgMeshCentralController sharedInstance] syncViewingParametersToServer:[(VDPMModel *)progMeshModel getViewingParameters]];
+    
+    
+}
 @end

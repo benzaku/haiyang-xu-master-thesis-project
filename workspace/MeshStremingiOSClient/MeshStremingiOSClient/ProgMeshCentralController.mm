@@ -18,7 +18,9 @@
 
 #import "VDPMModel.h"
 
-@implementation ProgMeshCentralController
+@implementation ProgMeshCentralController{
+    
+}
 
 static id SharedInstance;
 
@@ -50,7 +52,7 @@ static id SharedInstance;
         
         //[_socketHandler release];
         [_socketHandler setHost:host];
-       
+        
     }
     
     
@@ -153,40 +155,49 @@ static id SharedInstance;
 - (void) readData: (NSData *) data withTag: (long) tag : (enum SOCKET_STATE) waitState
 {
     
-    _socketHandler._SOCKET_STATE = SOCKET_CONNECTED_IDLE;
-
+    
+    
     switch (waitState) {
         case SOCKET_WAIT_FOR_SPM_VSPLIT_DATA:
+            _socketHandler._SOCKET_STATE = SOCKET_CONNECTED_IDLE;
+            
             [self handleWaitForSPMVsplitData:data];
             break;
             
         case SOCKET_WAIT_FOR_SPM_VSPLIT_DATA_SIZE:
+            _socketHandler._SOCKET_STATE = SOCKET_CONNECTED_IDLE;
             [self handleWaitForSPMVsplitDataSize:data];
+            
             break;
             
         case SOCKET_WAIT_FOR_SPM_BASE_INFO_DATA:
+            _socketHandler._SOCKET_STATE = SOCKET_CONNECTED_IDLE;
             [self handleWaitForSPMBaseInfoData:data];
             break;
             
         case SOCKET_WAIT_FOR_SPM_BASE_INFO_DATA_SIZE:
+            _socketHandler._SOCKET_STATE = SOCKET_CONNECTED_IDLE;
             [self handleWaitForSPMBaseInfoDataSize: data];
             break;
         case SOCKET_WAIT_FOR_HELLO:
+            _socketHandler._SOCKET_STATE = SOCKET_CONNECTED_IDLE;
             [self handleWaitForHelloFromServer:data];
             break;
             
         case SOCKET_WAIT_FOR_MODEL_LIST_SIZE:
-            
+            _socketHandler._SOCKET_STATE = SOCKET_CONNECTED_IDLE;
             
             [self handleWaitForModelListSize:data];
             break;
             
         case SOCKET_WAIT_FOR_MODEL_LIST:
+            _socketHandler._SOCKET_STATE = SOCKET_CONNECTED_IDLE;
             [self handleWaitForModelList:data];
             
             break;
             
         case SOCKET_WAIT_SERVER_LOAD_MODEL:
+            _socketHandler._SOCKET_STATE = SOCKET_CONNECTED_IDLE;
             [self handleWaitForServerLoadModel:data];
             break;
         default:
@@ -195,14 +206,55 @@ static id SharedInstance;
     
 }
 
+int n_vsplit_packet_remain;
+int total_vsplit;
+
+int n_vsplit_remaining;
+int n_vsplit_in_this_packet;
+
+int bytes_to_come;
+
+int total_size;
+
+int offset;
+
+#define VSPLIT_EACH_PACKET  100
+#define SIZE_OF_A_VSPLIT    80
+#define BYTE_PER_READ       8000
+
+int current_idx;
+
 - (void) handleWaitForSPMVsplitData: (NSData *) data
 {
-    NSLog(@"data size = %d", [data length]);
-    // update the mesh
-    UpdateInfo * updateInfo = [((VDPMModel *)_progMeshModel) update_mesh_with_vsplits:data];
+    int data_length = data.length;
     
     
+    //((std::vector<NSData *> *)[[_progMeshGLKViewController getProgMeshGLManager] get_vd_splits])->push_back([[NSData alloc] initWithData:data]);
+    //request for next packet;
     
+    
+    int req_num = current_idx + VSPLIT_EACH_PACKET > total_vsplit ? total_vsplit - current_idx : VSPLIT_EACH_PACKET;
+    int idx_num[2];
+    
+    if(req_num > 0){
+        idx_num[0] = current_idx;
+        idx_num[1] = req_num;
+     
+        int sendDataLength = COMMAND_RETIEVE_SPM_VSPLIT_DATA_IDX_NUM.length + 2 * sizeof(int);
+        char sendData[sendDataLength];
+        
+        memcpy(sendData, [COMMAND_RETIEVE_SPM_VSPLIT_DATA_IDX_NUM cStringUsingEncoding:NSUTF8StringEncoding], COMMAND_RETIEVE_SPM_VSPLIT_DATA_IDX_NUM.length);
+        memcpy((char *)&(sendData[COMMAND_RETIEVE_SPM_VSPLIT_DATA_IDX_NUM.length]), idx_num, 2*sizeof(int));
+        
+        
+        int readLength = idx_num[1] * SIZE_OF_A_VSPLIT;
+        [_socketHandler socketSendDataWithReadTimeOutAndToLength:[[NSData alloc] initWithBytes:sendData length:sendDataLength] :SOCKET_WAIT_FOR_SPM_VSPLIT_DATA :-1 :readLength];        
+    }
+    else{
+        _socketHandler._SOCKET_STATE = SOCKET_CONNECTED_IDLE;        
+    }
+    [_progMeshGLKViewController.progress setProgress:(float) (current_idx) / (float)total_vsplit];
+    current_idx += idx_num[1];
 }
 
 - (void) handleWaitForSPMVsplitDataSize: (NSData *) data
@@ -216,10 +268,41 @@ static id SharedInstance;
     int size;
     memcpy(&size, &header_size[8], sizeof(int));
     
-    NSLog(@"header = %s, size = %d", h, size);
+    //NSLog(@"header = %s, size = %d", h, size);
     
-    if(size > 0)
-        [_socketHandler socketWaitForDataWithLengthTimeout:size :SOCKET_WAIT_FOR_SPM_VSPLIT_DATA :-1];
+    [_progMeshGLKViewController.progress setProgress:0.0f];
+    
+    total_vsplit = size / SIZE_OF_A_VSPLIT;
+    n_vsplit_remaining = total_vsplit;
+    total_size = size;
+    bytes_to_come = size;
+    current_idx = 0;
+    
+    int initial_vsplit_pack_count = total_vsplit > VSPLIT_EACH_PACKET? VSPLIT_EACH_PACKET : total_vsplit;
+    int idx_size[2];
+    idx_size[0] = current_idx;
+    idx_size[1] = initial_vsplit_pack_count;
+    if(initial_vsplit_pack_count > 0){
+        int sendDataLength = COMMAND_RETIEVE_SPM_VSPLIT_DATA_IDX_NUM.length + 2 * sizeof(int);
+        char sendData[sendDataLength];
+        
+        memcpy(sendData, [COMMAND_RETIEVE_SPM_VSPLIT_DATA_IDX_NUM cStringUsingEncoding:NSUTF8StringEncoding], COMMAND_RETIEVE_SPM_VSPLIT_DATA_IDX_NUM.length);
+        memcpy((char *)&(sendData[COMMAND_RETIEVE_SPM_VSPLIT_DATA_IDX_NUM.length]), idx_size, 2*sizeof(int));
+        int readLength = initial_vsplit_pack_count * SIZE_OF_A_VSPLIT;
+        
+        [_socketHandler socketSendDataWithReadTimeOutAndToLength:[[NSData alloc] initWithBytes:sendData length:sendDataLength] :SOCKET_WAIT_FOR_SPM_VSPLIT_DATA :-1 :readLength];
+    }
+    current_idx += initial_vsplit_pack_count;
+    /*
+    if(size > 0){
+        if(size > BYTE_PER_READ){
+            [_socketHandler socketSendMessageWithReadTimeOutAndToLength:COMMAND_RETIEVE_SPM_VSPLIT_DATA :SOCKET_WAIT_FOR_SPM_VSPLIT_DATA :-1 :BYTE_PER_READ];
+        }
+        else{
+            [_socketHandler socketSendMessageWithReadTimeOutAndToLength:COMMAND_RETIEVE_SPM_VSPLIT_DATA :SOCKET_WAIT_FOR_SPM_VSPLIT_DATA :-1 :size];
+        }
+    }
+     */
     
 }
 
@@ -252,13 +335,22 @@ static id SharedInstance;
         [[_progMeshGLKViewController getProgMeshGLManager] setNormalPointerStride:24];
         [[_progMeshGLKViewController getProgMeshGLManager] setNormalPointerOffset:12];
         
-        [[_progMeshGLKViewController getProgMeshGLManager] initBaseMeshBuffer:(GLubyte *)[_progMeshModel getBaseMeshVertexNormalArray] :[_progMeshModel getBaseMeshVertexNormalArraySize] * sizeof(float) :[_progMeshModel getTotalVertexNormalArraySize] :(GLubyte *)[_progMeshModel getMeshIndiceArray] :[_progMeshModel getBaseMeshIndiceBufferSize] :[_progMeshModel getTotalFaceIndiceBufferSize]];
+        [[_progMeshGLKViewController getProgMeshGLManager] initBaseMeshBuffer:(GLubyte *)[_progMeshModel getBaseMeshVertexNormalArray] :[_progMeshModel getBaseMeshVertexNormalArraySize] * sizeof(float) :[_progMeshModel getTotalVertexNormalArraySize] * sizeof(float) :(GLubyte *)[_progMeshModel getMeshIndiceArray] :[_progMeshModel getBaseMeshIndiceBufferSize] :[_progMeshModel getTotalFaceIndiceBufferSize]];
         
         _progMeshGLKViewController.status = PM_VIEW_STATUS_SPM_RENDER_BASE_MESH;
+        
+        //request for details
+        //[self requestForVDPMDetails];
 #endif
         
     }
     
+    
+}
+
+- (void) requestForVDPMDetails
+{
+    [_socketHandler socketSendMessageWithReadTimeOut:COMMAND_RETIEVE_SPM_DETAILS :SOCKET_WAIT_FOR_SPM_DETAILS_DATA :-1];
 }
 
 - (void) handleWaitForSPMBaseInfoDataSize : (NSData *) data
@@ -312,13 +404,13 @@ static id SharedInstance;
     NSLog(@"get Data:\n%@", modelListXMLString);
     
     [self createXMLDocumentObjectFromString:data];
-
+    
 }
 
 - (void) createXMLDocumentObjectFromString: (NSData *) xmlData
 {
     XmlParser *parser = [[[XmlParser alloc] init] autorelease];
-   
+    
     Models *models = [[[Models alloc] init] autorelease];
     
     NSMutableArray *modelArray = [parser fromXml:modelListXMLString withObject:models];
@@ -360,7 +452,12 @@ static id SharedInstance;
     strcpy(request, [COMMAND_REQUEST_LOAD_MODEL cStringUsingEncoding:NSUTF8StringEncoding]);
     strncpy(&(request[[COMMAND_REQUEST_LOAD_MODEL length]]), (char *)&modelId, sizeof(int));
     NSLog(@"id = %d", modelId);
+    
     [_socketHandler socketSendDataWithLengthAndReadTimeOut:[[NSData alloc] initWithBytes:request length:(request_length)] :SOCKET_WAIT_SERVER_LOAD_MODEL :-1];
+    
+    //try to retrieve all details.
+    
+    
 }
 
 - (void) syncViewingParametersToServer : (NSData *) viewing_parameters_
@@ -369,6 +466,7 @@ static id SharedInstance;
     [_socketHandler socketSendDataWithLengthAndReadTimeOut:viewing_parameters_:SOCKET_WAIT_FOR_SPM_VSPLIT_DATA_SIZE :-1];
     
 }
+
 
 
 

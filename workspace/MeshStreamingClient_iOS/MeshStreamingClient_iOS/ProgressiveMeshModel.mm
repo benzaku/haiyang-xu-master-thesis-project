@@ -274,7 +274,7 @@
         }
         
         currentRecoveredFaceNumber += ((nv1 + nv0 - nv11) / 2);
-            for (MyMesh::VertexVertexIter vviter = baseMesh.vv_begin(pminfo->v0); vviter != baseMesh.vv_end(pminfo->v0); ++ vviter) {
+        for (MyMesh::VertexVertexIter vviter = baseMesh.vv_begin(pminfo->v0); vviter != baseMesh.vv_end(pminfo->v0); ++ vviter) {
             baseMesh.update_normal(vviter.handle());
             // update normal in vertex normal array
             memcpy(&(BASE_MESH_VERTEX_NORMAL_ARRAY[vviter.handle().idx() * 3 * 2 + 3]), baseMesh.normal(vviter.handle()).data(), 3 * sizeof(float));

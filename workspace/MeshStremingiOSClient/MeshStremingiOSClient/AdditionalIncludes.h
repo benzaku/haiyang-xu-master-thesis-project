@@ -60,5 +60,8 @@ struct Vsplit {
     
 };
 
+#include <set.h>
 
+typedef std::set<int>          UpdatePartIndex;
+typedef std::pair<UpdatePartIndex *, UpdatePartIndex *> UpdateInfo;
 #endif /* defined(__MeshStremingiOSClient__AdditionalIncludes__) */

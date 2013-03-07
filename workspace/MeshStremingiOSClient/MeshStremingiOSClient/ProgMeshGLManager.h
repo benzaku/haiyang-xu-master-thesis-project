@@ -6,12 +6,10 @@
 //  Copyright (c) 2013 Xu Haiyang. All rights reserved.
 //
 
-
 #import <Foundation/Foundation.h>
 #import <GLKit/GLKit.h>
 #import "ProgMeshModel.h"
 #import <QuartzCore/CAEAGLLayer.h>
-
 
 @interface ProgMeshGLManager : NSObject{
     
@@ -21,6 +19,7 @@
     
     GLKMatrix4 _modelViewProjectionMatrix;
     GLKMatrix3 _normalMatrix;
+    GLKMatrix4 _modelViewMatrix;
         
     ProgMeshModel *progMeshModel;
     
@@ -43,10 +42,15 @@
 	GLint backingHeight;
     
     GLuint _backgroundSquareBuffer;
+    void *  _updateInfo;
     
-
+@private
+    bool    duringVBOUpdate;
     
 }
+
+@property (atomic, assign) BOOL duringVBOUpdating;
+
 
 @property (nonatomic, assign) GLsizei   positionPointerStride;
 @property (nonatomic, assign) int       positionPointerOffset;
@@ -59,6 +63,10 @@
 
 @property (nonatomic, assign) GLKMatrix4 modelViewProjectionMatrix;
 @property (nonatomic, assign) GLKMatrix3 normalMatrix;
+
+@property (nonatomic, assign) GLKMatrix4 viewingMatrix;
+
+@property (nonatomic, assign) GLKMatrix4 modelViewMatrix;
 
 - (void) setCentroidAndRadius:(float *) centroid_radius;
 
@@ -94,6 +102,19 @@
 
 - (void) draw2;
 
-- (void) update_vbo;
+- (void) draw3;
+
+- (void) update_vbo: (void *) updateInfo;
+
+- (void) setUpdateInfo:(void *) updateInfo;
+
+- (void *) getUpdateInfo;
+
+- (void *) get_vd_splits;
+
+- (void) try_to_refine;
+
+- (void) try_to_refine: (int) number;
+
 
 @end
