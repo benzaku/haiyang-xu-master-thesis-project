@@ -72,7 +72,11 @@ struct viewparam {
 
 - (void) decrease_tolerance_square;
 
+- (void) set_tolerance_square : (float) tsq;
+
 - (void) adaptive_refinement;
+
+- (bool) get_require_n_refinement;
 
 - (NSData *) getViewingParameters;
 

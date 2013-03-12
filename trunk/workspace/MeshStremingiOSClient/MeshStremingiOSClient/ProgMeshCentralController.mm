@@ -19,10 +19,26 @@
 #import "VDPMModel.h"
 
 @implementation ProgMeshCentralController{
-    
+    NSMutableData * _tempData;
+    BOOL _needUpdateVBO;
+    MyMutableArray *_updateInfoArray;
+    std::vector<UpdateInfo *> * _update_infos;
+    std::list<NSData *> * _update_data;
+}
+- (void *) get_update_infos
+{
+    return _update_infos;
 }
 
+- (void *) get_update_data
+{
+    return _update_data;
+}
+
+
 static id SharedInstance;
+
+
 
 - (id)init
 {
@@ -33,6 +49,30 @@ static id SharedInstance;
     _currentSelectedModel = nil;
     
     _progMeshModel = nil;
+    
+    _refineOperationQueue = dispatch_queue_create("refineOperationQueue", 0);
+    
+    _tempData = nil;
+    
+    _tempData = [[NSMutableData alloc] init];
+    
+    _needUpdateVBO = NO;
+    
+    currentContext = 0;
+    
+    _updateInfoArray = [[MyMutableArray alloc] init];
+    
+    _update_infos = new std::vector<UpdateInfo *>();
+    
+    _update_infos->clear();
+    
+    _update_data = new std::list<NSData *> ();
+    
+    _update_data->clear();
+    
+    duringUpdateing = NO;
+    
+    subUpdateFinish = NO;
     
     return self;
 }
@@ -227,12 +267,15 @@ int current_idx;
 - (void) handleWaitForSPMVsplitData: (NSData *) data
 {
     int data_length = data.length;
+    dispatch_async(_refineOperationQueue, ^{
+        _update_data->push_back([[NSData alloc] initWithData:data]);
+    });
+    /*
     
-    
-    //((std::vector<NSData *> *)[[_progMeshGLKViewController getProgMeshGLManager] get_vd_splits])->push_back([[NSData alloc] initWithData:data]);
+        [[_progMeshGLKViewController getProgMeshGLManager] update_with_vsplits:[[NSData alloc] initWithData:data]];
+    });
+    */
     //request for next packet;
-    
-    
     int req_num = current_idx + VSPLIT_EACH_PACKET > total_vsplit ? total_vsplit - current_idx : VSPLIT_EACH_PACKET;
     int idx_num[2];
     
@@ -251,7 +294,14 @@ int current_idx;
         [_socketHandler socketSendDataWithReadTimeOutAndToLength:[[NSData alloc] initWithBytes:sendData length:sendDataLength] :SOCKET_WAIT_FOR_SPM_VSPLIT_DATA :-1 :readLength];        
     }
     else{
-        _socketHandler._SOCKET_STATE = SOCKET_CONNECTED_IDLE;        
+        
+        dispatch_async(_refineOperationQueue, ^{
+            NSLog(@"update data finish!");
+            duringUpdateing = NO;
+            _socketHandler._SOCKET_STATE = SOCKET_CONNECTED_IDLE;
+            subUpdateFinish = YES;
+        });
+        
     }
     [_progMeshGLKViewController.progress setProgress:(float) (current_idx) / (float)total_vsplit];
     current_idx += idx_num[1];
@@ -262,13 +312,10 @@ int current_idx;
     char header_size[8 + sizeof(int)];
     [data getBytes:header_size length:8 + sizeof(int)];
     
-    //[data getBytes:&size];
     char h[8];
     strncpy(h, header_size, 8);
     int size;
     memcpy(&size, &header_size[8], sizeof(int));
-    
-    //NSLog(@"header = %s, size = %d", h, size);
     
     [_progMeshGLKViewController.progress setProgress:0.0f];
     
@@ -291,19 +338,18 @@ int current_idx;
         int readLength = initial_vsplit_pack_count * SIZE_OF_A_VSPLIT;
         
         [_socketHandler socketSendDataWithReadTimeOutAndToLength:[[NSData alloc] initWithBytes:sendData length:sendDataLength] :SOCKET_WAIT_FOR_SPM_VSPLIT_DATA :-1 :readLength];
+        /*
+        if(_tempData != nil){
+            [_tempData release];
+            _tempData = nil;
+        }
+         
+        _tempData = [[NSMutableData alloc] init];
+        */
+        duringUpdateing = YES;
+        subUpdateFinish = NO;
     }
     current_idx += initial_vsplit_pack_count;
-    /*
-    if(size > 0){
-        if(size > BYTE_PER_READ){
-            [_socketHandler socketSendMessageWithReadTimeOutAndToLength:COMMAND_RETIEVE_SPM_VSPLIT_DATA :SOCKET_WAIT_FOR_SPM_VSPLIT_DATA :-1 :BYTE_PER_READ];
-        }
-        else{
-            [_socketHandler socketSendMessageWithReadTimeOutAndToLength:COMMAND_RETIEVE_SPM_VSPLIT_DATA :SOCKET_WAIT_FOR_SPM_VSPLIT_DATA :-1 :size];
-        }
-    }
-     */
-    
 }
 
 - (void) handleWaitForSPMBaseInfoData: (NSData *) data
@@ -339,8 +385,6 @@ int current_idx;
         
         _progMeshGLKViewController.status = PM_VIEW_STATUS_SPM_RENDER_BASE_MESH;
         
-        //request for details
-        //[self requestForVDPMDetails];
 #endif
         
     }
@@ -467,9 +511,47 @@ int current_idx;
     
 }
 
+- (BOOL) getIfNeedUpdateVBO
+{
+    return _needUpdateVBO;
+}
 
+- (void) setIfNeedUpdateVBO : (BOOL) value
+{
+    _needUpdateVBO = value;
+}
 
+- (void) setCurrentContext: (EAGLContext *) context
+{
+    currentContext = context;
+}
 
+- (EAGLContext *) getCurrentContext
+{
+    return currentContext;
+}
+
+- (BOOL) isDuringUpdating
+{
+    return duringUpdateing;
+}
+
+- (void) setDuringUpdating : (BOOL) updating
+{
+    duringUpdateing = updating;
+}
+- (NSMutableData *) get_tempData
+{
+    return _tempData;
+}
+- (void) setSubUpdateFinish: (BOOL) subupdatefinish
+{
+    subUpdateFinish = subupdatefinish;
+}
+
+@synthesize subUpdateFinish;
+@synthesize updateInfoArray = _updateInfoArray;
+@synthesize isQueueBusy;
 @synthesize  serverInfo = _serverInfo;
 @synthesize  currentSelectedModel = _currentSelectedModel;
 @synthesize  progMeshModel = _progMeshModel;

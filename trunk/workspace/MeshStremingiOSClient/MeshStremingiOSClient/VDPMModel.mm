@@ -9,8 +9,12 @@
 
 #import "VDPMModel.h"
 #import "Constants.h"
-
+#import "ProgMeshCentralController.h"
+#import "Pair.h"
 #include <vector>
+
+#import <GLKit/GLKit.h>
+
 
 
 @implementation VDPMModel{
@@ -271,7 +275,7 @@
         //NSLog(@"node %d ", node_handle.idx());
         if([self qrefine:node_handle] == true){
             NSLog(@"Need to force_vsplit %d", node_handle.idx());
-            
+            NSLog(@"leftchild %d",vhierarchy_.lchild_handle(node_handle).idx());
         }
         vfront_.next();
         //else if (vhierarchy_.is_root_node(node_handle) != true) &&
@@ -280,8 +284,34 @@
     //NSLog(@"size of vfront_ = %d", vfront_.size());
 }
 
+- (bool) get_require_n_refinement
+{
+    VDPMMesh::HalfedgeHandle v0v1;
+    float fovy = viewing_parameters_.fovy();
+    float tolerance_square = viewing_parameters_.tolerance_square();
+    float tan_value = tanf(fovy / 2.0f);
+    
+    kappa_square_ = 4.0f * tan_value * tan_value * tolerance_square;
+    for( vfront_.begin(); !vfront_.end();){
+        VHierarchyNodeHandle node_handle = vfront_.node_handle(), parent_handle = vhierarchy_.parent_handle(node_handle);
+        //NSLog(@"node %d ", node_handle.idx());
+        if([self qrefine:node_handle] == true){
+            return true;
+        }
+        vfront_.next();
+    }
+    return false;
+}
+
+
 - (void) decrease_tolerance_square{
     viewing_parameters_.decrease_tolerance();
+    viewing_parameters_.update_viewing_configurations();
+}
+
+- (void) set_tolerance_square: (float) tsq
+{
+    viewing_parameters_.set_tolerance_square(0.001/ tsq);
     viewing_parameters_.update_viewing_configurations();
 }
 
@@ -309,7 +339,7 @@
     aVP.fovy = viewing_parameters_.fovy();
     aVP.tolerance_square = viewing_parameters_.tolerance_square();
     
-    NSLog(@"fovy : %f tor : %f",aVP.fovy, aVP.tolerance_square );
+    //NSLog(@"fovy : %f tor : %f",aVP.fovy, aVP.tolerance_square );
     int command_size = [COMMAND_SYNC_SPM_VIEWING_PARAMS length];
     int vp_size = sizeof(viewparam);
     char request[command_size + vp_size];    
@@ -410,9 +440,7 @@
     int n_split = vsplits_data.length / sizeof(Vsplit);
 
     Vsplit * splits = new Vsplit[n_split];
-    [vsplits_data getBytes:splits length:vsplits_data.length];
-    //std::cout << splits[0].l_normal << std::endl;
-    
+    [vsplits_data getBytes:splits length:vsplits_data.length];    
     for(int i = 0; i < n_split; i ++){
         Vsplit asplit = splits[i];
         
@@ -452,11 +480,11 @@
         vhierarchy_.node(rchild_handle).set_sigma_square(asplit.r_sigma_square);
     }
     
+    glBindBuffer(GL_ARRAY_BUFFER, *(glvnobj));
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *(glfiobj));
     [self refine];
-    
-    //NSLog(@"size of vfront: %d", vfront_.size());
-    
-    
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     
     return &updateInfo;
 }
@@ -508,8 +536,8 @@
     //NSLog(@"size of vfront : %d", vfront_count);
     // free memories tagged as 'deleted'
     mesh_.garbage_collection(false, true, true);
-    mesh_.update_vertex_normals();
-    mesh_.update_face_normals();
+    //mesh_.update_vertex_normals();
+    //mesh_.update_face_normals();
     updateInfo = std::make_pair(&updatePartIndex, &indicePartIndex);
 }
 
@@ -528,7 +556,7 @@
     [self vsplit:node_handle: vl: vr];
 }
 
-- (void) vsplit: (VHierarchyNodeHandle) _node_handle: (VDPMMesh::VertexHandle) vl:(VDPMMesh::VertexHandle) vr
+- (void) vsplit: (VHierarchyNodeHandle) _node_handle : (VDPMMesh::VertexHandle) vl:(VDPMMesh::VertexHandle) vr
 {
     // refine
     VHierarchyNodeHandle
@@ -564,15 +592,32 @@ VDPMMesh::Point temp_center;
 - (void) updateVetexNormalArray :   (int) nv11
 :(VDPMMesh::VertexHandle) v0 : (VDPMMesh::VertexHandle) v1
 {
+    
+    UpdatePartIndex * vnPartIndex = new std::set<int>();
+    UpdatePartIndex * idPartIndex = new std::set<int>();
+    
+    vnPartIndex->clear();
+    idPartIndex->clear();
+    
+    
+    
+    
+    
+    
     int idx;
     int nv0 = 0, nv1 = 0;
     memcpy(&(BASE_MESH_VERTEX_NORMAL_ARRAY[nCurrentVertices * 3 * 2]), mesh_.point(v0).data(), 3 * sizeof(float));
     
+    glBufferSubData(GL_ARRAY_BUFFER, (nCurrentVertices * 3 * 2) * sizeof(float), 3 * sizeof(float), mesh_.point(v0).data());
+    
     if(mesh_.point(v0).data()[0] == 0 && mesh_.point(v0).data()[1] == 0 && mesh_.point(v0).data()[2] == 0){
-        NSLog(@"illeagle!");
+        NSLog(@"invalid!");
     }
     
+    
     updatePartIndex.insert(nCurrentVertices * 3 * 2);
+    
+    vnPartIndex->insert(nCurrentVertices * 3 * 2);
     
     nCurrentVertices ++;
     currentVerticeIdx ++;
@@ -599,14 +644,21 @@ VDPMMesh::Point temp_center;
         idx = cfviter.handle().idx();
         MESH_INDICE_ARRAY[vfiter.handle().idx() * 3] = idx;
         indicePartIndex.insert(vfiter.handle().idx() * 3);
+        idPartIndex->insert(vfiter.handle().idx() * 3);
+        
         ++cfviter;
         idx = cfviter.handle().idx();
         MESH_INDICE_ARRAY[vfiter.handle().idx() * 3 + 1] = idx;
         indicePartIndex.insert(vfiter.handle().idx() * 3 + 1);
+        idPartIndex->insert(vfiter.handle().idx() * 3 +1);
+        
         ++cfviter;
         idx = cfviter.handle().idx();
         MESH_INDICE_ARRAY[vfiter.handle().idx() * 3 + 2] = idx;
         indicePartIndex.insert(vfiter.handle().idx() * 3 + 2);
+        idPartIndex->insert(vfiter.handle().idx() * 3 + 2);
+        
+        glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, (vfiter.handle().idx() * 3) * sizeof(unsigned int), 3 * sizeof(unsigned int), &MESH_INDICE_ARRAY[vfiter.handle().idx() * 3]);
         
     }
     for (VDPMMesh::VertexFaceIter vfiter = mesh_.vf_begin(v1); vfiter != mesh_.vf_end(v1); ++ vfiter) {
@@ -620,7 +672,11 @@ VDPMMesh::Point temp_center;
         // update normal in vertex normal array
         memcpy(&(BASE_MESH_VERTEX_NORMAL_ARRAY[vviter.handle().idx() * 3 * 2 + 3]), mesh_.normal(vviter.handle()).data(), 3 * sizeof(float));
         
+        glBufferSubData(GL_ARRAY_BUFFER, (vviter.handle().idx() * 3 * 2 + 3) * sizeof(float), 3 * sizeof(float), &BASE_MESH_VERTEX_NORMAL_ARRAY[vviter.handle().idx() * 3 * 2 + 3]);
+        
+        
         updatePartIndex.insert(vviter.handle().idx() * 3 * 2 + 3);
+        vnPartIndex->insert(vviter.handle().idx() * 3 * 2 + 3);
     }
     
     for (VDPMMesh::VertexVertexIter vviter = mesh_.vv_begin(v1); vviter != mesh_.vv_end(v1); ++ vviter) {
@@ -629,13 +685,22 @@ VDPMMesh::Point temp_center;
         // update normal in vertex normal array
         memcpy(&(BASE_MESH_VERTEX_NORMAL_ARRAY[vviter.handle().idx() * 3 * 2 + 3]), mesh_.normal(vviter.handle()).data(), 3 * sizeof(float));
         
+        glBufferSubData(GL_ARRAY_BUFFER, (vviter.handle().idx() * 3 * 2 + 3) * sizeof(float), 3 * sizeof(float), &BASE_MESH_VERTEX_NORMAL_ARRAY[vviter.handle().idx() * 3 * 2 + 3]);
+        
         updatePartIndex.insert(vviter.handle().idx() * 3 * 2 + 3);
+        vnPartIndex->insert(vviter.handle().idx() * 3 * 2 + 3);
     }
     
+    UpdateInfo * tempInfo = new std::pair<UpdatePartIndex *, UpdatePartIndex *>(vnPartIndex, idPartIndex);
     
+    ((std::vector<UpdateInfo *> *)[[ProgMeshCentralController sharedInstance] get_update_infos])->push_back(tempInfo);
+    
+    
+    
+    currentFaceNumberCanDraw = currentRecoveredFaceNumber;
 }
 
-- (void) get_active_cuts: (const VHierarchyNodeHandle) _node_handle : (VDPMMesh::VertexHandle &)vl:(VDPMMesh::VertexHandle &)vr
+- (void) get_active_cuts: (const VHierarchyNodeHandle) _node_handle : (VDPMMesh::VertexHandle &)vl :(VDPMMesh::VertexHandle &)vr
 {
     VDPMMesh::VertexVertexIter  vv_it;
     VHierarchyNodeHandle        nnode_handle;
@@ -680,8 +745,8 @@ VDPMMesh::Point temp_center;
 
 - (int) getCurrentFaceNumberCanDraw
 {
-    if(currentRecoveredFaceNumber != mesh_.n_faces())
-        NSLog(@"Calculated: %d, real : %d", currentRecoveredFaceNumber, mesh_.n_faces());
+    //if(currentRecoveredFaceNumber != mesh_.n_faces())
+        //NSLog(@"Calculated: %d, real : %d", currentRecoveredFaceNumber, mesh_.n_faces());
     return currentFaceNumberCanDraw;
 }
 

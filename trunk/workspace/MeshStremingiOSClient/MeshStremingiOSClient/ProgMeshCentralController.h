@@ -25,6 +25,8 @@
 
 #import "GLRenderViewController.h"
 
+#import "MyMutableArray.h"
+
 
 @interface ProgMeshCentralController : NSObject{
     SocketHandler *_socketHandler;
@@ -51,7 +53,19 @@
     
     ProgMeshModel * _progMeshModel;
     
+    dispatch_queue_t _refineOperationQueue;
+    
+    EAGLContext * currentContext;
+    
+    BOOL duringUpdateing;
+    
 }
+
+- (NSMutableData *) get_tempData;
+
+- (BOOL) isDuringUpdating;
+
+- (void) setDuringUpdating : (BOOL) updating;
 
 - (id) initWithHostAndPort:(NSString *) host: (NSString *) port;
 
@@ -91,7 +105,25 @@
 
 - (void) syncViewingParametersToServer : (NSData *) viewing_parameters_;
 
+- (BOOL) getIfNeedUpdateVBO;
 
+- (void) setIfNeedUpdateVBO : (BOOL) value;
+
+- (void) setCurrentContext: (EAGLContext *) context;
+
+- (EAGLContext *) getCurrentContext;
+
+- (void *) get_update_infos;
+
+- (void *) get_update_data;
+
+- (void) setSubUpdateFinish: (BOOL) subupdatefinish;
+
+@property (assign, atomic) BOOL subUpdateFinish;
+
+@property (strong, atomic, readwrite) MyMutableArray *updateInfoArray;
+
+@property (atomic, assign) BOOL isQueueBusy;
 //@property (strong, atomic) SocketHandler *socketHandler;
 @property (strong, atomic) ServerInfo *serverInfo;
 

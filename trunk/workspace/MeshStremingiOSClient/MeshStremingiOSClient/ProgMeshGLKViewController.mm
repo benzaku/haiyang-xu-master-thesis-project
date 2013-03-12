@@ -10,6 +10,7 @@
 #include "AdditionalIncludes.h"
 #import "VDPMModel.h"
 #import "AppDelegate.h"
+#import "Pair.h"
 
 
 const double TRACKBALL_RADIUS = 0.6;
@@ -62,6 +63,16 @@ const double TRACKBALL_RADIUS = 0.6;
     GLint backWidth;
     GLint backHeight;
     
+    dispatch_queue_t queue;
+    
+    int currentStage;
+    
+    BOOL wait_interaction;
+    
+    BOOL interrupt_lod_up;
+    
+    
+    
 }
 
 
@@ -77,6 +88,7 @@ const double TRACKBALL_RADIUS = 0.6;
 @implementation ProgMeshGLKViewController
 
 @synthesize status = _status;
+@synthesize current_lod;
 
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -100,6 +112,16 @@ const double TRACKBALL_RADIUS = 0.6;
     
     baseModelViewMatrix = GLKMatrix4MakeTranslation(0 , 0, 0);
     
+    current_lod = 0;
+    
+    queue = dispatch_queue_create("queue", NULL);
+    
+    currentStage = 0;
+    
+    wait_interaction = false;
+    
+    interrupt_lod_up = NO;
+    
     return self;
 }
 
@@ -113,6 +135,8 @@ const double TRACKBALL_RADIUS = 0.6;
     //self.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
     
     self.context = [progMeshGLManager createEAGLContext];
+    
+    [[ProgMeshCentralController sharedInstance] setCurrentContext:self.context];
     
     if (!self.context) {
         NSLog(@"Failed to create ES context");
@@ -194,7 +218,13 @@ int count;
 float objCenter[3];
 float objRadius = 0;
 
+
+float LOD[8] =  {0.001f, 2e-4f, 4e-5f, 8e-6f, 1.6e-6f, 3.2e-7f, 6.4e-8f, 1.28e-8};
+
 #pragma mark - GLKView and GLKViewController delegate methods
+
+#define UPDATE_INFO_TO_DELETE_EACH_TIME 100
+#define EACH_PACKET_LENGTH  80
 
 - (void)update
 {
@@ -207,13 +237,34 @@ float objRadius = 0;
         case PM_VIEW_STATUS_SPM_RENDER_BASE_MESH:
             //NSLog(@"PM_VIEW_STATUS_SPM_RENDER_BASE_MESH");
         {
-            //[progMeshGLManager try_to_refine: 5];
-
             
-            //[(VDPMModel *)progMeshModel adaptive_refinement];
+            std::list<NSData *> * tempList = (std::list<NSData *> *)[[ProgMeshCentralController sharedInstance] get_update_data];
+                
+            if(tempList->size() > 0){
+                NSData * data = tempList->front();
+                [progMeshGLManager update_with_vsplits:data];
+                tempList->erase(tempList->begin());
+            }
+            /*
+            if(tempList->size() == 0 && [[ProgMeshCentralController sharedInstance] subUpdateFinish] ){
+                [[ProgMeshCentralController sharedInstance] setSubUpdateFinish:NO];
+                NSLog(@"empty!");
+                if(wait_interaction == false){
+                    wait_interaction = true;
+                    [NSTimer scheduledTimerWithTimeInterval:1.0
+                                                     target:self
+                                                   selector:@selector(lod_up)
+                                                   userInfo:nil
+                                                    repeats:NO];
+                    //wait_interaction = false;
+
+                }
+                
+            }
+             */
             
         }
-            break;
+        break;
             
         default:
             break;
@@ -296,13 +347,10 @@ int ccnt = 0;
             progMeshGLManager.normalMatrix = GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3(modelViewMatrix), NULL);
             progMeshGLManager.modelViewProjectionMatrix = GLKMatrix4Multiply(projectionMatrix, modelViewMatrix);
             _modelViewMatrix = modelViewMatrix;
-            
-            //[progMeshGLManager try_to_refine];
-            
-            if(ccnt % 3 == 0)
+                        
+            //if([[ProgMeshCentralController sharedInstance] isDuringUpdating] == NO)
                 [progMeshGLManager draw2];
-            ccnt += 1;
-            //[progMeshGLManager draw3];
+            
             [self.view setUserInteractionEnabled:YES];
             
             break;
@@ -431,6 +479,8 @@ void printMatrix4(GLKMatrix4 * m){
             
             _current_position = _anchor_position;
             _quatStart = _quat;
+            
+            interrupt_lod_up = YES;
         } else if ([allTouches count] == 2)
         {
             //do nothing
@@ -444,6 +494,8 @@ void printMatrix4(GLKMatrix4 * m){
         NSArray *allTouches = [[event allTouches] allObjects];
         
         if ([allTouches count] == 1) {
+            //interrupt_lod_up = NO;
+
             NSLog(@"1 finger ends");
             
             [(VDPMModel *)progMeshModel update_viewing_parameters:_modelViewMatrix :fabsf(self.view.bounds.size.width / self.view.bounds.size.height) :45];
@@ -471,7 +523,7 @@ void printMatrix4(GLKMatrix4 * m){
         NSArray *allTouches = [[event allTouches] allObjects];
         
         if ([allTouches count] == 1) {
-            
+            currentStage = 0;
             UITouch * touch = [allTouches objectAtIndex:0];
             CGPoint location = [touch locationInView:self.view];
             CGPoint lastLoc = [touch previousLocationInView:self.view];
@@ -526,15 +578,41 @@ void printMatrix4(GLKMatrix4 * m){
 }
 - (IBAction)decrease_screen_error:(id)sender {
     
+    [self lod_up];
+    
+    
+}
+
+- (int) getSuitableStage
+{
+    while (currentStage < 100) {
+        
+        [(VDPMModel *) progMeshModel set_tolerance_square:(10 * pow(2, currentStage))];
+        if([(VDPMModel *) progMeshModel get_require_n_refinement]){
+            break;
+        }
+        currentStage ++;
+    }
+    return currentStage;
+}
+
+- (void) lod_up
+{
+        
+    
     NSLog(@"decrease screen error");
-    [(VDPMModel *) progMeshModel decrease_tolerance_square];
-    [(VDPMModel *)progMeshModel update_viewing_parameters:progMeshGLManager.modelViewProjectionMatrix :fabsf(self.view.bounds.size.width / self.view.bounds.size.height) :45];
-    [(VDPMModel *) progMeshModel adaptive_refinement];
+    //[(VDPMModel *) progMeshModel decrease_tolerance_square];
+    //[self getSuitableStage];
+    [(VDPMModel *) progMeshModel set_tolerance_square:(pow(5, currentStage ++))];
+    [(VDPMModel *)progMeshModel update_viewing_parameters:_modelViewMatrix :fabsf(self.view.bounds.size.width / self.view.bounds.size.height) :45];
+    
+    //[(VDPMModel *) progMeshModel adaptive_refinement];
     
     //update viewing parameters with server
     if([[ProgMeshCentralController sharedInstance] getSocketHandler]._SOCKET_STATE == SOCKET_CONNECTED_IDLE)
         [[ProgMeshCentralController sharedInstance] syncViewingParametersToServer:[(VDPMModel *)progMeshModel getViewingParameters]];
     
+    wait_interaction = false;
     
 }
 @end

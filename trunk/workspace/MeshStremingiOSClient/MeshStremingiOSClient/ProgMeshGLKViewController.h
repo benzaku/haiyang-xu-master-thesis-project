@@ -39,6 +39,7 @@
 - (void) setScenePosition : (float *) centroidAndRadius;
 
 
+@property (atomic, assign) int current_lod;
 @property (atomic, assign) enum PM_VIEW_STATUS status;
 @property (retain, nonatomic) IBOutlet UIProgressView *progress;
 - (IBAction)decrease_screen_error:(id)sender;

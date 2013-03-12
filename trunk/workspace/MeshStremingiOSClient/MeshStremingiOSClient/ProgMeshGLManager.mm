@@ -8,6 +8,7 @@
 
 #import "ProgMeshGLManager.h"
 #import "AdditionalIncludes.h"
+#import "ProgMeshCentralController.h"
 #include "VDPMModel.h"
 
 
@@ -85,7 +86,7 @@ GLfloat backgroundSquare[] =
     [self mapBaseMeshFaceIndexBufferData:faceIndexData :faceIndexDataSize];
     
     
-    
+    [progMeshModel setGLObjs:&_VERTEX_NORMAL_BUFFER_OBJECT :&_FACE_INDEX_BUFFER_OBJECT];
     vd_vsplits_pointer = 0;
 }
 
@@ -94,6 +95,7 @@ GLfloat backgroundSquare[] =
 {
     glGenBuffers(1, &_VERTEX_NORMAL_BUFFER_OBJECT);
     glBindBuffer(GL_ARRAY_BUFFER, _VERTEX_NORMAL_BUFFER_OBJECT);
+    
 }
 
 - (void) createVertexNormalBufferMemSpace: (GLsizei) totalSize
@@ -399,6 +401,33 @@ GLfloat backgroundSquare[] =
     
 }
 
+- (void) update_vbo2
+{
+    _duringVBOUpdating = YES;
+    //UpdatePartIndex * upi_array = ((UpdateInfo *)updateInfo)->first;
+    //UpdatePartIndex * upi_indice = ((UpdateInfo *)updateInfo)->second;
+    
+    glBindBuffer(GL_ARRAY_BUFFER, _VERTEX_NORMAL_BUFFER_OBJECT);
+    
+    glBufferSubData(GL_ARRAY_BUFFER, 0, [progMeshModel getTotalVertexNormalArraySize] * sizeof(float),[progMeshModel getBaseMeshVertexNormalArray]);
+
+    
+    glEnableVertexAttribArray(GLKVertexAttribPosition);
+    glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(0));
+    glEnableVertexAttribArray(GLKVertexAttribNormal);
+    glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(12));
+    
+    //update index
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _FACE_INDEX_BUFFER_OBJECT);
+    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, [progMeshModel getTotalFaceIndiceBufferSize], [progMeshModel getMeshIndiceArray]);
+    
+    
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    
+    _duringVBOUpdating = NO;
+}
+
 - (void) update_vbo: (void *) updateInfo
 {
     _duringVBOUpdating = YES;
@@ -417,15 +446,26 @@ GLfloat backgroundSquare[] =
     glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(12));
     
     //update index
-    
-    
     // allocate enough space for indice vbo
     GLubyte * indice = (GLubyte *)&([progMeshModel getMeshIndiceArray][0]);
     //currentRecoveredFace = [progMeshModel getCurrentRecoveredFacesNumber];
     
+    int maxIndex = 0;
+    
     for (UpdatePartIndex::iterator i = upi_indice->begin(); i != upi_indice->end(); i ++) {
+        
+        if(*i > maxIndex){
+            maxIndex = *i;
+        }
+        
         glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, (*i) * sizeof(unsigned int), 3 * sizeof(unsigned int), &[progMeshModel getMeshIndiceArray][*i]);
     }
+    
+    
+    int face = [progMeshModel getCurrentRecoveredFaceNumber];
+    int facedraw = maxIndex;
+    //calculate currentFaceNumberCanDraw
+    
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     _updateInfo = NULL;
@@ -473,6 +513,62 @@ GLfloat backgroundSquare[] =
     
     [self setCentroidAndRadius:[(VDPMModel *) progMeshModel getCentroidAndRadius]];
     [progMeshModel setCurrentFaceNumberCanDraw:[progMeshModel getCurrentRecoveredFaceNumber]];
+}
+
+- (void) update_with_vsplits
+{
+    if (vd_vsplits.size() > 0) {
+        [(VDPMModel *)progMeshModel update_mesh_with_vsplits: vd_vsplits.front()];
+        vd_vsplits.erase(vd_vsplits.begin());
+    }
+    //[progMeshModel setCurrentFaceNumberCanDraw:[progMeshModel getCurrentRecoveredFaceNumber]];
+}
+
+- (void) update_with_vsplits: (NSData *) vsplitdata
+{
+    [EAGLContext setCurrentContext:[[ProgMeshCentralController sharedInstance] getCurrentContext]];
+    UpdateInfo *up_info = [(VDPMModel *)progMeshModel update_mesh_with_vsplits: vsplitdata];
+    //[self update_vbo:up_info];
+    [self setCentroidAndRadius:[(VDPMModel *) progMeshModel getCentroidAndRadius]];
+    [vsplitdata release];
+}
+
+- (void) finish_update_vsplits_and_update_vbo
+{
+    while (vd_vsplits.size() > 0) {
+        NSLog(@"left!");
+        [(VDPMModel *)progMeshModel update_mesh_with_vsplits: vd_vsplits.front()];
+        vd_vsplits.erase(vd_vsplits.begin());
+    }
+    
+    [self setCentroidAndRadius:[(VDPMModel *) progMeshModel getCentroidAndRadius]];
+    [progMeshModel setCurrentFaceNumberCanDraw:[progMeshModel getCurrentRecoveredFaceNumber]];
+
+}
+
+- (void) update_and_refine: (int) tonum
+{
+    NSLog(@"total number: %d", tonum);
+    int cnt = 0;
+    while (cnt < tonum) {
+        if(vd_vsplits.size() > 0){
+            [(VDPMModel *)progMeshModel update_mesh_with_vsplits: vd_vsplits.front()];
+            vd_vsplits.erase(vd_vsplits.begin());
+            cnt ++;
+        }
+    }
+    NSLog(@"%d exit", tonum);
+
+}
+
+- (GLuint *) get_VERTEX_NORMAL_BUFFER_OBJECT
+{
+    return &_VERTEX_NORMAL_BUFFER_OBJECT;
+}
+
+- (GLuint *) get_FACE_INDEX_BUFFER_OBJECT
+{
+    return &_FACE_INDEX_BUFFER_OBJECT;
 }
 
 

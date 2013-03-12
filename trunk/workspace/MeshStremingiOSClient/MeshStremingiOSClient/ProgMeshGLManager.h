@@ -49,8 +49,9 @@
     
 }
 
-@property (atomic, assign) BOOL duringVBOUpdating;
 
+
+@property (atomic, assign) BOOL duringVBOUpdating;
 
 @property (nonatomic, assign) GLsizei   positionPointerStride;
 @property (nonatomic, assign) int       positionPointerOffset;
@@ -116,5 +117,18 @@
 
 - (void) try_to_refine: (int) number;
 
+- (void) update_with_vsplits;
+
+- (void) finish_update_vsplits_and_update_vbo;
+
+- (void) update_and_refine : (int) tonum;
+
+- (void) update_with_vsplits: (NSData *) vsplitdata;
+
+- (void) update_vbo2;
+
+- (GLuint *) get_VERTEX_NORMAL_BUFFER_OBJECT;
+
+- (GLuint *) get_FACE_INDEX_BUFFER_OBJECT;
 
 @end

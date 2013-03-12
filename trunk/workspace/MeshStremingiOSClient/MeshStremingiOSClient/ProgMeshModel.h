@@ -33,8 +33,14 @@
     int currentRecoveredFaceNumber;
     
     int currentFaceNumberCanDraw;
+    
+    unsigned int *glvnobj;
+    
+    unsigned int *glfiobj;
 
 }
+
+- (void) setGLObjs : (unsigned int *) vn : (unsigned int *) fi;
 
 - (id) initWithNameAndType:(NSString *) name: (NSString *) type;
 
