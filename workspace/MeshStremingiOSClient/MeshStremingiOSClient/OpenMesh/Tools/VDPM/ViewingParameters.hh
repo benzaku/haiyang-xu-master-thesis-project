@@ -89,7 +89,7 @@ public:
   ViewingParameters();
 
   void increase_tolerance()           { tolerance_square_ *= 5.0f; }
-  void decrease_tolerance()           { tolerance_square_ /= 5.0f; }  
+  void decrease_tolerance()           { tolerance_square_ /= 5.0f; }
 
   float fovy() const                  { return  fovy_; }
   float aspect() const                { return  aspect_; }

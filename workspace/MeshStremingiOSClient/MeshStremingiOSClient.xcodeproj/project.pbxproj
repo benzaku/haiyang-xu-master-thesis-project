@@ -140,6 +140,8 @@
 		58D7D636166E1EDE00392661 /* ModelTableNavigationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 58D7D634166E1EDE00392661 /* ModelTableNavigationViewController.m */; };
 		58D7D637166E1EDE00392661 /* ModelTableNavigationViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 58D7D635166E1EDE00392661 /* ModelTableNavigationViewController.xib */; };
 		58D7D63A166E29DE00392661 /* ModelObj.m in Sources */ = {isa = PBXBuildFile; fileRef = 58D7D639166E29DE00392661 /* ModelObj.m */; };
+		58D7EA5816EB58CE00682DB2 /* Pair.m in Sources */ = {isa = PBXBuildFile; fileRef = 58D7EA5716EB58CE00682DB2 /* Pair.m */; };
+		58D7EA5B16EB642D00682DB2 /* MyMutableArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 58D7EA5A16EB642D00682DB2 /* MyMutableArray.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -416,6 +418,10 @@
 		58D7D635166E1EDE00392661 /* ModelTableNavigationViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ModelTableNavigationViewController.xib; sourceTree = "<group>"; };
 		58D7D638166E29DE00392661 /* ModelObj.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModelObj.h; sourceTree = "<group>"; };
 		58D7D639166E29DE00392661 /* ModelObj.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ModelObj.m; sourceTree = "<group>"; };
+		58D7EA5616EB58CE00682DB2 /* Pair.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Pair.h; sourceTree = "<group>"; };
+		58D7EA5716EB58CE00682DB2 /* Pair.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Pair.m; sourceTree = "<group>"; };
+		58D7EA5916EB642D00682DB2 /* MyMutableArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyMutableArray.h; sourceTree = "<group>"; };
+		58D7EA5A16EB642D00682DB2 /* MyMutableArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyMutableArray.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -588,6 +594,10 @@
 				583987C116A4C6D7008ED5A2 /* AdditionalIncludes.h */,
 				5833F3C616B41DA2002C8511 /* PMMemoryUpdateInformation.h */,
 				5833F3C716B41DA2002C8511 /* PMMemoryUpdateInformation.mm */,
+				58D7EA5616EB58CE00682DB2 /* Pair.h */,
+				58D7EA5716EB58CE00682DB2 /* Pair.m */,
+				58D7EA5916EB642D00682DB2 /* MyMutableArray.h */,
+				58D7EA5A16EB642D00682DB2 /* MyMutableArray.m */,
 			);
 			name = Util;
 			sourceTree = "<group>";
@@ -1230,6 +1240,8 @@
 				581DC6DA16AEEDA60036E94F /* vectorUtil.c in Sources */,
 				581DC6E516AEF4620036E94F /* MyOpenGLRenderer.m in Sources */,
 				5833F3C816B41DA2002C8511 /* PMMemoryUpdateInformation.mm in Sources */,
+				58D7EA5816EB58CE00682DB2 /* Pair.m in Sources */,
+				58D7EA5B16EB642D00682DB2 /* MyMutableArray.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -87,5 +87,11 @@
     currentFaceNumberCanDraw = cfncd;
 }
 
+- (void) setGLObjs : (unsigned int *) vn : (unsigned int *) fi
+{
+    glvnobj = vn;
+    glfiobj = fi;
+}
+
 
 @end

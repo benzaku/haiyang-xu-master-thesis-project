@@ -82,7 +82,7 @@ PMStreamServerHandler::onReadable(const AutoPtr<Poco::Net::ReadableNotification>
     int n = _socket.receiveBytes(_pBuffer, BUFFER_SIZE);
     
     if (n > 0){
-        std::cout << "receive length = " << n << std::endl;
+        //std::cout << "receive length = " << n << std::endl;
         handleRequest();
     }
     
