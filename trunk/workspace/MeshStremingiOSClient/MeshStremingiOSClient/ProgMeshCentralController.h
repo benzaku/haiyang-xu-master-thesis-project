@@ -59,6 +59,8 @@
     
     BOOL duringUpdateing;
     
+    bool clientAbort;
+    
 }
 
 - (NSMutableData *) get_tempData;
@@ -118,6 +120,10 @@
 - (void *) get_update_data;
 
 - (void) setSubUpdateFinish: (BOOL) subupdatefinish;
+
+- (void) setClientAbort : (bool) abort;
+
+- (bool) getClientAbort;
 
 @property (assign, atomic) BOOL subUpdateFinish;
 

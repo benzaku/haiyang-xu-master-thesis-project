@@ -82,5 +82,7 @@ struct viewparam {
 
 - (VDPMMesh *) getMesh;
 
+- (int) get_vfront_size;
+
 
 @end

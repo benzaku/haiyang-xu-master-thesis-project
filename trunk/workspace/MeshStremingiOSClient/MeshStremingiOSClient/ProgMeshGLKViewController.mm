@@ -244,6 +244,7 @@ float LOD[8] =  {0.001f, 2e-4f, 4e-5f, 8e-6f, 1.6e-6f, 3.2e-7f, 6.4e-8f, 1.28e-8
                 NSData * data = tempList->front();
                 [progMeshGLManager update_with_vsplits:data];
                 tempList->erase(tempList->begin());
+                //NSLog(@"vfront size : %d", [(VDPMModel *) progMeshModel get_vfront_size]);
             }
             /*
             if(tempList->size() == 0 && [[ProgMeshCentralController sharedInstance] subUpdateFinish] ){
@@ -490,6 +491,7 @@ void printMatrix4(GLKMatrix4 * m){
 
 - (void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
+    NSLog(@"vfront: %d",[(VDPMModel *) progMeshModel get_vfront_size]);
     if([[ProgMeshCentralController sharedInstance] getSocketHandler]._SOCKET_STATE == SOCKET_CONNECTED_IDLE){
         NSArray *allTouches = [[event allTouches] allObjects];
         
@@ -502,7 +504,7 @@ void printMatrix4(GLKMatrix4 * m){
             //[(VDPMModel *) progMeshModel adaptive_refinement];
             
             //update viewing parameters with server
-            [[ProgMeshCentralController sharedInstance] syncViewingParametersToServer:[(VDPMModel *)progMeshModel getViewingParameters]];
+            //[[ProgMeshCentralController sharedInstance] syncViewingParametersToServer:[(VDPMModel *)progMeshModel getViewingParameters]];
             
         } else if ([allTouches count] == 2)
         {
@@ -518,17 +520,30 @@ void printMatrix4(GLKMatrix4 * m){
 
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-    if([[ProgMeshCentralController sharedInstance] getSocketHandler]._SOCKET_STATE == SOCKET_CONNECTED_IDLE){
-        
-        NSArray *allTouches = [[event allTouches] allObjects];
-        
-        if ([allTouches count] == 1) {
-            currentStage = 0;
-            UITouch * touch = [allTouches objectAtIndex:0];
-            CGPoint location = [touch locationInView:self.view];
-            CGPoint lastLoc = [touch previousLocationInView:self.view];
-            CGPoint diff = CGPointMake(lastLoc.x - location.x, lastLoc.y - location.y);
+    
+    
+    
             
+    NSArray *allTouches = [[event allTouches] allObjects];
+    
+    if ([allTouches count] == 1) {
+        currentStage = 0;
+        UITouch * touch = [allTouches objectAtIndex:0];
+        CGPoint location = [touch locationInView:self.view];
+        CGPoint lastLoc = [touch previousLocationInView:self.view];
+        CGPoint diff = CGPointMake(lastLoc.x - location.x, lastLoc.y - location.y);
+        float distance = (lastLoc.x - location.x) * (lastLoc.x - location.x) + (lastLoc.y - location.y) * (lastLoc.y - location.y);
+        NSLog(@"dis: %f, %f", location.x, location.y );
+        if(![[ProgMeshCentralController sharedInstance] getClientAbort] && location.y > 100 && [[ProgMeshCentralController sharedInstance] isDuringUpdating])
+        {
+            
+            NSLog(@"Abort!");
+            [[ProgMeshCentralController sharedInstance] setClientAbort:true];
+        }
+        
+        if([[ProgMeshCentralController sharedInstance] getSocketHandler]._SOCKET_STATE == SOCKET_CONNECTED_IDLE && ((std::list<NSData *> *)[[ProgMeshCentralController sharedInstance] get_update_data])->size() == 0 && [[ProgMeshCentralController sharedInstance] subUpdateFinish] ){
+
+        
             float rotX = -1 * GLKMathDegreesToRadians(diff.y / 2.0);
             float rotY = -1 * GLKMathDegreesToRadians(diff.x / 2.0);
             
@@ -542,22 +557,23 @@ void printMatrix4(GLKMatrix4 * m){
             _current_position = [self projectOntoSurface:_current_position];
             
             [self computeIncremental];
-        } else if ([allTouches count] == 2){
-            UITouch *touchA = [allTouches objectAtIndex:0];
-            UITouch *touchB = [allTouches objectAtIndex:1];
-            
-            CGPoint pointA_ = [touchA locationInView:self.view];
-            CGPoint pointA = [touchA previousLocationInView:self.view];
-            
-            CGPoint pointB_ = [touchB locationInView:self.view];
-            CGPoint pointB = [touchB previousLocationInView:self.view];
-            
-            float disA_B_Now = sqrtf(((pointA_.x - pointB_.x) * (pointA_.x - pointB_.x) + (pointA_.y - pointB_.y) * (pointA_.y - pointB_.y)));
-            float disAB_Previous = sqrtf((pointA.x - pointB.x) * (pointA.x - pointB.x) + (pointA.y - pointB.y) * (pointA.y - pointB.y));
-            
-            zoomDistance += disA_B_Now - disAB_Previous;
-            
-        }}
+        }
+    } else if ([allTouches count] == 2){
+        UITouch *touchA = [allTouches objectAtIndex:0];
+        UITouch *touchB = [allTouches objectAtIndex:1];
+        
+        CGPoint pointA_ = [touchA locationInView:self.view];
+        CGPoint pointA = [touchA previousLocationInView:self.view];
+        
+        CGPoint pointB_ = [touchB locationInView:self.view];
+        CGPoint pointB = [touchB previousLocationInView:self.view];
+        
+        float disA_B_Now = sqrtf(((pointA_.x - pointB_.x) * (pointA_.x - pointB_.x) + (pointA_.y - pointB_.y) * (pointA_.y - pointB_.y)));
+        float disAB_Previous = sqrtf((pointA.x - pointB.x) * (pointA.x - pointB.x) + (pointA.y - pointB.y) * (pointA.y - pointB.y));
+        
+        zoomDistance += disA_B_Now - disAB_Previous;
+        
+    }
     
 }
 
@@ -577,7 +593,6 @@ void printMatrix4(GLKMatrix4 * m){
     [super dealloc];
 }
 - (IBAction)decrease_screen_error:(id)sender {
-    
     [self lod_up];
     
     
@@ -601,9 +616,9 @@ void printMatrix4(GLKMatrix4 * m){
         
     
     NSLog(@"decrease screen error");
-    //[(VDPMModel *) progMeshModel decrease_tolerance_square];
+    [(VDPMModel *) progMeshModel decrease_tolerance_square];
     //[self getSuitableStage];
-    [(VDPMModel *) progMeshModel set_tolerance_square:(pow(5, currentStage ++))];
+    //[(VDPMModel *) progMeshModel set_tolerance_square:(pow(5, currentStage ++))];
     [(VDPMModel *)progMeshModel update_viewing_parameters:_modelViewMatrix :fabsf(self.view.bounds.size.width / self.view.bounds.size.height) :45];
     
     //[(VDPMModel *) progMeshModel adaptive_refinement];

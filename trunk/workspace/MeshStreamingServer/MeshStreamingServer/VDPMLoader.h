@@ -25,6 +25,8 @@
 #include <OpenMesh/Tools/VDPM/VFront.hh>
 #include "PublicIncludes.h"
 
+#define VSPLIT_LENGTH   80
+
 
 using namespace OpenMesh;
 using namespace OpenMesh::VDPM;
@@ -96,6 +98,7 @@ public:
     
     std::vector<Vsplit>* get_vsplit_loaded(){ return &vsplit_loaded;};
 
+    void rollback_split(data_chunk * vsplitdata);
 
 private:
     
@@ -157,6 +160,10 @@ private:
     data_chunk* convert_vsplit_list_to_data_chunk();
     
     void append_vsplit(VHierarchyNodeHandle node_handle, std::vector<Vsplit *>& splits);
+    
+    bool ecol_legal(VHierarchyNodeHandle _parent_handle, VDPMMesh::HalfedgeHandle& v0v1);
+
+    void ecol(VHierarchyNodeHandle _node_handle, const VDPMMesh::HalfedgeHandle& v0v1);
 
 };
 

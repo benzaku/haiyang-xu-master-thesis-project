@@ -90,7 +90,7 @@ PMStreamServerHandler::onReadable(const AutoPtr<Poco::Net::ReadableNotification>
         delete this;
 }
 
-#define VSPLIT_LENGTH   80
+int bytesent;
 
 void
 PMStreamServerHandler::handleRequest()
@@ -256,6 +256,7 @@ PMStreamServerHandler::handleRequest()
         current_idx = 0;
         
         _socket.sendBytes(header_size, 8 + sizeof(int));
+        bytesent = 0;
         //if(data->size > 0)
           //  _socket.sendBytes(data->data, data->size);
     }
@@ -273,8 +274,36 @@ PMStreamServerHandler::handleRequest()
         if(temp_data_chunk != NULL){
             sent_bytes = _socket.sendBytes(&(temp_data_chunk->data[idx_num[0] * VSPLIT_LENGTH]), idx_num[1] * VSPLIT_LENGTH);
         }
+        bytesent += sent_bytes;
+        //std::cout << "total byte sent " << bytesent << "/"<< temp_data_chunk->size<< std::endl; /****/
         //std::cout << "byte sent " << sent_bytes << std::endl;
 
+    }
+    
+    if(strncmp(_pBuffer, "CLIENT_ABORT_DURING_UPDATE", 26) == 0){
+        
+        std::cout << "client abort signal received!" << std::endl;
+        int abortFromIdx;
+        memcpy(&abortFromIdx, &_pBuffer[26], sizeof(int));
+        
+        if(temp_data_chunk != NULL){
+            data_chunk *rollbackdata = (data_chunk *) malloc(sizeof(data_chunk));
+            strncpy(rollbackdata->HEADER, temp_data_chunk->HEADER, 8);
+            rollbackdata->size = temp_data_chunk->size - abortFromIdx * VSPLIT_LENGTH;
+            rollbackdata->data = &(temp_data_chunk->data[abortFromIdx * VSPLIT_LENGTH]);
+            //std::cout << "byte abort " << rollbackdata->size << std::endl;
+            this->_vdpmFH->getVDPMLoader()->rollback_split(rollbackdata);
+            free(rollbackdata);
+            free(temp_data_chunk->data);
+            free(temp_data_chunk);
+            temp_data_chunk = NULL;
+            rollbackdata = NULL;
+            _socket.sendBytes("CLIENT_ABORT_OK", 15);
+        } else{
+            std::cerr << "ERROR" << std::endl;
+            exit(1);
+        }
+        
     }
     
 }

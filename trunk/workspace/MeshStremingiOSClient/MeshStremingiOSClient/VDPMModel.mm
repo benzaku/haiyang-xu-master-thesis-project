@@ -315,6 +315,11 @@
     viewing_parameters_.update_viewing_configurations();
 }
 
+- (int) get_vfront_size
+{
+    return vfront_.size();
+}
+
 - (void) update_viewing_parameters: (GLKMatrix4) _modelview_matrix  :(float) aspect: (float) fovy
 {
     double mvm[16];
@@ -440,7 +445,10 @@
     int n_split = vsplits_data.length / sizeof(Vsplit);
 
     Vsplit * splits = new Vsplit[n_split];
-    [vsplits_data getBytes:splits length:vsplits_data.length];    
+    [vsplits_data getBytes:splits length:vsplits_data.length];
+    glBindBuffer(GL_ARRAY_BUFFER, *(glvnobj));
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *(glfiobj));
+    //update v hierarchy first
     for(int i = 0; i < n_split; i ++){
         Vsplit asplit = splits[i];
         
@@ -453,19 +461,32 @@
         VHierarchyNodeIndex _fund_lcut_index = VHierarchyNodeIndex(asplit.fund_lcut_index);
         VHierarchyNodeIndex _fund_rcut_index = VHierarchyNodeIndex(asplit.fund_rcut_index);
         
-        node_handle = vhierarchy_.node_handle(_node_index);
+        //node_handle = vhierarchy_.node_handle(_node_index);
+        node_handle = index2handle_map[_node_index];
         vhierarchy_.make_children(node_handle);
         
+        VHierarchyNode &node = vhierarchy_.node(node_handle);
+        VHierarchyNode &lchild = vhierarchy_.node(node.lchild_handle());
+        VHierarchyNode &rchild = vhierarchy_.node(node.rchild_handle());
+        
+        node.set_fund_lcut(_fund_lcut_index);
+        node.set_fund_rcut(_fund_rcut_index);
         
         lchild_handle = vhierarchy_.lchild_handle(node_handle);
         rchild_handle = vhierarchy_.rchild_handle(node_handle);
         
-        vhierarchy_.node(node_handle).set_fund_lcut(_fund_lcut_index);
-        vhierarchy_.node(node_handle).set_fund_rcut(_fund_rcut_index);
+        //vhierarchy_.node(node_handle).set_fund_lcut(_fund_lcut_index);
+        //vhierarchy_.node(node_handle).set_fund_rcut(_fund_rcut_index);
         
         vertex_handle = mesh_.add_vertex(asplit.v0);
-        vhierarchy_.node(lchild_handle).set_vertex_handle(vertex_handle);
-        vhierarchy_.node(rchild_handle).set_vertex_handle(vhierarchy_.node(node_handle).vertex_handle());
+        lchild.set_vertex_handle(vertex_handle);
+        rchild.set_vertex_handle(node.vertex_handle());
+        
+        //vhierarchy_.node(lchild_handle).set_vertex_handle(vertex_handle);
+        //vhierarchy_.node(rchild_handle).set_vertex_handle(vhierarchy_.node(node_handle).vertex_handle());
+        
+        index2handle_map[lchild.node_index()] = node.lchild_handle();
+        index2handle_map[rchild.node_index()] = node.rchild_handle();
         
         vhierarchy_.node(lchild_handle).set_radius(asplit.l_radius);
         vhierarchy_.node(lchild_handle).set_normal(asplit.l_normal);
@@ -478,14 +499,21 @@
         vhierarchy_.node(rchild_handle).set_sin_square(asplit.r_sin_square);
         vhierarchy_.node(rchild_handle).set_mue_square(asplit.r_mue_square);
         vhierarchy_.node(rchild_handle).set_sigma_square(asplit.r_sigma_square);
+        [self force_vsplit:node_handle];
+
+        
     }
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    /*
     
     glBindBuffer(GL_ARRAY_BUFFER, *(glvnobj));
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *(glfiobj));
     [self refine];
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    
+     */
+    delete [] splits;
     return &updateInfo;
 }
 
@@ -570,8 +598,16 @@
     for (VDPMMesh::VertexFaceIter vfiter = mesh_.vf_begin(v1); vfiter != mesh_.vf_end(v1); ++ vfiter) {
         nv11 ++;
     }
+    /*
     
-    
+    std::cout << "==============" << std::endl;
+    std::cout << "splits info: " << std::endl
+    << "node_handle.idx " << _node_handle.idx() << std::endl
+    << "vl: " << vl.idx() << " vr: " << vr.idx() << std::endl
+    << "v0: " << v0.idx() << " v1: " << v1.idx() << std::endl;
+    std::cout << "==============" << std::endl;
+    */
+     
     mesh_.vertex_split(v0, v1, vl, vr);
     mesh_.set_normal(v0, vhierarchy_.normal(lchild_handle));
     mesh_.set_normal(v1, vhierarchy_.normal(rchild_handle));
@@ -710,6 +746,11 @@ VDPMMesh::Point temp_center;
     fund_lcut_index = vhierarchy_.fund_lcut_index(_node_handle),
     fund_rcut_index = vhierarchy_.fund_rcut_index(_node_handle);
     
+    /*
+    std::cout << "fund_lcut_index " << fund_lcut_index.value() << std::endl;
+    std::cout << "fund_rcut_index " << fund_rcut_index.value() << std::endl;
+    */
+     
     vl = VDPMMesh::InvalidVertexHandle;
     vr = VDPMMesh::InvalidVertexHandle;
     
@@ -736,6 +777,7 @@ VDPMMesh::Point temp_center;
             vr != VDPMMesh::InvalidVertexHandle)
             break;
     }
+    //std::cout << "vl: " << mesh_.point(vl) << " vr: " << mesh_.point(vr) << std::endl;
 
 }
 - (VDPMMesh *) getMesh
