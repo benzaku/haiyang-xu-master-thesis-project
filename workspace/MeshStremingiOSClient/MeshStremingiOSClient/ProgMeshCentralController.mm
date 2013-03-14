@@ -74,6 +74,8 @@ static id SharedInstance;
     
     subUpdateFinish = NO;
     
+    clientAbort = false;
+    
     return self;
 }
 
@@ -198,6 +200,11 @@ static id SharedInstance;
     
     
     switch (waitState) {
+            
+        case SOCKET_WAIT_CLIENT_ABORT_ACK:
+            _socketHandler._SOCKET_STATE = SOCKET_CONNECTED_IDLE;
+            [self handleWaitForClientAbortAck: data];
+            break;
         case SOCKET_WAIT_FOR_SPM_VSPLIT_DATA:
             _socketHandler._SOCKET_STATE = SOCKET_CONNECTED_IDLE;
             
@@ -246,6 +253,27 @@ static id SharedInstance;
     
 }
 
+- (void) handleWaitForClientAbortAck: (NSData *) data
+{
+    //CLIENT_ABORT_OK
+    char ack[15];
+    [data getBytes: ack length:15];
+    if(strncmp("CLIENT_ABORT_OK", ack, 15) == 0){
+        NSLog(@"client abort successful!");
+        
+        //dispatch_async(_refineOperationQueue, ^{
+            NSLog(@"update data finish!");
+            duringUpdateing = NO;
+            _socketHandler._SOCKET_STATE = SOCKET_CONNECTED_IDLE;
+            subUpdateFinish = YES;
+        //});
+        [_progMeshGLKViewController.progress setProgress:1.0f];
+        [self setClientAbort:false];
+        
+    }
+}
+
+
 int n_vsplit_packet_remain;
 int total_vsplit;
 
@@ -258,7 +286,7 @@ int total_size;
 
 int offset;
 
-#define VSPLIT_EACH_PACKET  100
+#define VSPLIT_EACH_PACKET  1000
 #define SIZE_OF_A_VSPLIT    80
 #define BYTE_PER_READ       8000
 
@@ -278,6 +306,29 @@ int current_idx;
     //request for next packet;
     int req_num = current_idx + VSPLIT_EACH_PACKET > total_vsplit ? total_vsplit - current_idx : VSPLIT_EACH_PACKET;
     int idx_num[2];
+    
+    if(clientAbort && duringUpdateing){
+        NSLog(@"Get Client Abort Signal, Send Abort Signal to Server!");
+        
+        int abortFromIndex = current_idx;
+        int data_to_send_size = COMMAND_CLIENT_ABORT_DURING_UPDATE.length + sizeof(int);
+        char data_to_send[data_to_send_size];
+        memcpy(data_to_send, [COMMAND_CLIENT_ABORT_DURING_UPDATE cStringUsingEncoding:NSUTF8StringEncoding], COMMAND_CLIENT_ABORT_DURING_UPDATE.length);
+        memcpy((char *)&(data_to_send[COMMAND_CLIENT_ABORT_DURING_UPDATE.length]) , &abortFromIndex, sizeof(int));
+        
+        [_socketHandler socketSendDataWithLengthAndReadTimeOut:[[NSData alloc] initWithBytes:data_to_send length:data_to_send_size] :SOCKET_WAIT_CLIENT_ABORT_ACK :-1];
+        /*
+        dispatch_async(_refineOperationQueue, ^{
+            NSLog(@"update data finish!");
+            duringUpdateing = NO;
+            _socketHandler._SOCKET_STATE = SOCKET_CONNECTED_IDLE;
+            subUpdateFinish = YES;
+        });
+        [_progMeshGLKViewController.progress setProgress:1.0f];
+        //[self setClientAbort:NO];
+        */
+        return;
+    }
     
     if(req_num > 0){
         idx_num[0] = current_idx;
@@ -547,6 +598,21 @@ int current_idx;
 - (void) setSubUpdateFinish: (BOOL) subupdatefinish
 {
     subUpdateFinish = subupdatefinish;
+}
+
+- (void) setClientAbort : (bool) abort
+{
+    @synchronized(self){
+        NSLog(@"set abort to %d", abort );
+        clientAbort = abort;
+    }
+}
+
+- (bool) getClientAbort
+{
+    @synchronized(self){
+        return clientAbort;
+    }
 }
 
 @synthesize subUpdateFinish;

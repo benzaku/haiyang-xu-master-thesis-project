@@ -231,9 +231,32 @@ VDPMLoader::openVDPM(const char* _filename)
 
 void clear_vsplits_to_send(std::vector<Vsplit*> & splits){
     for (int i = 0; i < splits.size(); i ++) {
-        delete splits[i];
+        free(splits[i]);
     }
 }
+
+void VDPMLoader::rollback_split(data_chunk * vsplitdata)
+{
+    Vsplit * vsltdata = (Vsplit *)vsplitdata->data;
+    int size = vsplitdata->size / VSPLIT_LENGTH;
+    std::cout << "Need to roll back " << size << " vsplits" << std::endl;
+    VDPMMesh::HalfedgeHandle v0v1;
+    for(int i = size - 1; i >= 0; i --){
+        Vsplit aVsplit = vsltdata[i];
+        //std::cout << "node_index" << aVsplit.node_index << std::endl;
+        VHierarchyNodeHandle node_handle = index2handle_map[aVsplit.node_index];
+        //std::cout << "rollback node idx = " << node_handle.idx() << std::endl;
+        if(ecol_legal(node_handle, v0v1)){
+            ecol(node_handle, v0v1);
+        } else{
+            std::cout << "unable to ecol node : " << node_handle.idx() << std::endl;
+        }
+    }
+    std::cout << "rollback finish! size of vfront " << vfront_.size()<<std::endl;
+
+}
+
+
 int count = 0;
 data_chunk* VDPMLoader::adaptive_refinement()
 {
@@ -288,8 +311,9 @@ data_chunk* VDPMLoader::adaptive_refinement()
     for(int i = 0; i < vsplits_to_send.size(); i ++){
         vdata[i] = *vsplits_to_send[i];
     }
-    if(vsplits_to_send.size() > 0)
-        std::cout << vsplits_to_send[0]->l_normal << std::endl;
+    
+    //if(vsplits_to_send.size() > 0)
+      //  std::cout << vsplits_to_send[0]->l_normal << std::endl;
     clear_vsplits_to_send(vsplits_to_send);
     vsplits_to_send.clear();
     std::cout << "size of vfront : " << vfront_.size() << std::endl;
@@ -362,6 +386,7 @@ VDPMLoader::vsplit(VHierarchyNodeHandle _node_handle,
 {
     
     
+    
     // refine
     VHierarchyNodeHandle
     lchild_handle = vhierarchy_.lchild_handle(_node_handle),
@@ -369,7 +394,14 @@ VDPMLoader::vsplit(VHierarchyNodeHandle _node_handle,
     
     VDPMMesh::VertexHandle  v0 = vhierarchy_.vertex_handle(lchild_handle);
     VDPMMesh::VertexHandle  v1 = vhierarchy_.vertex_handle(rchild_handle);
-    
+    /*
+    std::cout << "==============" << std::endl;
+    std::cout << "splits info: " << std::endl
+    << "node_handle.idx " << _node_handle.idx() << std::endl
+    << "vl: " << vl.idx() << " vr: " << vr.idx() << std::endl
+    << "v0: " << v0.idx() << " v1: " << v1.idx() << std::endl;
+    std::cout << "==============" << std::endl;
+    */
     append_vsplit(_node_handle, splits);
      
     mesh_.vertex_split(v0, v1, vl, vr);
@@ -385,6 +417,8 @@ VDPMLoader::vsplit(VHierarchyNodeHandle _node_handle,
     vfront_.add(rchild_handle);
     
     
+    
+    
 }
 
 void VDPMLoader::get_active_cuts(const VHierarchyNodeHandle _node_handle,
@@ -398,6 +432,10 @@ void VDPMLoader::get_active_cuts(const VHierarchyNodeHandle _node_handle,
     fund_lcut_index = vhierarchy_.fund_lcut_index(_node_handle),
     fund_rcut_index = vhierarchy_.fund_rcut_index(_node_handle);
     
+    /**
+    std::cout << "fund_lcut_index " << fund_lcut_index.value() << std::endl;
+    std::cout << "fund_rcut_index " << fund_rcut_index.value() << std::endl;
+    */
     vl = VDPMMesh::InvalidVertexHandle;
     vr = VDPMMesh::InvalidVertexHandle;
     
@@ -424,6 +462,7 @@ void VDPMLoader::get_active_cuts(const VHierarchyNodeHandle _node_handle,
             vr != VDPMMesh::InvalidVertexHandle)
             break;
     }
+    //std::cout << "vl: " << mesh_.point(vl) << " vr: " << mesh_.point(vr) << std::endl;
 
 }
 
@@ -450,6 +489,55 @@ bool VDPMLoader::qrefine(VHierarchyNodeHandle _node_handle){
     
     return true;
 
+}
+
+bool
+VDPMLoader::
+ecol_legal(VHierarchyNodeHandle _parent_handle, VDPMMesh::HalfedgeHandle& v0v1)
+{
+    VHierarchyNodeHandle
+    lchild_handle = vhierarchy_.lchild_handle(_parent_handle),
+    rchild_handle = vhierarchy_.rchild_handle(_parent_handle);
+    
+    // test whether lchild & rchild present in the current vfront
+    if ( vfront_.is_active(lchild_handle) != true ||
+        vfront_.is_active(rchild_handle) != true)
+        return  false;
+    
+    VDPMMesh::VertexHandle v0, v1;
+    
+    
+    v0 = vhierarchy_.vertex_handle(lchild_handle);
+    v1 = vhierarchy_.vertex_handle(rchild_handle);
+    
+    v0v1 = mesh_.find_halfedge(v0, v1);
+    
+    return  mesh_.is_collapse_ok(v0v1);
+}
+
+void
+VDPMLoader::
+ecol(VHierarchyNodeHandle _node_handle, const VDPMMesh::HalfedgeHandle& v0v1)
+{
+    VHierarchyNodeHandle
+    lchild_handle = vhierarchy_.lchild_handle(_node_handle),
+    rchild_handle = vhierarchy_.rchild_handle(_node_handle);
+    
+    VDPMMesh::VertexHandle  v0 = vhierarchy_.vertex_handle(lchild_handle);
+    VDPMMesh::VertexHandle  v1 = vhierarchy_.vertex_handle(rchild_handle);
+    
+    // coarsen
+    mesh_.collapse(v0v1);
+    mesh_.set_normal(v1, vhierarchy_.normal(_node_handle));
+    
+    mesh_.data(v0).set_vhierarchy_node_handle(lchild_handle);
+    mesh_.data(v1).set_vhierarchy_node_handle(_node_handle);
+    mesh_.status(v0).set_deleted(false);
+    mesh_.status(v1).set_deleted(false);
+    
+    vfront_.add(_node_handle);
+    vfront_.remove(lchild_handle);
+    vfront_.remove(rchild_handle);
 }
 
 

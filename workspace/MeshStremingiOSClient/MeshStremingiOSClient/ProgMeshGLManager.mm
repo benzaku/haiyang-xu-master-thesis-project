@@ -527,8 +527,9 @@ GLfloat backgroundSquare[] =
 - (void) update_with_vsplits: (NSData *) vsplitdata
 {
     [EAGLContext setCurrentContext:[[ProgMeshCentralController sharedInstance] getCurrentContext]];
+    
     UpdateInfo *up_info = [(VDPMModel *)progMeshModel update_mesh_with_vsplits: vsplitdata];
-    //[self update_vbo:up_info];
+    //[self update_vbo2];
     [self setCentroidAndRadius:[(VDPMModel *) progMeshModel getCentroidAndRadius]];
     [vsplitdata release];
 }
