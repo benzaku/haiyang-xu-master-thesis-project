@@ -19,8 +19,6 @@ const double TRACKBALL_RADIUS = 0.6;
 
 @interface ProgMeshGLKViewController (){
     
-    
-    
     GLuint _program;
     
     GLuint _vertexArray;
@@ -71,7 +69,7 @@ const double TRACKBALL_RADIUS = 0.6;
     
     BOOL interrupt_lod_up;
     
-    
+    bool duringInteraction;
     
 }
 
@@ -121,6 +119,8 @@ const double TRACKBALL_RADIUS = 0.6;
     wait_interaction = false;
     
     interrupt_lod_up = NO;
+    
+    duringInteraction = false;
     
     return self;
 }
@@ -244,25 +244,24 @@ float LOD[8] =  {0.001f, 2e-4f, 4e-5f, 8e-6f, 1.6e-6f, 3.2e-7f, 6.4e-8f, 1.28e-8
                 NSData * data = tempList->front();
                 [progMeshGLManager update_with_vsplits:data];
                 tempList->erase(tempList->begin());
-                //NSLog(@"vfront size : %d", [(VDPMModel *) progMeshModel get_vfront_size]);
             }
-            /*
-            if(tempList->size() == 0 && [[ProgMeshCentralController sharedInstance] subUpdateFinish] ){
+            
+            
+            if(tempList->size() == 0 && [[ProgMeshCentralController sharedInstance] subUpdateFinish] && !duringInteraction ){
                 [[ProgMeshCentralController sharedInstance] setSubUpdateFinish:NO];
-                NSLog(@"empty!");
                 if(wait_interaction == false){
                     wait_interaction = true;
-                    [NSTimer scheduledTimerWithTimeInterval:1.0
+                    [NSTimer scheduledTimerWithTimeInterval:0.25
                                                      target:self
                                                    selector:@selector(lod_up)
                                                    userInfo:nil
                                                     repeats:NO];
-                    //wait_interaction = false;
-
                 }
                 
             }
-             */
+            
+            
+            
             
         }
         break;
@@ -437,11 +436,6 @@ void printMatrix4(GLKMatrix4 * m){
         P.z = sqrt(radius2 - length2);
     else
     {
-        /*
-         P.x *= radius / sqrt(length2);
-         P.y *= radius / sqrt(length2);
-         P.z = 0;
-         */
         P.z = radius2 / (2.0 * sqrt(length2));
         float length = sqrt(length2 + P.z * P.z);
         P = GLKVector3DivideScalar(P, length);
@@ -501,10 +495,6 @@ void printMatrix4(GLKMatrix4 * m){
             NSLog(@"1 finger ends");
             
             [(VDPMModel *)progMeshModel update_viewing_parameters:_modelViewMatrix :fabsf(self.view.bounds.size.width / self.view.bounds.size.height) :45];
-            //[(VDPMModel *) progMeshModel adaptive_refinement];
-            
-            //update viewing parameters with server
-            //[[ProgMeshCentralController sharedInstance] syncViewingParametersToServer:[(VDPMModel *)progMeshModel getViewingParameters]];
             
         } else if ([allTouches count] == 2)
         {
@@ -516,14 +506,16 @@ void printMatrix4(GLKMatrix4 * m){
         }
     }
     
+    duringInteraction = false;
+    
+    
 }
 
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
     
+    duringInteraction = true;
     
-    
-            
     NSArray *allTouches = [[event allTouches] allObjects];
     
     if ([allTouches count] == 1) {
@@ -532,8 +524,8 @@ void printMatrix4(GLKMatrix4 * m){
         CGPoint location = [touch locationInView:self.view];
         CGPoint lastLoc = [touch previousLocationInView:self.view];
         CGPoint diff = CGPointMake(lastLoc.x - location.x, lastLoc.y - location.y);
-        float distance = (lastLoc.x - location.x) * (lastLoc.x - location.x) + (lastLoc.y - location.y) * (lastLoc.y - location.y);
-        NSLog(@"dis: %f, %f", location.x, location.y );
+
+        
         if(![[ProgMeshCentralController sharedInstance] getClientAbort] && location.y > 100 && [[ProgMeshCentralController sharedInstance] isDuringUpdating])
         {
             
@@ -541,23 +533,21 @@ void printMatrix4(GLKMatrix4 * m){
             [[ProgMeshCentralController sharedInstance] setClientAbort:true];
         }
         
-        if([[ProgMeshCentralController sharedInstance] getSocketHandler]._SOCKET_STATE == SOCKET_CONNECTED_IDLE && ((std::list<NSData *> *)[[ProgMeshCentralController sharedInstance] get_update_data])->size() == 0 && [[ProgMeshCentralController sharedInstance] subUpdateFinish] ){
-
+            
+        float rotX = -1 * GLKMathDegreesToRadians(diff.y / 2.0);
+        float rotY = -1 * GLKMathDegreesToRadians(diff.x / 2.0);
         
-            float rotX = -1 * GLKMathDegreesToRadians(diff.y / 2.0);
-            float rotY = -1 * GLKMathDegreesToRadians(diff.x / 2.0);
-            
-            bool isInvertible;
-            GLKVector3 xAxis = GLKMatrix4MultiplyVector3(GLKMatrix4Invert(_rotMatrix, &isInvertible), GLKVector3Make(1, 0, 0));
-            _rotMatrix = GLKMatrix4Rotate(_rotMatrix, rotX, xAxis.x, xAxis.y, xAxis.z);
-            GLKVector3 yAxis = GLKMatrix4MultiplyVector3(GLKMatrix4Invert(_rotMatrix, &isInvertible), GLKVector3Make(0, 1, 0));
-            _rotMatrix = GLKMatrix4Rotate(_rotMatrix, rotY, yAxis.x, yAxis.y, yAxis.z);
-            
-            _current_position = GLKVector3Make(location.x, location.y, 0);
-            _current_position = [self projectOntoSurface:_current_position];
-            
-            [self computeIncremental];
-        }
+        bool isInvertible;
+        GLKVector3 xAxis = GLKMatrix4MultiplyVector3(GLKMatrix4Invert(_rotMatrix, &isInvertible), GLKVector3Make(1, 0, 0));
+        _rotMatrix = GLKMatrix4Rotate(_rotMatrix, rotX, xAxis.x, xAxis.y, xAxis.z);
+        GLKVector3 yAxis = GLKMatrix4MultiplyVector3(GLKMatrix4Invert(_rotMatrix, &isInvertible), GLKVector3Make(0, 1, 0));
+        _rotMatrix = GLKMatrix4Rotate(_rotMatrix, rotY, yAxis.x, yAxis.y, yAxis.z);
+        
+        _current_position = GLKVector3Make(location.x, location.y, 0);
+        _current_position = [self projectOntoSurface:_current_position];
+        
+        [self computeIncremental];
+    
     } else if ([allTouches count] == 2){
         UITouch *touchA = [allTouches objectAtIndex:0];
         UITouch *touchB = [allTouches objectAtIndex:1];
@@ -613,17 +603,16 @@ void printMatrix4(GLKMatrix4 * m){
 
 - (void) lod_up
 {
-        
+    if(duringInteraction)
+        return;
     
-    NSLog(@"decrease screen error");
-    [(VDPMModel *) progMeshModel decrease_tolerance_square];
-    //[self getSuitableStage];
-    //[(VDPMModel *) progMeshModel set_tolerance_square:(pow(5, currentStage ++))];
+    [(VDPMModel *) progMeshModel set_tolerance_square:(pow(5, currentStage ++))];
     [(VDPMModel *)progMeshModel update_viewing_parameters:_modelViewMatrix :fabsf(self.view.bounds.size.width / self.view.bounds.size.height) :45];
-    
-    //[(VDPMModel *) progMeshModel adaptive_refinement];
-    
-    //update viewing parameters with server
+    if(![((VDPMModel *) progMeshModel) get_require_n_refinement]){
+        wait_interaction = false;
+        return;
+    }
+        //update viewing parameters with server
     if([[ProgMeshCentralController sharedInstance] getSocketHandler]._SOCKET_STATE == SOCKET_CONNECTED_IDLE)
         [[ProgMeshCentralController sharedInstance] syncViewingParametersToServer:[(VDPMModel *)progMeshModel getViewingParameters]];
     

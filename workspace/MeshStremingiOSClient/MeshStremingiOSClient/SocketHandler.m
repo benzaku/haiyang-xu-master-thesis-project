@@ -95,7 +95,6 @@
 {
     if (_socket_state == SOCKET_CONNECTED_IDLE) {
         _socket_state = nextState;
-        //NSLog(@"sending data ");
         [_socket writeData:data withTimeout:timeout tag:0];
         [_socket readDataWithTimeout:timeout tag:0];
         

@@ -286,7 +286,7 @@ int total_size;
 
 int offset;
 
-#define VSPLIT_EACH_PACKET  1000
+#define VSPLIT_EACH_PACKET  250
 #define SIZE_OF_A_VSPLIT    80
 #define BYTE_PER_READ       8000
 
@@ -298,11 +298,7 @@ int current_idx;
     dispatch_async(_refineOperationQueue, ^{
         _update_data->push_back([[NSData alloc] initWithData:data]);
     });
-    /*
     
-        [[_progMeshGLKViewController getProgMeshGLManager] update_with_vsplits:[[NSData alloc] initWithData:data]];
-    });
-    */
     //request for next packet;
     int req_num = current_idx + VSPLIT_EACH_PACKET > total_vsplit ? total_vsplit - current_idx : VSPLIT_EACH_PACKET;
     int idx_num[2];
@@ -317,16 +313,7 @@ int current_idx;
         memcpy((char *)&(data_to_send[COMMAND_CLIENT_ABORT_DURING_UPDATE.length]) , &abortFromIndex, sizeof(int));
         
         [_socketHandler socketSendDataWithLengthAndReadTimeOut:[[NSData alloc] initWithBytes:data_to_send length:data_to_send_size] :SOCKET_WAIT_CLIENT_ABORT_ACK :-1];
-        /*
-        dispatch_async(_refineOperationQueue, ^{
-            NSLog(@"update data finish!");
-            duringUpdateing = NO;
-            _socketHandler._SOCKET_STATE = SOCKET_CONNECTED_IDLE;
-            subUpdateFinish = YES;
-        });
-        [_progMeshGLKViewController.progress setProgress:1.0f];
-        //[self setClientAbort:NO];
-        */
+        //subUpdateFinish = yes;
         return;
     }
     
@@ -368,6 +355,11 @@ int current_idx;
     int size;
     memcpy(&size, &header_size[8], sizeof(int));
     
+    if(size == 0){
+        subUpdateFinish = YES;
+        return;
+    }
+    
     [_progMeshGLKViewController.progress setProgress:0.0f];
     
     total_vsplit = size / SIZE_OF_A_VSPLIT;
@@ -389,14 +381,7 @@ int current_idx;
         int readLength = initial_vsplit_pack_count * SIZE_OF_A_VSPLIT;
         
         [_socketHandler socketSendDataWithReadTimeOutAndToLength:[[NSData alloc] initWithBytes:sendData length:sendDataLength] :SOCKET_WAIT_FOR_SPM_VSPLIT_DATA :-1 :readLength];
-        /*
-        if(_tempData != nil){
-            [_tempData release];
-            _tempData = nil;
-        }
-         
-        _tempData = [[NSMutableData alloc] init];
-        */
+        
         duringUpdateing = YES;
         subUpdateFinish = NO;
     }
@@ -478,6 +463,7 @@ int current_idx;
     } else{
         NSLog(@"ERROR, Server returns illegal message : %@", temp);
     }
+    [temp release];
 }
 
 
@@ -486,9 +472,6 @@ int current_idx;
     int receivedInt = 0;
     [data getBytes:&receivedInt length:sizeof(int)];
     modelListXMLStringLength = receivedInt;
-    
-    NSLog(@"length of ModelListXML = %d\n",receivedInt);
-    
     [_socketHandler socketSendMessageWithReadTimeOutAndToLength:COMMAND_REQUEST_MODEL_LIST_XML :SOCKET_WAIT_FOR_MODEL_LIST :-1 :receivedInt];
 }
 
@@ -508,10 +491,8 @@ int current_idx;
     
     Models *models = [[[Models alloc] init] autorelease];
     
-    NSMutableArray *modelArray = [parser fromXml:modelListXMLString withObject:models];
-    
-    NSLog(@"models :: %@", modelArray);
-    
+    //NSMutableArray *modelArray = [parser fromXml:modelListXMLString withObject:models];
+        
     MeshObj *meshObj = [[[MeshObj alloc] init] autorelease];
     
     VolumeObj *volObj = [[[VolumeObj alloc] init] autorelease];
@@ -521,15 +502,12 @@ int current_idx;
     _progMeshModelTableViewController.volumes = [parser fromXml:modelListXMLString withObject:volObj];
     
     [_progMeshModelTableViewController.tableView reloadData];
+    
 }
 
 - (void) didConnectToServer
 {
-    //retrieve mesh list
-    NSLog(@"Start to retrieve model list size");
-    
     [_socketHandler socketWaitForMessageWithReadTimeOut:HELLO_FROM_SERVER :SOCKET_WAIT_FOR_HELLO :-1];
-    
 }
 
 - (void) didSelectModelToLoad: (ModelObj *) selectedModel
@@ -545,21 +523,13 @@ int current_idx;
     int request_length = [COMMAND_REQUEST_LOAD_MODEL length] + sizeof(int);
     char request[request_length];
     strcpy(request, [COMMAND_REQUEST_LOAD_MODEL cStringUsingEncoding:NSUTF8StringEncoding]);
-    strncpy(&(request[[COMMAND_REQUEST_LOAD_MODEL length]]), (char *)&modelId, sizeof(int));
-    NSLog(@"id = %d", modelId);
-    
+    strncpy(&(request[[COMMAND_REQUEST_LOAD_MODEL length]]), (char *)&modelId, sizeof(int));    
     [_socketHandler socketSendDataWithLengthAndReadTimeOut:[[NSData alloc] initWithBytes:request length:(request_length)] :SOCKET_WAIT_SERVER_LOAD_MODEL :-1];
-    
-    //try to retrieve all details.
-    
-    
 }
 
 - (void) syncViewingParametersToServer : (NSData *) viewing_parameters_
 {
-    NSLog(@"Sync Viewing Params with Server");
-    [_socketHandler socketSendDataWithLengthAndReadTimeOut:viewing_parameters_:SOCKET_WAIT_FOR_SPM_VSPLIT_DATA_SIZE :-1];
-    
+    [_socketHandler socketSendDataWithLengthAndReadTimeOut:viewing_parameters_:SOCKET_WAIT_FOR_SPM_VSPLIT_DATA_SIZE :-1];    
 }
 
 - (BOOL) getIfNeedUpdateVBO
