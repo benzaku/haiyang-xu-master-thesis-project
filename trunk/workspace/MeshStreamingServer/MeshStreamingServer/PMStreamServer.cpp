@@ -109,46 +109,17 @@ int PMStreamServer::main(const std::vector<std::string> &args){
         modelRepo->initVolumeObjs();
         modelRepo->initMeshObjs();
         
-        vector<VolumeObj*> *vols = modelRepo->getVolumeObjs();
-        vector<MeshObj*> *meshes = modelRepo->getMeshObjs();
-        
-        
-        for(int i = 0; i < meshes->size(); i ++){
-            std::cout << (*meshes)[i]->ObjectFileName << std::endl;
-            
-        }
-        
         AutoPtr<Document> pDoc = modelRepo->getModelObjectsXmlDocument();
         
         modelRepo->generateModelListXmlInfo();
-        
-       
-        
-        
-        modelListXmlString = modelRepo->getModelListXmlString();
-        
-        modelListXmlStringLength = modelRepo->getModelListXmlStringLength();
-        
-        
-        VDPMLoader vdpmLoader;
-        vdpmLoader.openVDPM("/Users/hyx/Development/MasterThesis/repository/mesh/bunny.spm");
-        
-        /**/
         
         pmFileHandler = (PMFileHandler*)PMFileHandler::getInstance();
         pmFileHandler->setFileName(PMFileName);
         
         pmLoader = new PMLoader(PMFileName);
         pmLoader->setUseVolume(useVolume);
-        pmLoader->loadPM();
-        pmLoader->getBaseMeshChunk();
         pmFileHandler->setPMLoader(pmLoader);
-        
-        
         pmFileHandler->setPMRepository(modelRepo);
-        //mrHandler->setPMRepository(modelRepo);
-        
-                
         std::cout<<"Server Started" << std::endl;
         
         // get parameters from configuration file

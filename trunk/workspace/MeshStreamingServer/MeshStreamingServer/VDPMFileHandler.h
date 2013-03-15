@@ -29,6 +29,13 @@ public:
         this->vdpmLoader = loader;
     };
     
+    void clear(){
+        if(vdpmLoader != NULL){
+            delete vdpmLoader;
+            vdpmLoader = NULL;
+        }
+    }
+    
 private:
     
     VDPMFileHandler();

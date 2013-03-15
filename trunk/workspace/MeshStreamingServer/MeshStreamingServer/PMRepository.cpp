@@ -266,7 +266,6 @@ PMRepository::initMeshObjs()
         
         std::string ext = get_extension(f);
         stringToUpper(ext);
-        std::cout << "extension : " << ext << std::endl;
         
         mObj->setMeshType(ext);
         
@@ -345,7 +344,6 @@ PMRepository::generateModelListXmlInfo()
     
     modelListXmlStringLength = (int)(str.str().length());
     
-    std::cout<< str.str().size() <<" : " << str.str().size()<< std::endl;
 }
 
 char *

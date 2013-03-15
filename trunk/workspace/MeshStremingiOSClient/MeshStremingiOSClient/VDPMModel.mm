@@ -50,7 +50,7 @@
     mesh_.clear();
     vfront_.clear();
     vhierarchy_.clear();
-    
+    mesh_.garbage_collection();
     vhierarchy_.set_num_roots(_n_base_vertices_);
     
     // load base mesh

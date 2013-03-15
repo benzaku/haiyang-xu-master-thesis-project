@@ -42,9 +42,10 @@ PMStreamServerHandler::PMStreamServerHandler(StreamSocket& socket, SocketReactor
     _mRH = (ModelRepositoryHandler *) ModelRepositoryHandler::getInstance();
     
     _vdpmFH = (VDPMFileHandler *) VDPMFileHandler::getInstance();
+    _vdpmFH->setVDPMLoader(NULL);
     //_mRH->getPMRepository()->generateModelListXmlInfo();
     
-    std::cout<<*(_pmFH->getFileName())<<std::endl;
+    //std::cout<<*(_pmFH->getFileName())<<std::endl;
     
     _socket.sendBytes("HELLO", 5, 0);
     
@@ -65,6 +66,7 @@ PMStreamServerHandler::~PMStreamServerHandler()
     try
     {
         app.logger().information("Disconnecting " + _socket.peerAddress().toString());
+        _vdpmFH->clear();
         //if(pmInfoChunk)
             //delete pmInfoChunk;
     }
@@ -191,20 +193,12 @@ PMStreamServerHandler::handleRequest()
         char * xmlstring = nullptr;
         int length;
         
-        //_pmFH->getPMRepository()->generateModelListXmlInfo();
-        
         xmlstring = _pmFH->getPMRepository()->getModelListXmlString();
         
         length = _pmFH->getPMRepository()->getModelListXmlStringLength();
-        
-        
-        //pmInfoChunk = _pmFH->getPMLoader()->getDetailsChunk();
-        
-        std::cout << xmlstring << std::endl;
-        
+                
         _socket.sendBytes(xmlstring, length * sizeof(char));
         
-        //std::cout<< "PMInfo details sent... size = "<<totalDetailChunkSize << std::endl;
         
     }
     
@@ -273,6 +267,7 @@ PMStreamServerHandler::handleRequest()
         int sent_bytes = 0;
         if(temp_data_chunk != NULL){
             sent_bytes = _socket.sendBytes(&(temp_data_chunk->data[idx_num[0] * VSPLIT_LENGTH]), idx_num[1] * VSPLIT_LENGTH);
+            
         }
         bytesent += sent_bytes;
         //std::cout << "total byte sent " << bytesent << "/"<< temp_data_chunk->size<< std::endl; /****/
@@ -344,7 +339,9 @@ PMStreamServerHandler::handleLoadModelRequest(int modelId)
             }
             else if(meshes->at(i)->MeshType == SPM){
                 std::cout << "load spm" << std::endl;
-                
+                if(_vdpmFH->getVDPMLoader() != NULL){
+                    _vdpmFH->clear();
+                }
                 _vdpmFH->setVDPMLoader(new VDPMLoader(meshes->at(i)->ObjectFilePath));
                 _vdpmFH->getVDPMLoader()->loadVDPM();
                 
@@ -352,13 +349,6 @@ PMStreamServerHandler::handleLoadModelRequest(int modelId)
                 return true;
             }
             return false;
-        }
-    }
-    
-    for (int i = 0; i < vols->size(); i ++){
-        if(modelId == vols->at(i)->Id){
-            std::cout << "found! vol!" << std::endl;
-            return true;
         }
     }
 }

@@ -7,3 +7,9 @@
 //
 
 #include "VDPMFileHandler.h"
+
+VDPMFileHandler::VDPMFileHandler()
+{
+    
+    vdpmLoader = NULL;
+}

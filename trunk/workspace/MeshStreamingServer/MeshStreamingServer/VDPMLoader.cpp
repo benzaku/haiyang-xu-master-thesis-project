@@ -16,7 +16,32 @@
 
 
 VDPMLoader::~VDPMLoader(){
+    this->qFilename_.clear();
+    this->mesh_loaded = false;
+    vsplit_loaded.clear();
+    vfront_.clear();
+    vhierarchy_.clear();
+    index2handle_map.clear();
     
+    //mesh_.clear();
+    
+    VDPMMesh::FaceIter fIt(mesh_.faces_begin()), fEnd(mesh_.faces_end());
+    
+    for(; fIt != fEnd; ++fIt){
+        mesh_.delete_face(fIt.handle());
+    }
+    VDPMMesh::VertexIter vIt(mesh_.vertices_begin()), vEnd(mesh_.vertices_end());
+    for(; vIt != vEnd; ++vIt){
+        mesh_.delete_vertex(vIt.handle());
+    }
+    mesh_.garbage_collection();
+    if(base_info_data != NULL){
+        delete  [] base_info_data;
+        base_info_data = NULL;
+    }
+    base_info_data_size = 0;
+    
+
 }
 
 void
@@ -67,6 +92,7 @@ VDPMLoader::openVDPM(const char* _filename)
     vhierarchy_.clear();
     
     vhierarchy_.set_num_roots(n_base_vertices_);
+    
     
     // load base mesh
     for (i=0; i<n_base_vertices_; ++i)
@@ -269,7 +295,6 @@ data_chunk* VDPMLoader::adaptive_refinement()
     
     kappa_square_ = 4.0f * tan_value * tan_value * tolerance_square;
     
-    //clear_vsplits_to_send(vsplits_to_send);
     count = 0;
     for ( vfront_.begin(); !vfront_.end(); )
     {
@@ -280,17 +305,8 @@ data_chunk* VDPMLoader::adaptive_refinement()
         if (vhierarchy_.is_leaf_node(node_handle) != true &&
             qrefine(node_handle) == true)
         {
-            //std::cout << "Need to force_vsplit " << node_handle.idx() << std::endl;
             force_vsplit(node_handle, vsplits_to_send);
         }
-        /*
-        else if (vhierarchy_.is_root_node(node_handle) != true &&
-                 ecol_legal(parent_handle, v0v1) == true       &&
-                 qrefine(parent_handle) != true)
-        {
-            ecol(parent_handle, v0v1);
-        }
-         */
         else
         {
             vfront_.next();
@@ -312,11 +328,8 @@ data_chunk* VDPMLoader::adaptive_refinement()
         vdata[i] = *vsplits_to_send[i];
     }
     
-    //if(vsplits_to_send.size() > 0)
-      //  std::cout << vsplits_to_send[0]->l_normal << std::endl;
     clear_vsplits_to_send(vsplits_to_send);
     vsplits_to_send.clear();
-    std::cout << "size of vfront : " << vfront_.size() << std::endl;
     return vsplits_data;
 }
 
