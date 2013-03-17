@@ -55,6 +55,10 @@ const double TRACKBALL_RADIUS = 0.6;
     
     float zoomDistance;
     
+    float translateX;
+    
+    float translateY;
+    
     //test frame buffer
     GLuint defaultFramebuffer, colorRenderbuffer;
     
@@ -109,6 +113,9 @@ const double TRACKBALL_RADIUS = 0.6;
     
     _rotation.x = 0.0f;
     _rotation.y = 0.0f;
+    
+    translateX = 0.0f;
+    translateY = 0.0f;
     
     baseModelViewMatrix = GLKMatrix4MakeTranslation(0 , 0, 0);
     
@@ -308,9 +315,7 @@ int ccnt = 0;
                 _curRed = 0.0;
                 _increasing = YES;
             }
-            
-            
-            
+                        
             float aspect = fabsf(self.view.bounds.size.width / self.view.bounds.size.height);
             projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(45.0f), aspect, 0.01 * objRadius, 100.0f * objRadius);
             self.effect.transform.projectionMatrix = projectionMatrix;
@@ -344,8 +349,14 @@ int ccnt = 0;
             GLKMatrix4 rotation = GLKMatrix4MakeWithQuaternion(_quat);
             GLKMatrix4 temp = GLKMatrix4MakeTranslation(0, 0, 0);
             temp = GLKMatrix4Translate(temp, t[0], t[1], t[2]);
+            //translate
+            temp = GLKMatrix4Translate(temp, -translateX * 0.0005 * objRadius, translateY * 0.0005 * objRadius, 0);
+            //zoom
+            temp = GLKMatrix4Translate(temp, 0, 0, zoomDistance * 0.001 * objRadius);
+            
             temp = GLKMatrix4Multiply(temp, rotation);
             temp = GLKMatrix4Translate(temp, -t[0], -t[1], -t[2]);
+            
             modelViewMatrix = GLKMatrix4Multiply(temp, modelViewMatrix);
             
             progMeshGLManager.modelViewMatrix = modelViewMatrix;
@@ -353,9 +364,8 @@ int ccnt = 0;
             progMeshGLManager.normalMatrix = GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3(modelViewMatrix), NULL);
             progMeshGLManager.modelViewProjectionMatrix = GLKMatrix4Multiply(projectionMatrix, modelViewMatrix);
             _modelViewMatrix = modelViewMatrix;
-                        
-            //if([[ProgMeshCentralController sharedInstance] isDuringUpdating] == NO)
-                [progMeshGLManager draw2];
+            
+            [progMeshGLManager draw2];
             
             [self.view setUserInteractionEnabled:YES];
             
@@ -496,18 +506,13 @@ void printMatrix4(GLKMatrix4 * m){
         NSArray *allTouches = [[event allTouches] allObjects];
         
         if ([allTouches count] == 1) {
-            //interrupt_lod_up = NO;
-
             NSLog(@"1 finger ends");
-            
             [(VDPMModel *)progMeshModel update_viewing_parameters:_modelViewMatrix :fabsf(self.view.bounds.size.width / self.view.bounds.size.height) :45];
             
         } else if ([allTouches count] == 2)
         {
-            //[(VDPMModel *)progMeshModel update_viewing_parameters:progMeshGLManager.modelViewProjectionMatrix :fabsf(self.view.bounds.size.width / self.view.bounds.size.height) :45];
+            [(VDPMModel *)progMeshModel update_viewing_parameters: _modelViewMatrix :fabsf(self.view.bounds.size.width / self.view.bounds.size.height) :45];
             NSLog(@"2 finger ends");
-            
-            //do nothing
             
         }
     }
@@ -557,6 +562,13 @@ void printMatrix4(GLKMatrix4 * m){
         [self computeIncremental];
     
     } else if ([allTouches count] == 2){
+        if(![[ProgMeshCentralController sharedInstance] getClientAbort] && [[ProgMeshCentralController sharedInstance] isDuringUpdating])
+        {
+            
+            NSLog(@"Abort!");
+            [[ProgMeshCentralController sharedInstance] setClientAbort:true];
+        }
+        
         UITouch *touchA = [allTouches objectAtIndex:0];
         UITouch *touchB = [allTouches objectAtIndex:1];
         
@@ -571,7 +583,12 @@ void printMatrix4(GLKMatrix4 * m){
         
         zoomDistance += disA_B_Now - disAB_Previous;
         
-    }
+        translateX += (pointA.x + pointB.x) / 2 - (pointA_.x + pointB_.x) / 2;
+        translateY += (pointA.y + pointB.y) / 2 - (pointA_.y + pointB_.y) / 2;
+
+        
+    } 
+    
     
 }
 

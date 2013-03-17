@@ -75,7 +75,7 @@
 {
     // Return the number of rows in the section.
     
-    if(_meshes == nil || _volumes == nil){
+    if(_meshes == nil && _volumes == nil){
         return 0;
     }
     
