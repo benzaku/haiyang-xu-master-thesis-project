@@ -505,7 +505,7 @@ int current_idx;
     
     _progMeshModelTableViewController.meshes = [parser fromXml:modelListXMLString withObject:meshObj];
     
-    _progMeshModelTableViewController.volumes = [parser fromXml:modelListXMLString withObject:volObj];
+    //_progMeshModelTableViewController.volumes = [parser fromXml:modelListXMLString withObject:volObj];
     
     [_progMeshModelTableViewController.tableView reloadData];
     
