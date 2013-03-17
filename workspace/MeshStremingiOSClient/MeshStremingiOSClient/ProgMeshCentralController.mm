@@ -412,6 +412,12 @@ int current_idx;
         
         [[_progMeshGLKViewController getProgMeshGLManager] setCentroidAndRadius:[_progMeshModel getCentroidAndRadius]];
         
+        [_progMeshGLKViewController resetCurrentStage];
+        
+        if(_update_data->size() > 0){
+            _update_data->clear();
+        }
+        
         [[_progMeshGLKViewController getProgMeshGLManager] setPositionPointerStride:24];
         [[_progMeshGLKViewController getProgMeshGLManager] setPositionPointerOffset:0];
         [[_progMeshGLKViewController getProgMeshGLManager] setNormalPointerStride:24];

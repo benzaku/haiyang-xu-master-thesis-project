@@ -93,6 +93,8 @@ GLfloat backgroundSquare[] =
 
 - (void) genderateAndBindVertexNormalBufferObject
 {
+    glDeleteBuffers(1, &_VERTEX_NORMAL_BUFFER_OBJECT);
+    glDeleteBuffers(1, &_FACE_INDEX_BUFFER_OBJECT);
     glGenBuffers(1, &_VERTEX_NORMAL_BUFFER_OBJECT);
     glBindBuffer(GL_ARRAY_BUFFER, _VERTEX_NORMAL_BUFFER_OBJECT);
     
@@ -528,7 +530,7 @@ GLfloat backgroundSquare[] =
 {
     [EAGLContext setCurrentContext:[[ProgMeshCentralController sharedInstance] getCurrentContext]];
     
-    UpdateInfo *up_info = [(VDPMModel *)progMeshModel update_mesh_with_vsplits: vsplitdata];
+    [(VDPMModel *)progMeshModel update_mesh_with_vsplits: vsplitdata];
     //[self update_vbo2];
     [self setCentroidAndRadius:[(VDPMModel *) progMeshModel getCentroidAndRadius]];
     [vsplitdata release];

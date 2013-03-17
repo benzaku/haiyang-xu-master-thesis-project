@@ -44,7 +44,7 @@ struct viewparam {
     
     UpdatePartIndex updatePartIndex;
     UpdatePartIndex indicePartIndex;
-    UpdateInfo updateInfo;
+    //UpdateInfo updateInfo;
 
     VDPMMesh::Point BBMAX, BBMIN;
 }

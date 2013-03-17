@@ -71,6 +71,8 @@ const double TRACKBALL_RADIUS = 0.6;
     
     bool duringInteraction;
     
+    float wait_time;
+    
 }
 
 
@@ -121,6 +123,8 @@ const double TRACKBALL_RADIUS = 0.6;
     interrupt_lod_up = NO;
     
     duringInteraction = false;
+    
+    wait_time = 0.0f;
     
     return self;
 }
@@ -251,11 +255,13 @@ float LOD[8] =  {0.001f, 2e-4f, 4e-5f, 8e-6f, 1.6e-6f, 3.2e-7f, 6.4e-8f, 1.28e-8
                 [[ProgMeshCentralController sharedInstance] setSubUpdateFinish:NO];
                 if(wait_interaction == false){
                     wait_interaction = true;
-                    [NSTimer scheduledTimerWithTimeInterval:0.25
+                    [NSTimer scheduledTimerWithTimeInterval:wait_time
                                                      target:self
                                                    selector:@selector(lod_up)
                                                    userInfo:nil
                                                     repeats:NO];
+                    wait_time = 0.0f;
+                    
                 }
                 
             }
@@ -516,6 +522,8 @@ void printMatrix4(GLKMatrix4 * m){
     
     duringInteraction = true;
     
+    wait_time = 0.5f;
+    
     NSArray *allTouches = [[event allTouches] allObjects];
     
     if ([allTouches count] == 1) {
@@ -586,6 +594,13 @@ void printMatrix4(GLKMatrix4 * m){
     [self lod_up];
     
     
+}
+
+- (void) resetCurrentStage
+{
+    @synchronized(self){
+        currentStage = 0;
+    }
 }
 
 - (int) getSuitableStage

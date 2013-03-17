@@ -31,7 +31,9 @@
 #import "GLRenderViewController.h"
 
 
-@implementation AppDelegate
+@implementation AppDelegate{
+    
+}
 
 
 @synthesize progMeshCentralController = _progMeshCentralController;
@@ -60,9 +62,7 @@
     ProgMeshModelTableViewController *progMeshTableViewController = [[[ProgMeshModelTableViewController alloc] initWithNibName:@"ProgMeshModelTableViewController" bundle:nil] autorelease];
     
     
-    ModelTableNavigationViewController *modelTableNavigationViewController = [[ModelTableNavigationViewController alloc] initWithRootViewController:progMeshTableViewController];
-        
-    
+    ModelTableNavigationViewController *modelTableNavigationViewController = [[[ModelTableNavigationViewController alloc] initWithRootViewController:progMeshTableViewController] autorelease];
     
     self.tabBarController = [[[UITabBarController alloc] init] autorelease];
     
@@ -89,9 +89,7 @@
     [_progMeshCentralController setGLRenderViewController:(GLRenderViewController *)glRenderViewController];
 #else
     [_progMeshCentralController setProgMeshGLKViewController:(ProgMeshGLKViewController *)glkviewController];
-#endif
-    //[_progMeshCentralController setGLRenderViewController:(GLRenderViewController *)glRenderViewController];
-    
+#endif    
     
     [self.window makeKeyAndVisible];
     
