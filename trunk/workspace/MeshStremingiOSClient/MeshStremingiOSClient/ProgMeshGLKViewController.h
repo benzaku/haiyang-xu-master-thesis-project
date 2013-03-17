@@ -38,6 +38,8 @@
 
 - (void) setScenePosition : (float *) centroidAndRadius;
 
+- (void) resetCurrentStage;
+
 
 @property (atomic, assign) int current_lod;
 @property (atomic, assign) enum PM_VIEW_STATUS status;

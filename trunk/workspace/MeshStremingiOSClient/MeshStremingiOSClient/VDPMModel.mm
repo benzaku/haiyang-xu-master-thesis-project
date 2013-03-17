@@ -123,12 +123,6 @@
     NSLog(@"Base Mesh Load Finished!");
     NSLog(@"%d vertices, %d faces %d details", _n_base_vertices_, _n_base_faces_, _n_details_);
     
-    //viewing_parameters_.decrease_tolerance();
-    //viewing_parameters_.decrease_tolerance();
-    //viewing_parameters_.decrease_tolerance();
-    //viewing_parameters_.decrease_tolerance();
-    //viewing_parameters_.decrease_tolerance();
-    
 }
 
 - (id) initWithModelObject:(ModelObj *)modelObj
@@ -137,9 +131,6 @@
     _mesh = (MeshObj *)modelObj;
     _name = modelObj.ObjectFileName;
     _type = modelObj.ModelType;
-    
-    updateInfo.~pair();
-    //viewing_parameters_.set_tolerance_square();
     return self;
 }
 
@@ -294,7 +285,6 @@
     kappa_square_ = 4.0f * tan_value * tan_value * tolerance_square;
     for( vfront_.begin(); !vfront_.end();){
         VHierarchyNodeHandle node_handle = vfront_.node_handle(), parent_handle = vhierarchy_.parent_handle(node_handle);
-        //NSLog(@"node %d ", node_handle.idx());
         if([self qrefine:node_handle] == true){
             return true;
         }
@@ -320,7 +310,7 @@
     return vfront_.size();
 }
 
-- (void) update_viewing_parameters: (GLKMatrix4) _modelview_matrix  :(float) aspect: (float) fovy
+- (void) update_viewing_parameters: (GLKMatrix4) _modelview_matrix  : (float) aspect : (float) fovy
 {
     double mvm[16];
     for(int i = 0; i < 16; i ++){
@@ -332,8 +322,6 @@
     //viewing_parameters_.decrease_tolerance();
     viewing_parameters_.update_viewing_configurations();
     
-    //NSLog(@"tolerance_square : %f", viewing_parameters_.tolerance_square());
-
 }
 
 - (NSData *) getViewingParameters
@@ -378,7 +366,7 @@
     return true;
 }
 
-- (bool) outside_view_frustum:(const Vec3f&) pos: (float) radius
+- (bool) outside_view_frustum:(const Vec3f&) pos : (float) radius
 {
 #if 0
     return
@@ -400,7 +388,7 @@
 #endif
 }
 
-- (bool) oriented_away:(float) sin_square: (float) distance_square: (float) product_value
+- (bool) oriented_away:(float) sin_square : (float) distance_square : (float) product_value
 {
 #if 0
     return (product_value > 0)
@@ -451,8 +439,6 @@
     //update v hierarchy first
     for(int i = 0; i < n_split; i ++){
         Vsplit asplit = splits[i];
-        
-        //[self printVsplit:asplit];
         
         OpenMesh::VertexHandle  vertex_handle;
         VHierarchyNodeHandle    node_handle, lchild_handle, rchild_handle;
@@ -505,16 +491,9 @@
     }
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    /*
     
-    glBindBuffer(GL_ARRAY_BUFFER, *(glvnobj));
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *(glfiobj));
-    [self refine];
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-     */
     delete [] splits;
-    return &updateInfo;
+    return NULL;
 }
 
 - (void) printVsplit:(Vsplit) vsplit
@@ -529,10 +508,6 @@
 {
     
     VDPMMesh::HalfedgeHandle v0v1;
-    
-    updatePartIndex.clear();
-    indicePartIndex.clear();
-    updateInfo.~pair();
     
     float fovy = viewing_parameters_.fovy();
     
@@ -560,13 +535,9 @@
             vfront_count ++;
         }
     }
-    
-    //NSLog(@"size of vfront : %d", vfront_count);
     // free memories tagged as 'deleted'
     mesh_.garbage_collection(false, true, true);
-    //mesh_.update_vertex_normals();
-    //mesh_.update_face_normals();
-    updateInfo = std::make_pair(&updatePartIndex, &indicePartIndex);
+    
 }
 
 - (void) force_vsplit: (VHierarchyNodeHandle) node_handle
@@ -598,15 +569,6 @@
     for (VDPMMesh::VertexFaceIter vfiter = mesh_.vf_begin(v1); vfiter != mesh_.vf_end(v1); ++ vfiter) {
         nv11 ++;
     }
-    /*
-    
-    std::cout << "==============" << std::endl;
-    std::cout << "splits info: " << std::endl
-    << "node_handle.idx " << _node_handle.idx() << std::endl
-    << "vl: " << vl.idx() << " vr: " << vr.idx() << std::endl
-    << "v0: " << v0.idx() << " v1: " << v1.idx() << std::endl;
-    std::cout << "==============" << std::endl;
-    */
      
     mesh_.vertex_split(v0, v1, vl, vr);
     mesh_.set_normal(v0, vhierarchy_.normal(lchild_handle));
@@ -628,18 +590,6 @@ VDPMMesh::Point temp_center;
 - (void) updateVetexNormalArray :   (int) nv11
 :(VDPMMesh::VertexHandle) v0 : (VDPMMesh::VertexHandle) v1
 {
-    
-    UpdatePartIndex * vnPartIndex = new std::set<int>();
-    UpdatePartIndex * idPartIndex = new std::set<int>();
-    
-    vnPartIndex->clear();
-    idPartIndex->clear();
-    
-    
-    
-    
-    
-    
     int idx;
     int nv0 = 0, nv1 = 0;
     memcpy(&(BASE_MESH_VERTEX_NORMAL_ARRAY[nCurrentVertices * 3 * 2]), mesh_.point(v0).data(), 3 * sizeof(float));
@@ -650,14 +600,8 @@ VDPMMesh::Point temp_center;
         NSLog(@"invalid!");
     }
     
-    
-    updatePartIndex.insert(nCurrentVertices * 3 * 2);
-    
-    vnPartIndex->insert(nCurrentVertices * 3 * 2);
-    
     nCurrentVertices ++;
     currentVerticeIdx ++;
-    //currentRecoveredFaceNumber += 2;
     
     BBMAX.maximize(mesh_.point(v0));
     BBMIN.minimize(mesh_.point(v0));
@@ -679,20 +623,14 @@ VDPMMesh::Point temp_center;
         
         idx = cfviter.handle().idx();
         MESH_INDICE_ARRAY[vfiter.handle().idx() * 3] = idx;
-        indicePartIndex.insert(vfiter.handle().idx() * 3);
-        idPartIndex->insert(vfiter.handle().idx() * 3);
         
         ++cfviter;
         idx = cfviter.handle().idx();
         MESH_INDICE_ARRAY[vfiter.handle().idx() * 3 + 1] = idx;
-        indicePartIndex.insert(vfiter.handle().idx() * 3 + 1);
-        idPartIndex->insert(vfiter.handle().idx() * 3 +1);
         
         ++cfviter;
         idx = cfviter.handle().idx();
         MESH_INDICE_ARRAY[vfiter.handle().idx() * 3 + 2] = idx;
-        indicePartIndex.insert(vfiter.handle().idx() * 3 + 2);
-        idPartIndex->insert(vfiter.handle().idx() * 3 + 2);
         
         glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, (vfiter.handle().idx() * 3) * sizeof(unsigned int), 3 * sizeof(unsigned int), &MESH_INDICE_ARRAY[vfiter.handle().idx() * 3]);
         
@@ -710,9 +648,6 @@ VDPMMesh::Point temp_center;
         
         glBufferSubData(GL_ARRAY_BUFFER, (vviter.handle().idx() * 3 * 2 + 3) * sizeof(float), 3 * sizeof(float), &BASE_MESH_VERTEX_NORMAL_ARRAY[vviter.handle().idx() * 3 * 2 + 3]);
         
-        
-        updatePartIndex.insert(vviter.handle().idx() * 3 * 2 + 3);
-        vnPartIndex->insert(vviter.handle().idx() * 3 * 2 + 3);
     }
     
     for (VDPMMesh::VertexVertexIter vviter = mesh_.vv_begin(v1); vviter != mesh_.vv_end(v1); ++ vviter) {
@@ -723,16 +658,7 @@ VDPMMesh::Point temp_center;
         
         glBufferSubData(GL_ARRAY_BUFFER, (vviter.handle().idx() * 3 * 2 + 3) * sizeof(float), 3 * sizeof(float), &BASE_MESH_VERTEX_NORMAL_ARRAY[vviter.handle().idx() * 3 * 2 + 3]);
         
-        updatePartIndex.insert(vviter.handle().idx() * 3 * 2 + 3);
-        vnPartIndex->insert(vviter.handle().idx() * 3 * 2 + 3);
     }
-    
-    UpdateInfo * tempInfo = new std::pair<UpdatePartIndex *, UpdatePartIndex *>(vnPartIndex, idPartIndex);
-    
-    ((std::vector<UpdateInfo *> *)[[ProgMeshCentralController sharedInstance] get_update_infos])->push_back(tempInfo);
-    
-    
-    
     currentFaceNumberCanDraw = currentRecoveredFaceNumber;
 }
 
@@ -746,11 +672,6 @@ VDPMMesh::Point temp_center;
     fund_lcut_index = vhierarchy_.fund_lcut_index(_node_handle),
     fund_rcut_index = vhierarchy_.fund_rcut_index(_node_handle);
     
-    /*
-    std::cout << "fund_lcut_index " << fund_lcut_index.value() << std::endl;
-    std::cout << "fund_rcut_index " << fund_rcut_index.value() << std::endl;
-    */
-     
     vl = VDPMMesh::InvalidVertexHandle;
     vr = VDPMMesh::InvalidVertexHandle;
     
@@ -768,16 +689,10 @@ VDPMMesh::Point temp_center;
             vhierarchy_.is_ancestor(nnode_index, fund_rcut_index) == true)
             vr = vv_it.handle();
         
-        /*if (vl == VDPMMesh::InvalidVertexHandle && nnode_index.is_ancestor_index(fund_lcut_index) == true)
-         vl = vv_it.handle();
-         if (vr == VDPMMesh::InvalidVertexHandle && nnode_index.is_ancestor_index(fund_rcut_index) == true)
-         vr = vv_it.handle();*/
-        
         if (vl != VDPMMesh::InvalidVertexHandle &&
             vr != VDPMMesh::InvalidVertexHandle)
             break;
     }
-    //std::cout << "vl: " << mesh_.point(vl) << " vr: " << mesh_.point(vr) << std::endl;
 
 }
 - (VDPMMesh *) getMesh
@@ -787,9 +702,28 @@ VDPMMesh::Point temp_center;
 
 - (int) getCurrentFaceNumberCanDraw
 {
-    //if(currentRecoveredFaceNumber != mesh_.n_faces())
-        //NSLog(@"Calculated: %d, real : %d", currentRecoveredFaceNumber, mesh_.n_faces());
     return currentFaceNumberCanDraw;
+}
+
+- (void)dealloc {
+    if(BASE_MESH_VERTEX_NORMAL_ARRAY != NULL){
+        delete [] BASE_MESH_VERTEX_NORMAL_ARRAY;
+        BASE_MESH_VERTEX_NORMAL_ARRAY = NULL;
+        BASE_MESH_VERTEX_NORMAL_ARRAY_SIZE = 0;
+    }
+    if(MESH_INDICE_ARRAY != NULL){
+        delete [] MESH_INDICE_ARRAY;
+        MESH_INDICE_ARRAY = NULL;
+        MESH_INDICE_ARRAY_SIZE = 0;
+    }
+    //release openmesh object;
+    
+    vfront_.clear();
+    vhierarchy_.clear();
+    mesh_.clear();
+    mesh_.clean();
+    mesh_.garbage_collection();
+    [super dealloc];
 }
 
 
