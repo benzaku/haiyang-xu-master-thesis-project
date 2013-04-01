@@ -53,6 +53,8 @@
     
     ProgMeshModel * _progMeshModel;
     
+    ProgMeshModel * _serverRenderingRoughModel;
+    
     dispatch_queue_t _refineOperationQueue;
     
     EAGLContext * currentContext;
@@ -125,6 +127,12 @@
 
 - (bool) getClientAbort;
 
+- (NSData *) getDisplayTextureData;
+
+- (void) releaseDisplayTextureData;
+
+@property (assign, atomic) BOOL updateTexFinish;
+
 @property (assign, atomic) BOOL subUpdateFinish;
 
 @property (strong, atomic, readwrite) MyMutableArray *updateInfoArray;
@@ -136,5 +144,11 @@
 @property (strong, atomic) ModelObj * currentSelectedModel;
 
 @property (strong, atomic) ProgMeshModel * progMeshModel;
+
+@property (strong, atomic) ProgMeshModel * serverRenderingRoughModel;
+
+@property (assign, atomic) BOOL isServerRendering;
+
+@property (assign, atomic) BOOL textureDataUpdated;
 
 @end

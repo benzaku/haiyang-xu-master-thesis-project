@@ -18,7 +18,9 @@
 @property (retain, nonatomic) IBOutlet UILabel *statusBar;
 
 @property (retain, nonatomic) IBOutlet UIButton *connectButton;
+@property (retain, nonatomic) IBOutlet UISwitch *serverRenderSwitch;
 
+- (IBAction)ServerRenderingChanged:(UISwitch *)sender forEvent:(UIEvent *)event;
 
 - (IBAction)serverConnect:(UIButton *)sender;
 @end

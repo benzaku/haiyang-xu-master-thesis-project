@@ -40,10 +40,13 @@
 
 - (void) resetCurrentStage;
 
+- (BOOL) updateTexture : (NSData *) texData;
+
 @property (atomic, assign) enum DRAW_MODE render_mode;
 @property (atomic, assign) int current_lod;
 @property (atomic, assign) enum PM_VIEW_STATUS status;
 @property (retain, nonatomic) IBOutlet UIProgressView *progress;
+@property (retain) GLKTextureInfo *textureInfo;
 - (IBAction)decrease_screen_error:(id)sender;
 
 @end

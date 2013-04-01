@@ -43,11 +43,64 @@ GLfloat backgroundSquare[] =
     -3.f, -4.f, -8.0f,   0.0f, 0.0f, 1.0f
 };
 
+GLuint backgroundSquareIdx[]=
+{
+    0, 1, 2, 1, 2, 3
+};
+
+GLfloat vertices[] = {
+    -1.0,  1.0, -0.0,
+     1.0,  1.0, -0.0,
+    -1.0, -1.0, -0.0,
+     1.0, -1.0, -0.0
+};
+
+
+
+
+
+
+
+
 
 @implementation ProgMeshGLManager{
     std::vector<NSData *> vd_vsplits;
     
     int vd_vsplits_pointer;
+    
+    GLKTextureInfo * _textureInfo;
+    
+    GLuint _backgroundQuadObj;
+
+}
+
+- (void) initServerRenderingBackgroundQuad
+{
+    //float ratio = bounds.size.height / bounds.size.width;
+    float ratio = 955.0f / 768.0f;
+    GLfloat _backquad[] = {
+        -1,  1 * ratio, 0, 0, 1,
+        -1, -1 * ratio, 0, 0, 0,
+        1,  1 * ratio, 0,  1, 1,
+        1,  1 * ratio, 0,  1, 1,
+        1, -1 * ratio, 0,  1, 0,
+        -1, -1 * ratio, 0, 0, 0
+    };
+    
+    
+    glGenBuffers(1, &_backgroundQuadObj);
+    glBindBuffer(GL_ARRAY_BUFFER, _backgroundQuadObj);
+    
+    glBufferData(GL_ARRAY_BUFFER, sizeof(_backquad), _backquad, GL_STATIC_DRAW);
+    
+    glEnableVertexAttribArray(GLKVertexAttribPosition);
+    glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), BUFFER_OFFSET(0));
+    glEnableVertexAttribArray(GLKVertexAttribTexCoord0);
+    glVertexAttribPointer(GLKVertexAttribTexCoord0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), BUFFER_OFFSET(3 * sizeof(GLfloat)));
+    glDisableVertexAttribArray(GLKVertexAttribPosition);
+    glDisableVertexAttribArray(GLKVertexAttribTexCoord0);
+    
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 - (void) setProgMeshModel : (ProgMeshModel *) pmModel
@@ -62,7 +115,8 @@ GLfloat backgroundSquare[] =
 
 - (GLKBaseEffect *) createGLKBaseEffect
 {
-    return  [[GLKBaseEffect alloc] init];
+    effect = [[GLKBaseEffect alloc] init];
+    return  effect;
 
 }
 
@@ -87,7 +141,11 @@ GLfloat backgroundSquare[] =
     
     
     [progMeshModel setGLObjs:&_VERTEX_NORMAL_BUFFER_OBJECT :&_FACE_INDEX_BUFFER_OBJECT];
+    
     vd_vsplits_pointer = 0;
+    //unbind
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 
@@ -143,6 +201,8 @@ GLfloat backgroundSquare[] =
     glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, _positionPointerStride, BUFFER_OFFSET(_positionPointerOffset));
     glEnableVertexAttribArray(GLKVertexAttribNormal);
     glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, _normalPointerStride, BUFFER_OFFSET(_normalPointerOffset));
+    glDisableVertexAttribArray(GLKVertexAttribPosition);
+    glDisableVertexAttribArray(GLKVertexAttribNormal);
 }
 
 
@@ -385,6 +445,11 @@ GLfloat backgroundSquare[] =
     glBindBuffer(GL_ARRAY_BUFFER, _VERTEX_NORMAL_BUFFER_OBJECT);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _FACE_INDEX_BUFFER_OBJECT);
     
+    glEnableVertexAttribArray(GLKVertexAttribPosition);
+    glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, _positionPointerStride, BUFFER_OFFSET(_positionPointerOffset));
+    glEnableVertexAttribArray(GLKVertexAttribNormal);
+    glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, _normalPointerStride, BUFFER_OFFSET(_normalPointerOffset));
+    
     // Render the object with GLKit
     //[effect prepareToDraw];
     glUseProgram(_Program);
@@ -396,6 +461,8 @@ GLfloat backgroundSquare[] =
     int facenumber = [progMeshModel getCurrentFaceNumberCanDraw];
     glDrawElements(GL_TRIANGLES, facenumber * 3, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
     
+    glDisableVertexAttribArray(GLKVertexAttribPosition);
+    glDisableVertexAttribArray(GLKVertexAttribNormal);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     //}
@@ -574,6 +641,52 @@ GLfloat backgroundSquare[] =
     return &_FACE_INDEX_BUFFER_OBJECT;
 }
 
+#define DEGREES_TO_RADIANS(__ANGLE__) ((__ANGLE__) / 180.0 * M_PI)
+
+- (void) drawServerRendering
+{
+
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_DEPTH_BUFFER_BIT);
+    glClear(GL_STENCIL_BUFFER_BIT);
+    glBindBuffer(GL_ARRAY_BUFFER, _backgroundQuadObj);
+    
+    glEnableVertexAttribArray(GLKVertexAttribPosition);
+    glEnableVertexAttribArray(GLKVertexAttribTexCoord0);
+
+    glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), BUFFER_OFFSET(0));
+    glVertexAttribPointer(GLKVertexAttribTexCoord0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), BUFFER_OFFSET(3 * sizeof(GLfloat)));
+    
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 6);
+    
+    glDisableVertexAttribArray(GLKVertexAttribPosition);
+    glDisableVertexAttribArray(GLKVertexAttribTexCoord0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+
+- (void) loadTexture
+{
+    [EAGLContext setCurrentContext:_context];
+    NSDictionary * options = [NSDictionary dictionaryWithObjectsAndKeys:
+                              [NSNumber numberWithBool:YES],
+                              GLKTextureLoaderOriginBottomLeft,
+                              nil];
+    
+    NSError * error;
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"texture.png" ofType:nil];
+    _textureInfo = [GLKTextureLoader textureWithContentsOfFile:path options:options error:&error];
+    
+    if (_textureInfo == nil) {
+        NSLog(@"Error loading file: %@", [error localizedDescription]);
+    }
+    
+}
+- (GLKTextureInfo *) getTextureInfo
+{
+    return _textureInfo;
+}
 
 @synthesize positionPointerStride = _positionPointerStride;
 @synthesize positionPointerOffset = _positionPointerOffset;
@@ -584,6 +697,7 @@ GLfloat backgroundSquare[] =
 @synthesize normalMatrix = _normalMatrix;
 @synthesize viewingMatrix;
 @synthesize modelViewMatrix = _modelViewMatrix;
+@synthesize bounds;
 
 @synthesize layer;
 

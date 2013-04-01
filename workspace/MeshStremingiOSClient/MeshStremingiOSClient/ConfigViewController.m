@@ -19,6 +19,7 @@
 @implementation ConfigViewController
 
 //@synthesize progMeshCentralController = _progMeshCentralController;
+@synthesize serverRenderSwitch = _serverRenderSwitch;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -39,6 +40,8 @@
     [_serverPort setText:DEFAULT_PORT];
     
     ProgMeshCentralController *_progMeshCentralController = [ProgMeshCentralController sharedInstance];
+    
+    [_serverRenderSwitch setEnabled:NO];
     
     if(_progMeshCentralController == nil){
         _statusBar.backgroundColor = [UIColor redColor];
@@ -67,12 +70,20 @@
     [_serverPort release];
     [_statusBar release];
     [_connectButton release];
+    [_serverRenderSwitch release];
     [super dealloc];
 }
+- (IBAction)ServerRenderingChanged:(UISwitch *)sender forEvent:(UIEvent *)event{
+    if (sender.on) {
+        [[ProgMeshCentralController sharedInstance] setIsServerRendering:YES];
+        NSLog(@"server rendering on");
+    } else{
+        [[ProgMeshCentralController sharedInstance] setIsServerRendering:NO];
+        NSLog(@"server rendering off");
+    }
+}
+
 - (IBAction)serverConnect:(UIButton *)sender {
-    
-    
-    
     ProgMeshCentralController *_progMeshCentralController = nil;
     if(_progMeshCentralController == nil){
         _progMeshCentralController = [ProgMeshCentralController sharedInstance];

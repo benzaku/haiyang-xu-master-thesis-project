@@ -41,16 +41,24 @@
 	GLint backingWidth;
 	GLint backingHeight;
     
+    
     GLuint _backgroundSquareBuffer;
     void *  _updateInfo;
+    
+    GLuint _texture;
+    
+    GLuint _backgroundPlaneVerBufferObj;
+    GLuint _backgroundPlaneIdxBufferObj;
+    
+    GLKBaseEffect * effect;
+    
     
 @private
     bool    duringVBOUpdate;
     
 }
 
-
-
+@property(nonatomic) CGRect            bounds;
 @property (atomic, assign) BOOL duringVBOUpdating;
 
 @property (nonatomic, assign) GLsizei   positionPointerStride;
@@ -68,6 +76,8 @@
 @property (nonatomic, assign) GLKMatrix4 viewingMatrix;
 
 @property (nonatomic, assign) GLKMatrix4 modelViewMatrix;
+
+- (GLKTextureInfo *) getTextureInfo;
 
 - (void) setCentroidAndRadius:(float *) centroid_radius;
 
@@ -130,5 +140,11 @@
 - (GLuint *) get_VERTEX_NORMAL_BUFFER_OBJECT;
 
 - (GLuint *) get_FACE_INDEX_BUFFER_OBJECT;
+
+- (void) drawServerRendering;
+
+- (void) loadTexture;
+
+- (void) initServerRenderingBackgroundQuad;
 
 @end
