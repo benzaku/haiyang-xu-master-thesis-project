@@ -30,6 +30,8 @@
 
     float centroid_radius[4];
     
+    float final_centroid_radius[4];
+    
     int currentRecoveredFaceNumber;
     
     int currentFaceNumberCanDraw;
@@ -71,7 +73,7 @@
 
 - (void) setCurrentFaceNumberCanDraw : (int) cfncd;
 
-
+- (float *) get_final_centroid_radius;
 @property (strong, nonatomic) NSString *type;
 @property (strong, nonatomic) NSString *name;
 

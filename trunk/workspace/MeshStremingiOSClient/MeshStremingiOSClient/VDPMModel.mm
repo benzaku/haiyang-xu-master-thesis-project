@@ -118,6 +118,14 @@
     
     centroid_radius[3] = 0.5*(BBMIN - BBMAX).norm();
     
+    ifs.read((char *)final_centroid_radius, 4 * sizeof(float));
+    
+    centroid_radius[0] = final_centroid_radius[0];
+    centroid_radius[1] = final_centroid_radius[1];
+    centroid_radius[2] = final_centroid_radius[2];
+    centroid_radius[3] = final_centroid_radius[3];
+    NSLog(@"final centroid %f",final_centroid_radius[0]);
+    
     base_mesh_loaded_flag = true;
     
     NSLog(@"Base Mesh Load Finished!");

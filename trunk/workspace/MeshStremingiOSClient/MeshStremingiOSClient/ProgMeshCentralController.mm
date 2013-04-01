@@ -24,6 +24,7 @@
     MyMutableArray *_updateInfoArray;
     std::vector<UpdateInfo *> * _update_infos;
     std::list<NSData *> * _update_data;
+    NSData * _displayTextureData;
 }
 - (void *) get_update_infos
 {
@@ -50,6 +51,8 @@ static id SharedInstance;
     
     _progMeshModel = nil;
     
+    _serverRenderingRoughModel = nil;
+    
     _refineOperationQueue = dispatch_queue_create("refineOperationQueue", 0);
     
     _tempData = nil;
@@ -75,6 +78,14 @@ static id SharedInstance;
     subUpdateFinish = NO;
     
     clientAbort = false;
+    
+    _isServerRendering = NO;
+    
+    _displayTextureData = nil;
+    
+    _textureDataUpdated = NO;
+    
+    updateTexFinish = YES;
     
     return self;
 }
@@ -200,6 +211,25 @@ static id SharedInstance;
     
     
     switch (waitState) {
+        case SOCKET_WAIT_FOR_SERVER_RENDERING_IMG:
+            _socketHandler._SOCKET_STATE = SOCKET_CONNECTED_IDLE;
+            [self handleWaitForServerRenderingImg : data];
+            break;
+            
+        case SOCKET_WAIT_FOR_SERVER_RENDERING_IMG_SIZE:
+            _socketHandler._SOCKET_STATE = SOCKET_CONNECTED_IDLE;
+            [self handleWaitForServerRenderingImgSize : data];
+            break;
+            
+        case SOCKET_WAIT_FOR_SERVER_RENDERING_ACK:
+            _socketHandler._SOCKET_STATE = SOCKET_CONNECTED_IDLE;
+            [self handleWaitForServerRenderingAck : data];
+            break;
+            
+        case SOCKET_WAIT_FOR_CLIENT_RENDERING_ACK:
+            _socketHandler._SOCKET_STATE = SOCKET_CONNECTED_IDLE;
+            [self handleWaitForClientRenderingAck : data];
+            break;
             
         case SOCKET_WAIT_CLIENT_ABORT_ACK:
             _socketHandler._SOCKET_STATE = SOCKET_CONNECTED_IDLE;
@@ -253,6 +283,42 @@ static id SharedInstance;
     
 }
 
+- (void) handleWaitForServerRenderingImg : (NSData *) data
+{
+    NSLog(@"Receive server rendering img!");
+    _displayTextureData = [[NSData alloc] initWithData:data];
+    _textureDataUpdated = YES;
+}
+
+- (void) handleWaitForServerRenderingImgSize:(NSData *) data
+{
+    NSLog(@"Server rendering img size");
+    updateTexFinish = NO;
+    char header_size[8 + sizeof(int)];
+    [data getBytes:header_size length:8 + sizeof(int)];
+    
+    char h[8];
+    strncpy(h, header_size, 8);
+    int size;
+    memcpy(&size, &header_size[8], sizeof(int));
+    if(strncmp(header_size, "svrender", 8) == 0 && size > 0){
+        //is img return from server
+        [_socketHandler socketSendMessageWithReadTimeOutAndToLength:COMMAND_CLIENT_RETRIEVE_SERVER_RENDERING_IMG :SOCKET_WAIT_FOR_SERVER_RENDERING_IMG :-1 :size];
+        
+    }
+    
+}
+
+- (void) handleWaitForServerRenderingAck: (NSData *) data
+{
+    NSLog(@"update server rendering ok!");
+}
+
+- (void) handleWaitForClientRenderingAck: (NSData *) data
+{
+    NSLog(@"update client rendering ok!");
+}
+
 - (void) handleWaitForClientAbortAck: (NSData *) data
 {
     //CLIENT_ABORT_OK
@@ -286,7 +352,7 @@ int total_size;
 
 int offset;
 
-#define VSPLIT_EACH_PACKET  250
+#define VSPLIT_EACH_PACKET  500
 #define SIZE_OF_A_VSPLIT    80
 #define BYTE_PER_READ       8000
 
@@ -347,6 +413,7 @@ int current_idx;
 
 - (void) handleWaitForSPMVsplitDataSize: (NSData *) data
 {
+    
     char header_size[8 + sizeof(int)];
     [data getBytes:header_size length:8 + sizeof(int)];
     
@@ -394,41 +461,85 @@ int current_idx;
     
     if (_progMeshModel != nil) {
         [_progMeshModel release];
+        _progMeshModel = nil;
+    }
+    if (_serverRenderingRoughModel != nil){
+        [_serverRenderingRoughModel release];
+        _serverRenderingRoughModel = nil;
     }
     if ([_currentSelectedModel.ModelType compare:@"SPM"] == NSOrderedSame){
-        _progMeshModel = [[VDPMModel alloc] initWithModelObject:_currentSelectedModel];
-        [_progMeshModel loadBaseMeshInfo:data];
         
+        if ([[ProgMeshCentralController sharedInstance] isServerRendering]) {
+            // use server rendering
+            _serverRenderingRoughModel = [[VDPMModel alloc] initWithModelObject:_currentSelectedModel];
+            [_serverRenderingRoughModel loadBaseMeshInfo:data];
 #ifdef USE_FBO
-        
-        [_glRenderViewController setProgMeshModel:_progMeshModel];
-        [[_glRenderViewController.glView getRenderer] buildVBOwithBaseModel:_progMeshModel];
+            
+            [_glRenderViewController setProgMeshModel:_serverRenderingRoughModel];
+            [[_glRenderViewController.glView getRenderer] buildVBOwithBaseModel:_serverRenderingRoughModel];
 #else
-        [[_progMeshGLKViewController getProgMeshGLManager] setProgMeshModel:_progMeshModel];
-        
-        [_progMeshGLKViewController setProgMeshModel:_progMeshModel];
-        
-        [_progMeshGLKViewController setScenePosition:[_progMeshModel getCentroidAndRadius]];
-        
-        [[_progMeshGLKViewController getProgMeshGLManager] setCentroidAndRadius:[_progMeshModel getCentroidAndRadius]];
-        
-        [_progMeshGLKViewController resetCurrentStage];
-        
-        if(_update_data->size() > 0){
-            _update_data->clear();
-        }
-        
-        [[_progMeshGLKViewController getProgMeshGLManager] setPositionPointerStride:24];
-        [[_progMeshGLKViewController getProgMeshGLManager] setPositionPointerOffset:0];
-        [[_progMeshGLKViewController getProgMeshGLManager] setNormalPointerStride:24];
-        [[_progMeshGLKViewController getProgMeshGLManager] setNormalPointerOffset:12];
-        
-        [[_progMeshGLKViewController getProgMeshGLManager] initBaseMeshBuffer:(GLubyte *)[_progMeshModel getBaseMeshVertexNormalArray] :[_progMeshModel getBaseMeshVertexNormalArraySize] * sizeof(float) :[_progMeshModel getTotalVertexNormalArraySize] * sizeof(float) :(GLubyte *)[_progMeshModel getMeshIndiceArray] :[_progMeshModel getBaseMeshIndiceBufferSize] :[_progMeshModel getTotalFaceIndiceBufferSize]];
-        
-        _progMeshGLKViewController.status = PM_VIEW_STATUS_SPM_RENDER_BASE_MESH;
-        
+            [[_progMeshGLKViewController getProgMeshGLManager] setProgMeshModel:_serverRenderingRoughModel];
+            
+            [_progMeshGLKViewController setProgMeshModel:_serverRenderingRoughModel];
+            
+            [_progMeshGLKViewController setScenePosition:[_serverRenderingRoughModel getCentroidAndRadius]];
+            
+            //[_progMeshGLKViewController setScenePosition:[_serverRenderingRoughModel get_final_centroid_radius]];
+            
+            [[_progMeshGLKViewController getProgMeshGLManager] setCentroidAndRadius:[_serverRenderingRoughModel getCentroidAndRadius]];
+            
+            [_progMeshGLKViewController resetCurrentStage];
+            
+            if(_update_data->size() > 0){
+                _update_data->clear();
+            }
+            
+            [[_progMeshGLKViewController getProgMeshGLManager] setPositionPointerStride:24];
+            [[_progMeshGLKViewController getProgMeshGLManager] setPositionPointerOffset:0];
+            [[_progMeshGLKViewController getProgMeshGLManager] setNormalPointerStride:24];
+            [[_progMeshGLKViewController getProgMeshGLManager] setNormalPointerOffset:12];
+            
+            [[_progMeshGLKViewController getProgMeshGLManager] initBaseMeshBuffer:(GLubyte *)[_serverRenderingRoughModel getBaseMeshVertexNormalArray] :[_serverRenderingRoughModel getBaseMeshVertexNormalArraySize] * sizeof(float) :[_serverRenderingRoughModel getTotalVertexNormalArraySize] * sizeof(float) :(GLubyte *)[_serverRenderingRoughModel getMeshIndiceArray] :[_serverRenderingRoughModel getBaseMeshIndiceBufferSize] :[_serverRenderingRoughModel getTotalFaceIndiceBufferSize]];
+            
+            //_progMeshGLKViewController.status = PM_VIEW_STATUS_SPM_RENDER_BASE_MESH;
+            
 #endif
-        
+
+        }
+        else{
+            _progMeshModel = [[VDPMModel alloc] initWithModelObject:_currentSelectedModel];
+            [_progMeshModel loadBaseMeshInfo:data];
+            
+#ifdef USE_FBO
+            
+            [_glRenderViewController setProgMeshModel:_progMeshModel];
+            [[_glRenderViewController.glView getRenderer] buildVBOwithBaseModel:_progMeshModel];
+#else
+            [[_progMeshGLKViewController getProgMeshGLManager] setProgMeshModel:_progMeshModel];
+            
+            [_progMeshGLKViewController setProgMeshModel:_progMeshModel];
+            
+            [_progMeshGLKViewController setScenePosition:[_progMeshModel getCentroidAndRadius]];
+            
+            [[_progMeshGLKViewController getProgMeshGLManager] setCentroidAndRadius:[_progMeshModel getCentroidAndRadius]];
+            
+            [_progMeshGLKViewController resetCurrentStage];
+            
+            if(_update_data->size() > 0){
+                _update_data->clear();
+            }
+            
+            [[_progMeshGLKViewController getProgMeshGLManager] setPositionPointerStride:24];
+            [[_progMeshGLKViewController getProgMeshGLManager] setPositionPointerOffset:0];
+            [[_progMeshGLKViewController getProgMeshGLManager] setNormalPointerStride:24];
+            [[_progMeshGLKViewController getProgMeshGLManager] setNormalPointerOffset:12];
+            
+            [[_progMeshGLKViewController getProgMeshGLManager] initBaseMeshBuffer:(GLubyte *)[_progMeshModel getBaseMeshVertexNormalArray] :[_progMeshModel getBaseMeshVertexNormalArraySize] * sizeof(float) :[_progMeshModel getTotalVertexNormalArraySize] * sizeof(float) :(GLubyte *)[_progMeshModel getMeshIndiceArray] :[_progMeshModel getBaseMeshIndiceBufferSize] :[_progMeshModel getTotalFaceIndiceBufferSize]];
+            
+            _progMeshGLKViewController.status = PM_VIEW_STATUS_SPM_RENDER_BASE_MESH;
+            
+#endif
+        }
     }
     
     
@@ -514,6 +625,7 @@ int current_idx;
 - (void) didConnectToServer
 {
     [_socketHandler socketWaitForMessageWithReadTimeOut:HELLO_FROM_SERVER :SOCKET_WAIT_FOR_HELLO :-1];
+    [_configureViewController.serverRenderSwitch setEnabled:YES];
 }
 
 - (void) didSelectModelToLoad: (ModelObj *) selectedModel
@@ -535,7 +647,11 @@ int current_idx;
 
 - (void) syncViewingParametersToServer : (NSData *) viewing_parameters_
 {
-    [_socketHandler socketSendDataWithLengthAndReadTimeOut:viewing_parameters_:SOCKET_WAIT_FOR_SPM_VSPLIT_DATA_SIZE :-1];    
+    if(!_isServerRendering){
+        [_socketHandler socketSendDataWithLengthAndReadTimeOut:viewing_parameters_:SOCKET_WAIT_FOR_SPM_VSPLIT_DATA_SIZE :-1];
+    } else{
+        [_socketHandler socketSendDataWithLengthAndReadTimeOut:viewing_parameters_:SOCKET_WAIT_FOR_SERVER_RENDERING_IMG_SIZE :-1];
+    }
 }
 
 - (BOOL) getIfNeedUpdateVBO
@@ -591,10 +707,43 @@ int current_idx;
     }
 }
 
+- (void) setIsServerRendering:(BOOL)isServerRendering
+{
+    if (!_socketHandler.isConnected) {
+        NSLog(@"Not Connected Yet!");
+        [_configureViewController.serverRenderSwitch setOn: !(_configureViewController.serverRenderSwitch.on)];
+        return;
+    }
+    //update with server
+    if(isServerRendering == YES){
+        [_socketHandler socketSendMessageWithReadTimeOut:COMMAND_CLIENT_UPDATE_SERVER_RENDERING :SOCKET_WAIT_FOR_SERVER_RENDERING_ACK :-1];
+    } else{
+        [_socketHandler socketSendMessageWithReadTimeOut:COMMAND_CLIENT_UPDATE_CLIENT_RENDERING :SOCKET_WAIT_FOR_CLIENT_RENDERING_ACK :-1];
+    }
+    NSLog(@"set server rendering : %@", isServerRendering? @"YES" : @"NO" );
+    _isServerRendering = isServerRendering;
+}
+
+
+- (NSData *) getDisplayTextureData
+{
+    return _displayTextureData;
+}
+
+- (void) releaseDisplayTextureData
+{
+    [_displayTextureData release];
+    _displayTextureData = nil;
+}
+
+@synthesize updateTexFinish;
 @synthesize subUpdateFinish;
 @synthesize updateInfoArray = _updateInfoArray;
 @synthesize isQueueBusy;
-@synthesize  serverInfo = _serverInfo;
-@synthesize  currentSelectedModel = _currentSelectedModel;
-@synthesize  progMeshModel = _progMeshModel;
+@synthesize serverInfo = _serverInfo;
+@synthesize currentSelectedModel = _currentSelectedModel;
+@synthesize progMeshModel = _progMeshModel;
+@synthesize serverRenderingRoughModel = _serverRenderingRoughModel;
+@synthesize isServerRendering = _isServerRendering;
+@synthesize textureDataUpdated = _textureDataUpdated;
 @end

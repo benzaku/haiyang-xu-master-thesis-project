@@ -93,5 +93,10 @@
     glfiobj = fi;
 }
 
+- (float *) get_final_centroid_radius
+{
+    return final_centroid_radius;
+}
+
 
 @end
