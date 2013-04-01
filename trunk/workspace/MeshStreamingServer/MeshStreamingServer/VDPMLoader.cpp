@@ -13,8 +13,6 @@
 #include <OpenMesh/Core/IO/BinaryHelper.hh>
 #include <OpenMesh/Core/Utils/Endian.hh>
 
-
-
 VDPMLoader::~VDPMLoader(){
     this->qFilename_.clear();
     this->mesh_loaded = false;
@@ -42,6 +40,233 @@ VDPMLoader::~VDPMLoader(){
     base_info_data_size = 0;
     
 
+}
+
+void VDPMLoader::openVDPM_ServerRendering(const char *_filename)
+{
+    unsigned int                    i;
+    unsigned int                    value;
+    unsigned int                    fvi[3];
+    char                            fileformat[16];
+    Vec3f                           p, normal;
+    float                           radius, sin_square, mue_square, sigma_square;
+    VHierarchyNodeHandleContainer   roots;
+    VertexHandle                    vertex_handle;
+    VHierarchyNodeIndex             node_index;
+    VHierarchyNodeIndex             lchild_node_index, rchild_node_index;
+    VHierarchyNodeIndex             fund_lcut_index, fund_rcut_index;
+    VHierarchyNodeHandle            node_handle;
+    VHierarchyNodeHandle            lchild_node_handle, rchild_node_handle;
+    
+    
+    
+    std::ifstream ifs(_filename, std::ios::binary);
+    
+    if (!ifs)
+    {
+        std::cerr << "read error\n";
+        exit(1);
+    }
+    
+    //
+    bool swap = Endian::local() != Endian::LSB;
+    
+    // read header
+    ifs.read(fileformat, 10); fileformat[10] = '\0';
+    if (std::string(fileformat) != std::string("VDProgMesh"))
+    {
+        std::cerr << "Wrong file format.\n";
+        ifs.close();
+        exit(1);
+    }
+    
+    IO::restore(ifs, n_base_vertices_, swap);
+    IO::restore(ifs, n_base_faces_, swap);
+    IO::restore(ifs, n_details_, swap);
+    
+    mesh_.clear();
+    vfront_.clear();
+    vhierarchy_.clear();
+    
+    vhierarchy_.set_num_roots(n_base_vertices_);
+    
+    
+    // load base mesh
+    for (i=0; i<n_base_vertices_; ++i)
+    {
+        IO::restore(ifs, p, swap);
+        IO::restore(ifs, radius, swap);
+        IO::restore(ifs, normal, swap);
+        IO::restore(ifs, sin_square, swap);
+        IO::restore(ifs, mue_square, swap);
+        IO::restore(ifs, sigma_square, swap);
+        
+        vertex_handle = mesh_.add_vertex(p);
+        node_index    = vhierarchy_.generate_node_index(i, 1);
+        node_handle   = vhierarchy_.add_node();
+        
+        VHierarchyNode &node = vhierarchy_.node(node_handle);
+        
+        node.set_index(node_index);
+        node.set_vertex_handle(vertex_handle);
+        mesh_.data(vertex_handle).set_vhierarchy_node_handle(node_handle);
+        
+        node.set_radius(radius);
+        node.set_normal(normal);
+        node.set_sin_square(sin_square);
+        node.set_mue_square(mue_square);
+        node.set_sigma_square(sigma_square);
+        mesh_.set_normal(vertex_handle, normal);
+        
+        index2handle_map[node_index] = node_handle;
+        roots.push_back(node_handle);
+    }
+    vfront_.init(roots, n_details_);
+    
+    for (i=0; i<n_base_faces_; ++i)
+    {
+        IO::restore(ifs, fvi[0], swap);
+        IO::restore(ifs, fvi[1], swap);
+        IO::restore(ifs, fvi[2], swap);
+        
+        mesh_.add_face(mesh_.vertex_handle(fvi[0]),
+                       mesh_.vertex_handle(fvi[1]),
+                       mesh_.vertex_handle(fvi[2]));
+    }
+    
+    vsplit_loaded.clear();
+    
+    // load details
+    for (i=0; i<n_details_; ++i)
+    {
+        Vsplit avs;
+        // position of v0
+        IO::restore(ifs, p, swap);
+        
+        avs.v0 = p;
+        
+        // vsplit info.
+        IO::restore(ifs, value, swap);
+        node_index = VHierarchyNodeIndex(value);
+        
+        avs.node_index = value;
+        
+        IO::restore(ifs, value, swap);
+        fund_lcut_index = VHierarchyNodeIndex(value);
+        
+        avs.fund_lcut_index = value;
+        
+        IO::restore(ifs, value, swap);
+        fund_rcut_index = VHierarchyNodeIndex(value);
+        
+        avs.fund_rcut_index = value;
+        
+        node_handle = index2handle_map[node_index];
+        vhierarchy_.make_children(node_handle);
+        
+        VHierarchyNode &node   = vhierarchy_.node(node_handle);
+        VHierarchyNode &lchild = vhierarchy_.node(node.lchild_handle());
+        VHierarchyNode &rchild = vhierarchy_.node(node.rchild_handle());
+        
+        node.set_fund_lcut(fund_lcut_index);
+        node.set_fund_rcut(fund_rcut_index);
+        
+        vertex_handle = mesh_.add_vertex(p);
+        lchild.set_vertex_handle(vertex_handle);
+        rchild.set_vertex_handle(node.vertex_handle());
+        
+        index2handle_map[lchild.node_index()] = node.lchild_handle();
+        index2handle_map[rchild.node_index()] = node.rchild_handle();
+        
+        // view-dependent parameters
+        IO::restore(ifs, radius, swap);
+        IO::restore(ifs, normal, swap);
+        IO::restore(ifs, sin_square, swap);
+        IO::restore(ifs, mue_square, swap);
+        IO::restore(ifs, sigma_square, swap);
+        lchild.set_radius(radius);
+        lchild.set_normal(normal);
+        lchild.set_sin_square(sin_square);
+        lchild.set_mue_square(mue_square);
+        lchild.set_sigma_square(sigma_square);
+        
+        avs.l_radius = radius;
+        avs.l_normal = normal;
+        avs.l_mue_square = mue_square;
+        avs.l_sigma_square = sigma_square;
+        avs.l_sin_square = sin_square;
+        
+        IO::restore(ifs, radius, swap);
+        IO::restore(ifs, normal, swap);
+        IO::restore(ifs, sin_square, swap);
+        IO::restore(ifs, mue_square, swap);
+        IO::restore(ifs, sigma_square, swap);
+        rchild.set_radius(radius);
+        rchild.set_normal(normal);
+        rchild.set_sin_square(sin_square);
+        rchild.set_mue_square(mue_square);
+        rchild.set_sigma_square(sigma_square);
+        
+        avs.r_radius = radius;
+        avs.r_normal = normal;
+        avs.r_mue_square = mue_square;
+        avs.r_sigma_square = sigma_square;
+        avs.r_sin_square = sin_square;
+        
+        vsplit_loaded.push_back(avs);
+        
+    }
+    
+    ifs.close();
+    
+    //refine 100 vsplits
+    int cc = 0;
+    for ( vfront_.begin(); !vfront_.end() && cc < 100; ++cc)
+    {
+        VHierarchyNodeHandle
+        node_handle   = vfront_.node_handle();
+        
+        if (vhierarchy_.is_leaf_node(node_handle) != true)
+        {
+            force_vsplit(node_handle, vsplits_to_send);
+        }
+        vfront_.next();
+        std::cout << "vfront_ size " << vfront_.size() <<std::endl;
+    }
+    
+    //**********//
+
+    
+    // update face and vertex normals
+    mesh_.update_face_normals();
+    
+    // bounding box
+    VDPMMesh::ConstVertexIter
+    vIt(mesh_.vertices_begin()),
+    vEnd(mesh_.vertices_end());
+    
+    VDPMMesh::Point bbMin, bbMax;
+    
+    bbMin = bbMax = mesh_.point(vIt);
+    for (; vIt!=vEnd; ++vIt)
+    {
+        bbMin.minimize(mesh_.point(vIt));
+        bbMax.maximize(mesh_.point(vIt));
+    }
+    
+    // set center and radius
+    VDPMMesh::Point center = 0.5f * (bbMin + bbMax);
+    set_scene_pos(0.5f*(bbMin + bbMax), 0.5*(bbMin - bbMax).norm());
+    
+    
+    
+    // info
+    std::cerr << mesh_.n_vertices() << " vertices, "
+    << mesh_.n_edges()    << " edge, "
+    << mesh_.n_faces()    << " faces, "
+    << n_details_ << " detail vertices\n";
+    
+    mesh_loaded = true;
 }
 
 void
@@ -241,6 +466,11 @@ VDPMLoader::openVDPM(const char* _filename)
     
     // set center and radius
     VDPMMesh::Point center = 0.5f * (bbMin + bbMax);
+    
+    centroid_radius[0] = center[0];
+    centroid_radius[1] = center[1];
+    centroid_radius[2] = center[2];
+    centroid_radius[3] = 0.5*(bbMin - bbMax).norm();
     set_scene_pos(0.5f*(bbMin + bbMax), 0.5*(bbMin - bbMax).norm());
     
     
@@ -282,6 +512,119 @@ void VDPMLoader::rollback_split(data_chunk * vsplitdata)
 
 }
 
+data_chunk* VDPMLoader::adaptive_refinement_server_rendering()
+{
+    VDPMMesh::HalfedgeHandle v0v1;
+    
+    float fovy = viewing_parameters_.fovy();
+    
+    float tolerance_square = viewing_parameters_.tolerance_square();
+    float	tan_value = tanf(fovy / 2.0f);
+    
+    kappa_square_ = 4.0f * tan_value * tan_value * tolerance_square;
+    
+    split_counter = 0;
+    ecol_counter = 0;
+    for ( vfront_.begin(); !vfront_.end(); )
+    {
+        VHierarchyNodeHandle
+        node_handle   = vfront_.node_handle(),
+        parent_handle = vhierarchy_.parent_handle(node_handle);
+        
+        
+        if (vhierarchy_.is_leaf_node(node_handle) != true &&
+            qrefine(node_handle) == true)
+        {
+            force_vsplit(node_handle);
+        }
+        
+        else if (vhierarchy_.is_root_node(node_handle) != true &&
+                 ecol_legal(parent_handle, v0v1) == true       &&
+                 qrefine(parent_handle) != true)
+        {
+            ++ecol_counter;
+            ecol(parent_handle, v0v1);
+        }
+        
+        else
+        {
+            vfront_.next();
+        }
+        
+    }
+    
+    // free memories tagged as 'deleted'
+    mesh_.garbage_collection(false, true, true);
+    mesh_.update_face_normals();
+    
+    _glHandler->update_viewing_parameters(viewing_parameters_);
+    
+    if (split_counter > 0 || ecol_counter > 0) {
+        draw_mesh();
+        return _glHandler->getFrameBufferAsJPEGinMen();
+    } else{
+        data_chunk * returnData = (data_chunk *) malloc(sizeof(data_chunk));
+        char * header = "svrender";
+        memcpy(returnData->HEADER, header, 8);
+        returnData->size = 0;
+        returnData->data = NULL;
+        return returnData;
+    }
+    
+}
+
+void
+VDPMLoader::
+draw_mesh()
+{
+    _glHandler->draw_mesh(mesh_);
+}
+
+void
+VDPMLoader::
+force_vsplit(VHierarchyNodeHandle node_handle)
+{
+    VDPMMesh::VertexHandle  vl, vr;
+    
+    get_active_cuts(node_handle, vl, vr);
+    
+    while (vl == vr)
+    {
+        force_vsplit(mesh_.data(vl).vhierarchy_node_handle());
+        get_active_cuts(node_handle, vl, vr);
+    }
+    
+    vsplit(node_handle, vl, vr);
+}
+
+void
+VDPMLoader::
+vsplit(VHierarchyNodeHandle _node_handle,
+       VDPMMesh::VertexHandle vl,
+       VDPMMesh::VertexHandle vr)
+{
+    ++ split_counter;
+    
+    // refine
+    VHierarchyNodeHandle
+    lchild_handle = vhierarchy_.lchild_handle(_node_handle),
+    rchild_handle = vhierarchy_.rchild_handle(_node_handle);
+    
+    VDPMMesh::VertexHandle  v0 = vhierarchy_.vertex_handle(lchild_handle);
+    VDPMMesh::VertexHandle  v1 = vhierarchy_.vertex_handle(rchild_handle);
+    
+    mesh_.vertex_split(v0, v1, vl, vr);
+    mesh_.set_normal(v0, vhierarchy_.normal(lchild_handle));
+    mesh_.set_normal(v1, vhierarchy_.normal(rchild_handle));
+    mesh_.data(v0).set_vhierarchy_node_handle(lchild_handle);
+    mesh_.data(v1).set_vhierarchy_node_handle(rchild_handle);
+    mesh_.status(v0).set_deleted(false);
+    mesh_.status(v1).set_deleted(false);
+    
+    vfront_.remove(_node_handle);
+    vfront_.add(lchild_handle);
+    vfront_.add(rchild_handle);
+}
 
 int count = 0;
 data_chunk* VDPMLoader::adaptive_refinement()
@@ -295,7 +638,6 @@ data_chunk* VDPMLoader::adaptive_refinement()
     
     kappa_square_ = 4.0f * tan_value * tan_value * tolerance_square;
     
-    count = 0;
     for ( vfront_.begin(); !vfront_.end(); )
     {
         VHierarchyNodeHandle
@@ -344,9 +686,6 @@ void VDPMLoader::force_vsplit(VHierarchyNodeHandle node_handle, std::vector<Vspl
         force_vsplit(mesh_.data(vl).vhierarchy_node_handle(), splits);
         get_active_cuts(node_handle, vl, vr);
     }
-    count ++;
-    
-    
     vsplit(node_handle, vl, vr, splits);
 }
 
@@ -397,26 +736,13 @@ VDPMLoader::vsplit(VHierarchyNodeHandle _node_handle,
        VDPMMesh::VertexHandle vl,
        VDPMMesh::VertexHandle vr, std::vector<Vsplit *>& splits)
 {
-    
-    
-    
     // refine
     VHierarchyNodeHandle
     lchild_handle = vhierarchy_.lchild_handle(_node_handle),
     rchild_handle = vhierarchy_.rchild_handle(_node_handle);
-    
     VDPMMesh::VertexHandle  v0 = vhierarchy_.vertex_handle(lchild_handle);
     VDPMMesh::VertexHandle  v1 = vhierarchy_.vertex_handle(rchild_handle);
-    /*
-    std::cout << "==============" << std::endl;
-    std::cout << "splits info: " << std::endl
-    << "node_handle.idx " << _node_handle.idx() << std::endl
-    << "vl: " << vl.idx() << " vr: " << vr.idx() << std::endl
-    << "v0: " << v0.idx() << " v1: " << v1.idx() << std::endl;
-    std::cout << "==============" << std::endl;
-    */
     append_vsplit(_node_handle, splits);
-     
     mesh_.vertex_split(v0, v1, vl, vr);
     mesh_.set_normal(v0, vhierarchy_.normal(lchild_handle));
     mesh_.set_normal(v1, vhierarchy_.normal(rchild_handle));
@@ -428,10 +754,6 @@ VDPMLoader::vsplit(VHierarchyNodeHandle _node_handle,
     vfront_.remove(_node_handle);
     vfront_.add(lchild_handle);
     vfront_.add(rchild_handle);
-    
-    
-    
-    
 }
 
 void VDPMLoader::get_active_cuts(const VHierarchyNodeHandle _node_handle,
@@ -445,10 +767,6 @@ void VDPMLoader::get_active_cuts(const VHierarchyNodeHandle _node_handle,
     fund_lcut_index = vhierarchy_.fund_lcut_index(_node_handle),
     fund_rcut_index = vhierarchy_.fund_rcut_index(_node_handle);
     
-    /**
-    std::cout << "fund_lcut_index " << fund_lcut_index.value() << std::endl;
-    std::cout << "fund_rcut_index " << fund_rcut_index.value() << std::endl;
-    */
     vl = VDPMMesh::InvalidVertexHandle;
     vr = VDPMMesh::InvalidVertexHandle;
     
@@ -466,16 +784,10 @@ void VDPMLoader::get_active_cuts(const VHierarchyNodeHandle _node_handle,
             vhierarchy_.is_ancestor(nnode_index, fund_rcut_index) == true)
             vr = vv_it.handle();
         
-        /*if (vl == VDPMMesh::InvalidVertexHandle && nnode_index.is_ancestor_index(fund_lcut_index) == true)
-         vl = vv_it.handle();
-         if (vr == VDPMMesh::InvalidVertexHandle && nnode_index.is_ancestor_index(fund_rcut_index) == true)
-         vr = vv_it.handle();*/
-        
         if (vl != VDPMMesh::InvalidVertexHandle &&
             vr != VDPMMesh::InvalidVertexHandle)
             break;
     }
-    //std::cout << "vl: " << mesh_.point(vl) << " vr: " << mesh_.point(vr) << std::endl;
 
 }
 
@@ -656,6 +968,9 @@ calculateSPMBaseInfoDataSize()
     
     size = size + n_base_faces_ * sizeofafaceidxpackage;
     
+    //add size of centroid radius array
+    size += 4 * sizeof(float);
+    
     base_info_data_size = size;
     
     return size;
@@ -689,11 +1004,33 @@ VDPMLoader::get_base_info_data()
             exit(1);
         }
         
-        ifs.read(base_info_data, base_info_data_size);
+        ifs.read(base_info_data, base_info_data_size - 4 * sizeof(float));
         ifs.close();
     }
     
+    memcpy(&base_info_data[base_info_data_size - 4 * sizeof(float)], centroid_radius, 4 * sizeof(float));
+    
     return base_info_data;
+}
+
+void
+VDPMLoader::generateRoughMesh()
+{
+    std::cout << "vfront before: " << vfront_.size() << std::endl;
+    //generate rough mesh to send
+    std::vector<Vsplit*> templist;
+    for ( vfront_.begin(); !vfront_.end(); )
+    {
+        VHierarchyNodeHandle
+        node_handle   = vfront_.node_handle();
+        force_vsplit(node_handle, templist);
+        vfront_.next();
+    }
+    
+    // free memories tagged as 'deleted'
+    //mesh_.garbage_collection(false, true, true);
+    mesh_.update_face_normals();
+    std::cout << "vfront after: " << vfront_.size() << std::endl;
 }
 
 

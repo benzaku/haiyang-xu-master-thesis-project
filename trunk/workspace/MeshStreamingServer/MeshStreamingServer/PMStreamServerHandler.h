@@ -15,6 +15,7 @@
 #include "PMFileHandler.h"
 #include "ModelRepositoryHandler.h"
 #include "VDPMFileHandler.h"
+#include "GLHandler.h"
 
 using Poco::Net::StreamSocket;
 using Poco::Net::SocketReactor;
@@ -61,6 +62,9 @@ private:
     
     data_chunk          *temp_data_chunk;
     int                 current_idx;
+    bool                _server_rendering;
+    
+    GLHandler *         _glh;
     
     
     bool handleLoadModelRequest(int modelId);

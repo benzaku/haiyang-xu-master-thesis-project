@@ -13,6 +13,7 @@
 #include "PMRepository.h"
 #include "ModelRepositoryHandler.h"
 #include "VDPMLoader.h"
+#include "GLHandler.h"
 
 
 #include "Poco/Util/HelpFormatter.h"
@@ -91,7 +92,6 @@ void PMStreamServer::displayHelp(){
     helpFormatter.setHeader("An echo server implemented using the Reactor and Acceptor patterns.");
     helpFormatter.format(std::cout);
 }
-
 int PMStreamServer::main(const std::vector<std::string> &args){
     if (_helpRequested)
     {
@@ -102,9 +102,9 @@ int PMStreamServer::main(const std::vector<std::string> &args){
         
         modelRepo =  new PMRepository();
         
-        std::string ss("/Users/hyx/Development/MasterThesis/repository");
+        std::string *ss = new std::string("/Users/hyx/Development/MasterThesis/repository");
         
-        modelRepo->setRepositoryDir(&ss);
+        modelRepo->setRepositoryDir(ss);
         
         modelRepo->initVolumeObjs();
         modelRepo->initMeshObjs();
@@ -119,8 +119,10 @@ int PMStreamServer::main(const std::vector<std::string> &args){
         pmLoader = new PMLoader(PMFileName);
         pmLoader->setUseVolume(useVolume);
         pmFileHandler->setPMLoader(pmLoader);
-        pmFileHandler->setPMRepository(modelRepo);
+        //pmFileHandler->setPMRepository(modelRepo);
         std::cout<<"Server Started" << std::endl;
+
+        
         
         // get parameters from configuration file
         unsigned short port = (unsigned short) config().getInt("EchoServer.port", 9977);

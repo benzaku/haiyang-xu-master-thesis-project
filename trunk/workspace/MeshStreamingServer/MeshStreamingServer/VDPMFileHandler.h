@@ -40,7 +40,10 @@ private:
     
     VDPMFileHandler();
     ~VDPMFileHandler();
+        
     VDPMLoader* vdpmLoader;
+    
+    
 
 };
 

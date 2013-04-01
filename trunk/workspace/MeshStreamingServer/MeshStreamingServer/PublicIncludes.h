@@ -8,8 +8,12 @@
 
 #ifndef MeshStreamingServer_PublicIncludes_h
 #define MeshStreamingServer_PublicIncludes_h
+#include <OpenMesh/Core/Mesh/TriMesh_ArrayKernelT.hh>
 
-
+#include <OpenMesh/Tools/VDPM/MeshTraits.hh>
+using namespace OpenMesh;
+using namespace OpenMesh::VDPM;
+typedef TriMesh_ArrayKernelT<VDPM::MeshTraits>	VDPMMesh;
 
 struct viewparam {
     double      modelViewMatrix[16];

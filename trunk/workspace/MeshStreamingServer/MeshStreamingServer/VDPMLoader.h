@@ -24,6 +24,7 @@
 #include <OpenMesh/Tools/VDPM/VHierarchy.hh>
 #include <OpenMesh/Tools/VDPM/VFront.hh>
 #include "PublicIncludes.h"
+#include "GLHandler.h"
 
 #define VSPLIT_LENGTH   80
 
@@ -31,7 +32,7 @@
 using namespace OpenMesh;
 using namespace OpenMesh::VDPM;
 
-typedef TriMesh_ArrayKernelT<VDPM::MeshTraits>	VDPMMesh;
+//typedef TriMesh_ArrayKernelT<VDPM::MeshTraits>	VDPMMesh;
 
 
 struct Vsplit {
@@ -71,11 +72,17 @@ public:
     };
     
     ~VDPMLoader();
-    
+        
     void openVDPM(const char* _filename);
+    
+    void openVDPM_ServerRendering(const char* _filename);
     
     void loadVDPM(){
         openVDPM(qFilename_.c_str());
+    }
+    
+    void loadVDPM_ServerRendering(){
+        openVDPM_ServerRendering(qFilename_.c_str());
     }
     
     ////
@@ -96,9 +103,26 @@ public:
     
     data_chunk* adaptive_refinement();
     
+    data_chunk* adaptive_refinement_server_rendering();
+    
     std::vector<Vsplit>* get_vsplit_loaded(){ return &vsplit_loaded;};
 
     void rollback_split(data_chunk * vsplitdata);
+    
+    void generateRoughMesh();
+    
+    void setGLHandler(GLHandler *glHandler){
+        _glHandler = glHandler;
+    }
+    GLHandler * getGLHandler(){
+        return _glHandler;
+    }
+    
+    void draw_mesh();
+    
+    float * getCentroidRadius(){
+        return centroid_radius;
+    }
 
 private:
     
@@ -127,6 +151,15 @@ private:
     std::vector<Vsplit> vsplit_loaded;
     
     std::map<VHierarchyNodeIndex, VHierarchyNodeHandle> index2handle_map;
+    
+    
+    GLHandler*          _glHandler;
+    
+    float               centroid_radius[4];
+    
+    unsigned int        split_counter;
+    
+    unsigned int        ecol_counter;
 
 private:
     
@@ -150,6 +183,12 @@ private:
     
     void force_vsplit(VHierarchyNodeHandle node_handle, std::vector<Vsplit *>& splits);
     
+    void force_vsplit(VHierarchyNodeHandle node_handle);
+    
+    void vsplit(VHierarchyNodeHandle _node_handle,
+                VDPMMesh::VertexHandle vl,
+                VDPMMesh::VertexHandle vr);
+    
     void get_active_cuts(const VHierarchyNodeHandle _node_handle,
                          VDPMMesh::VertexHandle &vl, VDPMMesh::VertexHandle &vr);
 
@@ -164,6 +203,8 @@ private:
     bool ecol_legal(VHierarchyNodeHandle _parent_handle, VDPMMesh::HalfedgeHandle& v0v1);
 
     void ecol(VHierarchyNodeHandle _node_handle, const VDPMMesh::HalfedgeHandle& v0v1);
+    
+    
 
 };
 

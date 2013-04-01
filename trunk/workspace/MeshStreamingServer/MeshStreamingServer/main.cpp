@@ -15,6 +15,8 @@
 #include "Poco/DOM/AutoPtr.h"
 #include "Poco/DOM/DOMWriter.h"
 #include "Poco/XML/XMLWriter.h"
+#include <stdio.h>
+#include <jpeglib.h>
 
 using Poco::XML::Document;
 using Poco::XML::Element;
@@ -31,6 +33,8 @@ int main(int argc, char** argv)
     std::cout << "Starting PMStreamServer ... \n";
     
     PMStreamServer pmStreamServer;
+    
+    
     
     return pmStreamServer.run(argc, argv);
     

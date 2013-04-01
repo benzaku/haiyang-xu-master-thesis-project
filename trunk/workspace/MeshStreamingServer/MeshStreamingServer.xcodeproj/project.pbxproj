@@ -17,16 +17,29 @@
 		28D0AC84161884D0000D174C /* PMStreamServerHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28D0AC7C161884D0000D174C /* PMStreamServerHandler.cpp */; };
 		28D0AC85161884D0000D174C /* Singleton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28D0AC7E161884D0000D174C /* Singleton.cpp */; };
 		28D0AC89161885C3000D174C /* libPocoUtil.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 28D0AC88161885C3000D174C /* libPocoUtil.dylib */; };
+		5813277D16F7554500924FA8 /* glInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5813277816F7554500924FA8 /* glInfo.cpp */; };
+		5813277E16F7554500924FA8 /* Timer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5813277B16F7554500924FA8 /* Timer.cpp */; };
+		5813278E16F75BDE00924FA8 /* GLFBOHelper.h in Sources */ = {isa = PBXBuildFile; fileRef = 5813278D16F75BAB00924FA8 /* GLFBOHelper.h */; };
+		5813279116F75F6C00924FA8 /* GLRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5813278F16F75F6C00924FA8 /* GLRenderer.cpp */; };
+		5813CCE116F7520400B01C1E /* GLHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5813CCDF16F7520400B01C1E /* GLHandler.cpp */; };
+		5813CCE316F7536100B01C1E /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5813CCE216F7536100B01C1E /* OpenGL.framework */; };
+		5813CCE516F7536700B01C1E /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5813CCE416F7536700B01C1E /* GLUT.framework */; };
 		5818D2C0165F7E9700378191 /* VolumeObj.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5818D2BE165F7E9700378191 /* VolumeObj.cpp */; };
 		582DC9CC16A2355F004BC474 /* VDPMLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 582DC9CA16A2355F004BC474 /* VDPMLoader.cpp */; };
 		583C4F7416494993006AF99A /* MC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 583C4F7116494993006AF99A /* MC.cpp */; };
 		5840D5BE165FBE3400CA167C /* MeshObj.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5840D5BC165FBE3400CA167C /* MeshObj.cpp */; };
 		5840D5C2165FC5B500CA167C /* ModelRepositoryHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5840D5C0165FC5B400CA167C /* ModelRepositoryHandler.cpp */; };
 		588934B516567DC60001BA27 /* PMRepository.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 588934B316567DC50001BA27 /* PMRepository.cpp */; };
+		58A475501703902B009B2E58 /* vectorUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 58A475461703902A009B2E58 /* vectorUtil.cpp */; };
+		58A475521703902B009B2E58 /* matrixUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 58A4754A1703902B009B2E58 /* matrixUtil.cpp */; };
+		58A475581703C1D3009B2E58 /* Phong.vsh in Sources */ = {isa = PBXBuildFile; fileRef = 58A475571703C1D3009B2E58 /* Phong.vsh */; };
+		58A4755A1703C1DD009B2E58 /* Phong.fsh in Sources */ = {isa = PBXBuildFile; fileRef = 58A475591703C1DD009B2E58 /* Phong.fsh */; };
 		58BA38371664EFBE00B11457 /* libPocoXML.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 58BA38361664EFBE00B11457 /* libPocoXML.dylib */; };
 		58C9A5D11627012600A36306 /* libOpenMeshCore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 58C9A5CF1627012600A36306 /* libOpenMeshCore.dylib */; };
 		58C9A5D21627012600A36306 /* libOpenMeshTools.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 58C9A5D01627012600A36306 /* libOpenMeshTools.dylib */; };
 		58CB3A1816A2EFF2000B9C8B /* VDPMFileHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 58CB3A1616A2EFF2000B9C8B /* VDPMFileHandler.cpp */; };
+		58DE335D1705E95F00766332 /* jpgd.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 58DE33591705E95F00766332 /* jpgd.cpp */; };
+		58DE335E1705E95F00766332 /* jpge.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 58DE335B1705E95F00766332 /* jpge.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -59,6 +72,19 @@
 		28D0AC7E161884D0000D174C /* Singleton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Singleton.cpp; sourceTree = "<group>"; };
 		28D0AC80161884D0000D174C /* Singleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Singleton.h; sourceTree = "<group>"; };
 		28D0AC88161885C3000D174C /* libPocoUtil.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libPocoUtil.dylib; path = ../../../../../../../usr/local/lib/libPocoUtil.dylib; sourceTree = "<group>"; };
+		5813277716F754DB00924FA8 /* glext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = glext.h; path = GL/GLMisc/glext.h; sourceTree = "<group>"; };
+		5813277816F7554500924FA8 /* glInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = glInfo.cpp; path = GL/GLMisc/glInfo.cpp; sourceTree = "<group>"; };
+		5813277916F7554500924FA8 /* glInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glInfo.h; path = GL/GLMisc/glInfo.h; sourceTree = "<group>"; };
+		5813277A16F7554500924FA8 /* teapot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = teapot.h; path = GL/GLMisc/teapot.h; sourceTree = "<group>"; };
+		5813277B16F7554500924FA8 /* Timer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Timer.cpp; path = GL/GLMisc/Timer.cpp; sourceTree = "<group>"; };
+		5813277C16F7554500924FA8 /* Timer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Timer.h; path = GL/GLMisc/Timer.h; sourceTree = "<group>"; };
+		5813278D16F75BAB00924FA8 /* GLFBOHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GLFBOHelper.h; sourceTree = "<group>"; };
+		5813278F16F75F6C00924FA8 /* GLRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GLRenderer.cpp; path = GL/GLRenderer.cpp; sourceTree = "<group>"; };
+		5813279016F75F6C00924FA8 /* GLRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GLRenderer.h; path = GL/GLRenderer.h; sourceTree = "<group>"; };
+		5813CCDF16F7520400B01C1E /* GLHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GLHandler.cpp; path = GL/GLHandler.cpp; sourceTree = "<group>"; };
+		5813CCE016F7520400B01C1E /* GLHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GLHandler.h; path = GL/GLHandler.h; sourceTree = "<group>"; };
+		5813CCE216F7536100B01C1E /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = ../../../../../../../System/Library/Frameworks/OpenGL.framework; sourceTree = "<group>"; };
+		5813CCE416F7536700B01C1E /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = ../../../../../../../System/Library/Frameworks/GLUT.framework; sourceTree = "<group>"; };
 		5818D2BE165F7E9700378191 /* VolumeObj.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VolumeObj.cpp; sourceTree = "<group>"; };
 		5818D2BF165F7E9700378191 /* VolumeObj.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VolumeObj.h; sourceTree = "<group>"; };
 		582DC9CA16A2355F004BC474 /* VDPMLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VDPMLoader.cpp; sourceTree = "<group>"; };
@@ -75,11 +101,24 @@
 		5840D5C1165FC5B400CA167C /* ModelRepositoryHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModelRepositoryHandler.h; sourceTree = "<group>"; };
 		588934B316567DC50001BA27 /* PMRepository.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PMRepository.cpp; sourceTree = "<group>"; };
 		588934B416567DC50001BA27 /* PMRepository.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PMRepository.h; sourceTree = "<group>"; };
+		58A475461703902A009B2E58 /* vectorUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vectorUtil.cpp; sourceTree = "<group>"; };
+		58A475471703902A009B2E58 /* vectorUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vectorUtil.h; sourceTree = "<group>"; };
+		58A4754A1703902B009B2E58 /* matrixUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = matrixUtil.cpp; sourceTree = "<group>"; };
+		58A4754B1703902B009B2E58 /* matrixUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = matrixUtil.h; sourceTree = "<group>"; };
+		58A4754E1703902B009B2E58 /* glUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = glUtil.h; sourceTree = "<group>"; };
+		58A4755517039725009B2E58 /* Shader.fsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = Shader.fsh; sourceTree = "<group>"; };
+		58A4755617039725009B2E58 /* Shader.vsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = Shader.vsh; sourceTree = "<group>"; };
+		58A475571703C1D3009B2E58 /* Phong.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Phong.vsh; sourceTree = "<group>"; };
+		58A475591703C1DD009B2E58 /* Phong.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Phong.fsh; sourceTree = "<group>"; };
 		58BA38361664EFBE00B11457 /* libPocoXML.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libPocoXML.dylib; path = ../../../../../../../usr/local/lib/libPocoXML.dylib; sourceTree = "<group>"; };
 		58C9A5CF1627012600A36306 /* libOpenMeshCore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libOpenMeshCore.dylib; path = ../../../../../../../usr/local/lib/OpenMesh/libOpenMeshCore.dylib; sourceTree = "<group>"; };
 		58C9A5D01627012600A36306 /* libOpenMeshTools.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libOpenMeshTools.dylib; path = ../../../../../../../usr/local/lib/OpenMesh/libOpenMeshTools.dylib; sourceTree = "<group>"; };
 		58CB3A1616A2EFF2000B9C8B /* VDPMFileHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VDPMFileHandler.cpp; sourceTree = "<group>"; };
 		58CB3A1716A2EFF2000B9C8B /* VDPMFileHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VDPMFileHandler.h; sourceTree = "<group>"; };
+		58DE33591705E95F00766332 /* jpgd.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = jpgd.cpp; sourceTree = "<group>"; };
+		58DE335A1705E95F00766332 /* jpgd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jpgd.h; sourceTree = "<group>"; };
+		58DE335B1705E95F00766332 /* jpge.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = jpge.cpp; sourceTree = "<group>"; };
+		58DE335C1705E95F00766332 /* jpge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jpge.h; sourceTree = "<group>"; };
 		58EA34FD16B1AA0D00BFE8AC /* PublicIncludes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PublicIncludes.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -88,6 +127,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5813CCE516F7536700B01C1E /* GLUT.framework in Frameworks */,
+				5813CCE316F7536100B01C1E /* OpenGL.framework in Frameworks */,
 				58BA38371664EFBE00B11457 /* libPocoXML.dylib in Frameworks */,
 				58C9A5D11627012600A36306 /* libOpenMeshCore.dylib in Frameworks */,
 				58C9A5D21627012600A36306 /* libOpenMeshTools.dylib in Frameworks */,
@@ -103,6 +144,8 @@
 		28D0AC3A1618815B000D174C = {
 			isa = PBXGroup;
 			children = (
+				5813CCE416F7536700B01C1E /* GLUT.framework */,
+				5813CCE216F7536100B01C1E /* OpenGL.framework */,
 				58BA38361664EFBE00B11457 /* libPocoXML.dylib */,
 				58C9A5CF1627012600A36306 /* libOpenMeshCore.dylib */,
 				58C9A5D01627012600A36306 /* libOpenMeshTools.dylib */,
@@ -125,6 +168,7 @@
 		28D0AC481618815B000D174C /* MeshStreamingServer */ = {
 			isa = PBXGroup;
 			children = (
+				5813CCDE16F751E700B01C1E /* GL */,
 				582DC9C516A2312B004BC474 /* VDPM */,
 				582DC9C416A23038004BC474 /* Model */,
 				582DC9C216A22FF4004BC474 /* PM */,
@@ -148,9 +192,45 @@
 		28D0AC7F161884D0000D174C /* Util */ = {
 			isa = PBXGroup;
 			children = (
+				58DE33591705E95F00766332 /* jpgd.cpp */,
+				58DE335A1705E95F00766332 /* jpgd.h */,
+				58DE335B1705E95F00766332 /* jpge.cpp */,
+				58DE335C1705E95F00766332 /* jpge.h */,
+				58A475461703902A009B2E58 /* vectorUtil.cpp */,
+				58A475471703902A009B2E58 /* vectorUtil.h */,
+				58A4754A1703902B009B2E58 /* matrixUtil.cpp */,
+				58A4754B1703902B009B2E58 /* matrixUtil.h */,
+				58A4754E1703902B009B2E58 /* glUtil.h */,
 				28D0AC80161884D0000D174C /* Singleton.h */,
 			);
 			path = Util;
+			sourceTree = "<group>";
+		};
+		5813CCDE16F751E700B01C1E /* GL */ = {
+			isa = PBXGroup;
+			children = (
+				58A4755417039710009B2E58 /* Shaders */,
+				5813CCE616F7538700B01C1E /* GLMisc */,
+				5813CCDF16F7520400B01C1E /* GLHandler.cpp */,
+				5813CCE016F7520400B01C1E /* GLHandler.h */,
+				5813278D16F75BAB00924FA8 /* GLFBOHelper.h */,
+				5813278F16F75F6C00924FA8 /* GLRenderer.cpp */,
+				5813279016F75F6C00924FA8 /* GLRenderer.h */,
+			);
+			name = GL;
+			sourceTree = "<group>";
+		};
+		5813CCE616F7538700B01C1E /* GLMisc */ = {
+			isa = PBXGroup;
+			children = (
+				5813277816F7554500924FA8 /* glInfo.cpp */,
+				5813277916F7554500924FA8 /* glInfo.h */,
+				5813277A16F7554500924FA8 /* teapot.h */,
+				5813277B16F7554500924FA8 /* Timer.cpp */,
+				5813277C16F7554500924FA8 /* Timer.h */,
+				5813277716F754DB00924FA8 /* glext.h */,
+			);
+			name = GLMisc;
 			sourceTree = "<group>";
 		};
 		582DC9C216A22FF4004BC474 /* PM */ = {
@@ -198,6 +278,17 @@
 				583C4F7316494993006AF99A /* MCinl.h */,
 			);
 			name = MC;
+			sourceTree = "<group>";
+		};
+		58A4755417039710009B2E58 /* Shaders */ = {
+			isa = PBXGroup;
+			children = (
+				58A4755517039725009B2E58 /* Shader.fsh */,
+				58A4755617039725009B2E58 /* Shader.vsh */,
+				58A475571703C1D3009B2E58 /* Phong.vsh */,
+				58A475591703C1DD009B2E58 /* Phong.fsh */,
+			);
+			name = Shaders;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -260,10 +351,21 @@
 				583C4F7416494993006AF99A /* MC.cpp in Sources */,
 				588934B516567DC60001BA27 /* PMRepository.cpp in Sources */,
 				5818D2C0165F7E9700378191 /* VolumeObj.cpp in Sources */,
+				5813278E16F75BDE00924FA8 /* GLFBOHelper.h in Sources */,
 				5840D5BE165FBE3400CA167C /* MeshObj.cpp in Sources */,
 				5840D5C2165FC5B500CA167C /* ModelRepositoryHandler.cpp in Sources */,
 				582DC9CC16A2355F004BC474 /* VDPMLoader.cpp in Sources */,
 				58CB3A1816A2EFF2000B9C8B /* VDPMFileHandler.cpp in Sources */,
+				5813CCE116F7520400B01C1E /* GLHandler.cpp in Sources */,
+				5813277D16F7554500924FA8 /* glInfo.cpp in Sources */,
+				5813277E16F7554500924FA8 /* Timer.cpp in Sources */,
+				5813279116F75F6C00924FA8 /* GLRenderer.cpp in Sources */,
+				58A475501703902B009B2E58 /* vectorUtil.cpp in Sources */,
+				58A475521703902B009B2E58 /* matrixUtil.cpp in Sources */,
+				58A475581703C1D3009B2E58 /* Phong.vsh in Sources */,
+				58A4755A1703C1DD009B2E58 /* Phong.fsh in Sources */,
+				58DE335D1705E95F00766332 /* jpgd.cpp in Sources */,
+				58DE335E1705E95F00766332 /* jpge.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -328,9 +430,14 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_CXX_LIBRARY = "compiler-default";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/usr/local/lib/OpenMesh,
+					"\"$(SRCROOT)\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -341,9 +448,14 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_CXX_LIBRARY = "compiler-default";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/usr/local/lib/OpenMesh,
+					"\"$(SRCROOT)\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
