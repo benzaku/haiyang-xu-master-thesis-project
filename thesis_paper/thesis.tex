@@ -25,7 +25,7 @@ a4paper,     %% defines the paper size: a4paper (default), a5paper, letterpaper,
  headsepline, %% add a horizontal line below the column title
 % footsepline, %% add a horizontal line above the page footer
  titlepage,   %% only the titlepage (using titlepage-environment) appears on the first page (alternatively: notitlepage)
-% parskip,     %% insert an empty line between two paragraphs (alternatively: halfparskip, ...)
+parskip,     %% insert an empty line between two paragraphs (alternatively: halfparskip, ...)
 % leqno,       %% equation numbers left (instead of right)
 % fleqn,       %% equation left-justified (instead of centered)
 % tablecaptionabove, %% captions of tables are above the tables (alternatively: tablecaptionbelow)
@@ -456,7 +456,7 @@ escapeinside={\%}{)}          % if you want to add a comment within your code
 %%% begin document
 %%%
 \begin{document}
-
+\begin{spacing}{1.5}
 % \pagenumbering{roman} %% small roman page numbers
 
 %%% include the title
@@ -546,7 +546,7 @@ escapeinside={\%}{)}          % if you want to add a comment within your code
 %%% name of the bibliography file without .bib
 %%% e.g.: literatur.bib -> \bibliography{literatur}
 \bibliography{thesis}
-
+\end{spacing}
 \end{document}
 %%% }}}
 %%% END OF FILE

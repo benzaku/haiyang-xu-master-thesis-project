@@ -53,16 +53,48 @@ And meanwhile, another development trend of today's information technology is th
 With handheld devices, new problems are raised. There are various limitations of those handheld devices such as less powerful computing resource, smaller size of RAM, and limited network connectivity. It's already stressful for a desktop to view a large model in the traditional download-whole-once scenario, not to mention how difficult it would be for a mobile device. 
 
 \smallskip
-Therefore, intuitively \emph{streaming approach} has been raised into our mind. That is the motivation of this project. In our approach, a base, coarsen geometry model will be transmitted to the client side upon an initial connections attempt. And after that, model details will be transmitted and the client-side model will be refined on the fly. Similar to video stream on \textbf{Youtube\footnote{\label{UTUBE}\url{http://www.youtube.com/}} }. And after the refinement streaming is finished, we can get the original mesh. Users can view the model during the refinement process. 
+Therefore, intuitively \emph{streaming approach} has been raised into our mind. That is the motivation of this project. In our approach, a base, coarsen geometry model will be transmitted to the client side upon an initial connections attempt. And after that, model details will be transmitted and the client-side model will be refined on the fly. Similar to video stream on \textbf{Youtube\footnote{\label{UTUBE}\url{http://www.youtube.com/}} }. And after the refinement streaming is finished, we can get the original mesh. Users can view the model during the refinement process. Another motivation is that currently there is no view-dependent progressive mesh streaming application on mobile devices. Given the differences and limitations of mobile devices, we can expect implementing such application on mobile devices being very different compared with the traditional approach on PC-to-PC schema.  
+
+\smallskip
+Based on the motivation described in the previous paragraph, this thesis proposed a streaming framework for large scale geometries on mobile devices. Our approach allows users to view large scale 3D polygon meshes on mobile devices with multiple resolutions which are continuously and progressively refined by the details streamed over network from it corresponding server. Those details are picked by the server according to viewing parameters (e.g. viewing angle, model view matrix etc. ) sent from clients. Therefore it is view-dependent streaming. Besides, when the 3D polygon mesh is too large and has too many details to transfer, our approach also support the server rendering mode in which multiple resolutions of the 3D polygon mesh are rendered in order according to user's viewing parameter and then sent to the client. Naturally our approach can be divided into two parts: Server and Client. The Server is implemented on a modern PC and the Client is implemented on iOS mobile devices (iPad).
 
 
-\section{Background}
-\label{section:background}
-\TODO{Here we will introduce background information of this topic.}
+%\section{Background}
+%\label{section:background}
+%\TODO{Here we will introduce background information of this topic.}
+%\smallskip
+%Based on the motivation described in the previous paragraph, this thesis proposed a streaming framework for large scale geometries on mobile devices. This framework is divided into two parts: server part and client part. The server part
 
 \section{Related Work}
 \label{section:relWork}
-\TODO{In this section we will introduce previous research in this area. }
+\TODO{In this section we will introduce previous research in this area. }\\
+In this section, we will introduce previous research and approaches in this area. 
+First we will introduce related work in \emph{Progressive Mesh (PM)} which is the theoretical fundament of our application.
+Next we will introduce related work in \emph{Mesh Simplication} approaches.   
+And then we will introduce the recent research of \emph{view-dependent PM} and related work in \emph{view-dependent streaming of progressive mesh}. 
+
+\subsection{Progressive Mesh}
+\label{subsection:relWork:pm}
+\TODO{introduce related work in pm}\\
+\emph{Progressive Mesh} is one of the techniques of dynamic level of detail(LOD). It was first introduces by Hugues Hoppe in \cite{Hoppe:1996:PM}. In this original work on PM, Hoppe introduced the \emph{progressive mesh (PM)} representation for storing and transmitting arbitrary triangle meshes. The main idea behind this representation is to decompose the original mesh into a coarser base mesh and a sequence of details which can be used to refine and recover the original mesh. To generate a PM, a sequence edge collapse transformation is performed on the original mesh. By reversing this sequence we can naturally get the details sequence. Given a base mesh and this details sequence, continuous levels-of-detail (LOD) meshes can be generated.  
+
+\subsection{Mesh Simplification}
+\label{subsection:relWork:meshsimp}
+\TODO{introduce related work in mesh simplification}\\
+Mesh Simplification is an important part of producing progressive mesh. And in recent years, this problem has received increasing attention. There are several algorithms proposed for simplifying polygon surfaces. These algorithms can be generally categorized into 3 classes: \textbf{Vertex Decimation.	}, \textbf{Vertex Clustering.} and \textbf{Edge Collapse.}. 
+Schroeder \etal \cite{Schroeder:1992:DTM} introduced an algorithm which we term \emph{vertex decimation} iteratively selects a vertex for removal and then remove all its adjacent faces and then re-triangulate the resulting hole. In \cite{Rossignac:93:MRARCS} Rossignac \etal proposed an algorithm using the \emph{vertex clustering} technique. In their method the original model is divided into a grid and vertices in each cell are clustered together into a single vertex. This approach is very fast, while with bad results since it makes huge, unreversable modification to the model. Another class of mesh simplification approach is \emph{edge collapse}. There are several algorithms \cite{Hoppe:1993:MO}\cite{Hoppe:1996:PM}\cite{RRR96}\cite{Gueziec:95:SSVT} published using edge collapse. These algorithms simplify a model by collapse its edges iteratively. How an edge is chosen to collapse is the main difference among this kind of simplification algorithms. \\
+And in \cite{Garland:1997:SSU} Garland \etal introduced a mesh simplification algorithm which rapidly produces high quality approximations of 3D mesh models. This algorithm iteratively collapse vertex pairs instead of just edges to simplify models and meanwhile, maintain surface error approximations using quadric matrices. 
+In the pre-process phase of our application, we generate simplified base model and details using this algorithm because it has a good combination of both speed and quality. We will describe this algorithm in detail in Chapter \ref{chapter:BasicConcepts}. 
+
+\subsection{View-dependent Approach}
+\label{subsection:relWork:vda}
+\TODO{introduce related work in vd}\\
+
+
+\subsection{View-dependent Streaming}
+\label{subsection:relWork:vds}
+\TODO{introduce related work in vds}\\
+
 
 %Picture
 %\noindent
