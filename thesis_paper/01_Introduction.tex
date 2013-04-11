@@ -9,53 +9,37 @@
 \\
 
 With the ever fast development of modern computer science, computer graphics and visualization has become a big topic. And with the more and more advanced 3D scanner and surface reconstruction technology, people are able to get extremely large 3D model with much more detail than ever before that are scanned from real objects such as sculptures. 
-And mean while, in recent years, various mobile devices (such as iPhone, iPad, Google Nexus series, etc.) with much powerful computing resource are being designed and manufactured. With faster CPU/GPU and larger memory, these hand-held devices are made possible to run graphics programs or to view 3D models. These two trends have raised many topics about graphics development on mobile devices. The visualisation of large-scale 3D model is one of the hot topics among them. 
+And mean while, in recent years, various mobile devices (such as iPhone, iPad, Google Nexus series, etc.) with much powerful computing resource are being designed and manufactured. With faster CPU/GPU and larger memory, these hand-held devices are made possible to run graphics programs or to view 3D models. These two trends have raised many topics about graphics development on mobile devices. The visualisation of large-scale 3D model is one of the hot topics among them. \\
 
-\smallskip
+In this thesis, we proposed a streaming framework for large scale geometry models. In this framework users can connect our server from a mobile device (e.g. iPad) and view the 3D geometry model they choose progressively. User can browse the model using drag-and-zoom gesture on the multi-touch screen of the device and the system will refine the corresponding part of the viewing model according to users' viewing angle. Therefore our system can provide view-dependent, selective geometry streaming. \\
 
-In this thesis, we proposed a streaming framework for large scale geometry models. In this framework users can connect our server from a mobile device (e.g. iPad) and view the 3D geometry model they choose progressively. User can browse the model using drag-and-zoom gesture on the multi-touch screen of the device and the system will refine the corresponding part of the viewing model according to users' viewing angle. Therefore our system can provide view-dependent, selective geometry streaming. 
+In the following paragraphs of this chapter, we will introduce in detail the motivation of the thesis in Section~\ref{section:motivation}. And Section~\ref{section:relWork} related works in the area of this topic will be listed and discussed. \\
 
-\smallskip
-In the following paragraphs of this chapter, we will introduce in detail the motivation of the thesis in Section~\ref{section:motivation}. And in Section~\ref{section:background} we will introduce the background of this topic. And Section~\ref{section:relWork} related works in the area of this topic will be listed and discussed. 
+And then In Chapter~\ref{chapter:BasicConcepts}, we will describe some basic theoretical and technical concepts behind the topic of this thesis including \emph{Progressive Mesh}, the \emph{Quadric Error Metrics}, \emph{View-dependent Progressive Mesh}, \etc \\
 
-\smallskip
-And then In Chapter~\ref{chapter:BasicConcepts}, we will describe some basic theoretical and technical concepts behind the topic of this thesis including \emph{Progressive Mesh}, the \emph{Quadric Error Metrics}, \emph{View-dependent Progressive Mesh}, \etc
+In Chapter~\ref{chapter:SystemDesign}, we will describe the overall system architecture design including the server architecture and client architecture. \\
 
-\smallskip
-In Chapter~\ref{chapter:SystemDesign}, we will describe the overall system architecture design including the server architecture and client architecture. 
+In Chapter~\ref{chapter:SystemImplementation}, we will describe in detail about the implementation of our geometry streaming framework. In this chapter, both server and client side implementation will be illustrated. And after that there will be a short discussion of the implementation. \\
 
-\smallskip
-In Chapter~\ref{chapter:SystemImplementation}, we will describe in detail about the implementation of our geometry streaming framework. In this chapter, both server and client side implementation will be illustrated. And after that there will be a short discussion of the implementation. 
-
-\smallskip
 In Chapter~\ref{chapter:ExperimentalEvaluation} and Chapter~\ref{chapter:CollaborationWithOtherProjects} we will show the experiment result of our framework and we will also describe the use of our framework in other projects. 
 
 In the last chapter, we will conclude this thesis. Future work will also be discussed in this chapter. 
 
 \section{Motivation}
 \label{section:motivation}
-%\TODO{In this section the motivation of our project will be described.}
-In this section, we will describe the motivation of this thesis. 
 
-\smallskip
-Nowadays, with the fast development of hardware and computing power, more and more complex geometry models are being used for viewing more details and better visual quality. 
+Nowadays, with the fast development of hardware and computing power, more and more complex geometry models are being used for viewing more details and better visual quality. \\
 
-\smallskip
-Maybe 10 years ago, people may thought the Stanford Bunny model with almost 70,000 triangles would already enough to show its surface details. But today, with more powerful hardwares, models with much more triangles are becoming increasingly popular. For instance, models we use from \textbf{The Stanford 3D Scanning Repository\footnote{\label{S3DSR}\url{http://graphics.stanford.edu/data/3Dscanrep/}}} are almost with over 10 million triangles. People using those large models in various application such as 3D game, industrial design etc.
- 
-\smallskip
-In the traditional local application scenario, with a desktop PC with a powerful GPU, we can view this kind of large scale geometry models easily. However, problems came out when we want to view them via internet. In the traditional local application scenario, the whole model is downloaded once and then being rendered to screen. This approach is intuitive and efficient when dealing with a model which is relatively small. But when models over hundreds megabytes are being transmitted over the internet, long waiting time becomes a problem. Under such circumstance, we will lose rendering quality and users' satisfactory as well. 
+Maybe 10 years ago, people may thought the Stanford Bunny model with almost 70,000 triangles would already enough to show its surface details. But today, with more powerful hardwares, models with much more triangles are becoming increasingly popular. For instance, models we use from \textbf{The Stanford 3D Scanning Repository\footnote{\label{S3DSR}\url{http://graphics.stanford.edu/data/3Dscanrep/}}} are almost with over 10 million triangles. People using those large models in various application such as 3D game, industrial design etc.\\
 
-\smallskip
-And meanwhile, another development trend of today's information technology is that everything is going mobilised! From the first iPhone, to Android, from the release of Microsoft's Surface tablet to the reborn of Blackberry 10. We can see that almost suddenly those handheld devices have dominated our life. You can see people using an iPad, Nexus 7 or Windows 8 table everywhere. And this also inspire us to build our project's application over a handheld device: iPad. 
+In the traditional local application scenario, with a desktop PC with a powerful GPU, we can view this kind of large scale geometry models easily. However, problems came out when we want to view them via internet. In the traditional local application scenario, the whole model is downloaded once and then being rendered to screen. This approach is intuitive and efficient when dealing with a model which is relatively small. But when models over hundreds megabytes are being transmitted over the internet, long waiting time becomes a problem. Under such circumstance, we will lose rendering quality and users' satisfactory as well. \\
 
-\smallskip
-With handheld devices, new problems are raised. There are various limitations of those handheld devices such as less powerful computing resource, smaller size of RAM, and limited network connectivity. It's already stressful for a desktop to view a large model in the traditional download-whole-once scenario, not to mention how difficult it would be for a mobile device. 
+And meanwhile, another development trend of today's information technology is that everything is going mobilised! From the first iPhone, to Android, from the release of Microsoft's Surface tablet to the reborn of Blackberry 10. We can see that almost suddenly those handheld devices have dominated our life. You can see people using an iPad, Nexus 7 or Windows 8 table everywhere. And this also inspire us to build our project's application over a handheld device: iPad. \\
 
-\smallskip
-Therefore, intuitively \emph{streaming approach} has been raised into our mind. That is the motivation of this project. In our approach, a base, coarsen geometry model will be transmitted to the client side upon an initial connections attempt. And after that, model details will be transmitted and the client-side model will be refined on the fly. Similar to video stream on \textbf{Youtube\footnote{\label{UTUBE}\url{http://www.youtube.com/}} }. And after the refinement streaming is finished, we can get the original mesh. Users can view the model during the refinement process. Another motivation is that currently there is no view-dependent progressive mesh streaming application on mobile devices. Given the differences and limitations of mobile devices, we can expect implementing such application on mobile devices being very different compared with the traditional approach on PC-to-PC schema.  
+With handheld devices, new problems are raised. There are various limitations of those handheld devices such as less powerful computing resource, smaller size of RAM, and limited network connectivity. It's already stressful for a desktop to view a large model in the traditional download-whole-once scenario, not to mention how difficult it would be for a mobile device. \\
 
-\smallskip
+Therefore, intuitively \emph{streaming approach} has been raised into our mind. That is the motivation of this project. In our approach, a base, coarsen geometry model will be transmitted to the client side upon an initial connections attempt. And after that, model details will be transmitted and the client-side model will be refined on the fly. Similar to video stream on \textbf{Youtube\footnote{\label{UTUBE}\url{http://www.youtube.com/}} }. And after the refinement streaming is finished, we can get the original mesh. Users can view the model during the refinement process. Another motivation is that currently there is no view-dependent progressive mesh streaming application on mobile devices. Given the differences and limitations of mobile devices, we can expect implementing such application on mobile devices being very different compared with the traditional approach on PC-to-PC schema.  \\
+
 Based on the motivation described in the previous paragraph, this thesis proposed a streaming framework for large scale geometries on mobile devices. Our approach allows users to view large scale 3D polygon meshes on mobile devices with multiple resolutions which are continuously and progressively refined by the details streamed over network from it corresponding server. Those details are picked by the server according to viewing parameters (e.g. viewing angle, model view matrix etc. ) sent from clients. Therefore it is view-dependent streaming. Besides, when the 3D polygon mesh is too large and has too many details to transfer, our approach also support the server rendering mode in which multiple resolutions of the 3D polygon mesh are rendered in order according to user's viewing parameter and then sent to the client. Naturally our approach can be divided into two parts: Server and Client. The Server is implemented on a modern PC and the Client is implemented on iOS mobile devices (iPad).
 
 
@@ -67,7 +51,7 @@ Based on the motivation described in the previous paragraph, this thesis propose
 
 \section{Related Work}
 \label{section:relWork}
-\TODO{In this section we will introduce previous research in this area. }\\
+
 In this section, we will introduce previous research and approaches in this area. 
 First we will introduce related work in \emph{Progressive Mesh (PM)} which is the theoretical fundament of our application.
 Next we will introduce related work in \emph{Mesh Simplication} approaches.   
@@ -75,25 +59,30 @@ And then we will introduce the recent research of \emph{view-dependent PM} and r
 
 \subsection{Progressive Mesh}
 \label{subsection:relWork:pm}
-\TODO{introduce related work in pm}\\
+
 \emph{Progressive Mesh} is one of the techniques of dynamic level of detail(LOD). It was first introduces by Hugues Hoppe in \cite{Hoppe:1996:PM}. In this original work on PM, Hoppe introduced the \emph{progressive mesh (PM)} representation for storing and transmitting arbitrary triangle meshes. The main idea behind this representation is to decompose the original mesh into a coarser base mesh and a sequence of details which can be used to refine and recover the original mesh. To generate a PM, a sequence edge collapse transformation is performed on the original mesh. By reversing this sequence we can naturally get the details sequence. Given a base mesh and this details sequence, continuous levels-of-detail (LOD) meshes can be generated.  
 
 \subsection{Mesh Simplification}
 \label{subsection:relWork:meshsimp}
-\TODO{introduce related work in mesh simplification}\\
+
 Mesh Simplification is an important part of producing progressive mesh. And in recent years, this problem has received increasing attention. There are several algorithms proposed for simplifying polygon surfaces. These algorithms can be generally categorized into 3 classes: \textbf{Vertex Decimation.	}, \textbf{Vertex Clustering.} and \textbf{Edge Collapse.}. 
 Schroeder \etal \cite{Schroeder:1992:DTM} introduced an algorithm which we term \emph{vertex decimation} iteratively selects a vertex for removal and then remove all its adjacent faces and then re-triangulate the resulting hole. In \cite{Rossignac:93:MRARCS} Rossignac \etal proposed an algorithm using the \emph{vertex clustering} technique. In their method the original model is divided into a grid and vertices in each cell are clustered together into a single vertex. This approach is very fast, while with bad results since it makes huge, unreversable modification to the model. Another class of mesh simplification approach is \emph{edge collapse}. There are several algorithms \cite{Hoppe:1993:MO}\cite{Hoppe:1996:PM}\cite{RRR96}\cite{Gueziec:95:SSVT} published using edge collapse. These algorithms simplify a model by collapse its edges iteratively. How an edge is chosen to collapse is the main difference among this kind of simplification algorithms. \\
+
 And in \cite{Garland:1997:SSU} Garland \etal introduced a mesh simplification algorithm which rapidly produces high quality approximations of 3D mesh models. This algorithm iteratively collapse vertex pairs instead of just edges to simplify models and meanwhile, maintain surface error approximations using quadric matrices. 
 In the pre-process phase of our application, we generate simplified base model and details using this algorithm because it has a good combination of both speed and quality. We will describe this algorithm in detail in Chapter \ref{chapter:BasicConcepts}. 
 
-\subsection{View-dependent Approach}
-\label{subsection:relWork:vda}
-\TODO{introduce related work in vd}\\
+\subsection{Progressive Mesh Streaming}
+\label{subsection:relWork:vdpms}
+
+With the development of \emph{progressive mesh} and \emph{mesh simplification algorithms}, much attention has been taken upon \emph{view-dependent approach in streaming of progressive mesh}. The original work of Hoppe\cite{Hoppe:1996:PM} also proposed a streaming schema of \emph{progressive mesh}. Then Southern \etal \cite{Southern:2001:SCP} proposed a method that the client is stateless and only visible data is maintained. To \etal\cite{To:1999:MPS} and Kim \etal \cite{KimLK05:0}'s methods store data received from servers during the whole life cycle of a connection session. These approaches mainly focus on limited rendering capability of progressive mesh streaming.\\
+
+On the other hand, some researches are focused on limited network bandwidth on progressive mesh streaming. Yang \etal \cite{Yang:2004:VDMeshTrans} proposed a system in which the resolution of the model displayed in the client is decided by the server dependent on network bandwidth. Zheng \etal's approach \cite{Zheng:08:IVRN} use a prediction technique to reduce network latency and improve rendering quality. \\
+
+In \emph{view-dependent progressive mesh streaming}, the main problem and challenge is that we have to find an appropriate subset of vertex split to refine the model and produce a satisfactory rendering image on the client side. Let's consider the following situation: the user rotates the model to a specific angle and the system decides to split a set of vertices according to current viewing parameter. We can express a vertex split operation as \emph{$vsplit(v_s, v_u, v_t, v_l, v_r$)} where \emph{$v_s$} is the vertex to split, \emph{$v_u$} and \emph{$v_t$} are the resulting two vertices and \emph{$v_l$} and \emph{$v_r$} are the \emph{cut neighbors}. Among these parameters, only $v_u$ and $v_t$ are new vertices to add into the mesh, others are already in the mesh. Therefore a vertex split operation depends on the existence of (i) the vertex to be split, (ii) two cut neighbors. The first dependency is naturally solved since we are not possible to split a vertex which has not yet been recovered in the mesh. But for the second dependency, if we want to split a vertex whose cut neighbors haven't been recovered in the mesh, the split operation will fail. \\
+
+To \etal later solved the dependency problem of \emph{cut neighbors}. In \cite{To:1999:MPS} they proposed a method which finds ancestors of the cut neighbors that are existed during a vertex split. Kim \etal \cite{Kim:2001:trulyselective} later improved this method. In their approach the final mesh can keep the original connectivity. Kim and Lee \etal\cite{Kim:04:VDstreaming} then proposed a novel framework for view-dependent streaming of progressive mesh. In their framework the detail data to be transmitted to client are decided dynamically according to the client side view parameters. Our approach is inspired by their work and we applied and extended this method in our streaming schema. We will describe further details in Chapter \ref{chapter:BasicConcepts}. \\
 
 
-\subsection{View-dependent Streaming}
-\label{subsection:relWork:vds}
-\TODO{introduce related work in vds}\\
 
 
 %Picture
