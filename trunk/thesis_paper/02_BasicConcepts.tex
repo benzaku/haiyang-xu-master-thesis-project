@@ -1,15 +1,128 @@
 \chapter{Basic Concepts}
 \label{chapter:BasicConcepts}
 
-\TODO{In this chapter, we first define the problem to be solve in this paper, and then we will introduce the theoretical and technical concepts which will be discussed in this paper. }
+This section will be divided into 3 parts. In Section \ref{section:ProbStat} I will describe the problems in this thesis that I am going to solve. And In Section \ref{section:TheoConcpt} I will describe in detail the theoretical algorithms and concepts that solve the problems stated in Section \ref{section:ProbStat}. Section \ref{section:TechConcpt} introduce the techniques I used this thesis project. Further implementation details will be described in Chapter \ref{chapter:SystemDesign} and Chapter \ref{chapter:SystemImplementation}. 
 
 \section{Problem Statement}
-\TODO{In this section, we will define the problem we are going to solve in this dissertation. }
+\label{section:ProbStat}
+
+
+As the title of this thesis reads, the main contribution of our approach is the \emph{streaming} of geometries. Naturally how to achieve streaming becomes the core problem in our approach. \\
+%statement of the streaming
+For a precise statement of the problems, we have to initially define \emph{mesh streaming} properly. Here is a practical scenario: Suppose there is a mobile device user who would like to view a 3D model remotely stored on a server. In the traditional setup, the 3D model would be transmitted to the client side as a whole package. Once the client side get the whole model it would load it and render it to screen. This solution would be good when the model is small and the transmission of the whole model would be finished in acceptable time. While in the streaming setup, on the user have chosen a model, a rough model simplified from the original model with much smaller size and can be downloaded from client side within an acceptable time. Afterwards, details of the model would be sent to client side and the client side model will be refined on the fly until highest resolution level is reached. During the whole process the 3D model on the client side would be continuously and progressively reconstructed. Based on this scenario, we define \emph{Mesh Streaming} as follows: 
+\begin{defn}
+\emph{Mesh Streaming} is a process satisfying the following conditions: 
+	\begin{enumerate}[label=\roman*]
+		\item A rough model of small size is transmitted to the client side in the initial phase.
+	  	\item Detail information of the model is transmitted after the initial phase. 
+	  	\item Model in the client side can be refined and reconstructed continuously and progressively upon the details received. 
+	\end{enumerate}
+\end{defn}
+%now we have the definition of mesh streaming, we can go further to describe the problem. 
+Given the definition of \emph{Mesh Streaming}, we can get the following problems naturally: 
+\begin{enumerate}[label=\roman*]
+	\item \emph{Mesh representation}\\
+	Since our approach is based on 3D models, a polygon mesh representation is initially needed. Therefore we have to find a way to model a 3D mesh with both efficiency and convenience. 
+	\item \emph{How to produce small-sized rough models? }\\
+	In the initial phase of our approach a small-sized rough mesh has to be generated from the original mesh. How to perform such kind of simplification could be a big topic. In our approach we use the \emph{Quadric Error Metric Method} which we will describe in detail in Section \ref{section:TheoConcpt}. 
+	\item \emph{How to reconstruct the original mesh given the rough mesh and details? }\\
+	As is stated in the definition of \emph{Mesh Streaming}, the final phase of streaming is reconstruction of the original mesh through the details streamed from the server side. And how to refine the mesh based on detail streamed from the server and finally reconstruct the original mesh becomes another problem we have to solve in this thesis. 
+\end{enumerate}
+
+Furthermore, as introduced in Chapter \ref{chapter:introduction}, our approach is providing \emph{view-dependent} streaming. Here we define the term \emph{View-dependent geometry streaming} as follows: 
+\begin{defn}
+	\emph{View-dependent geometry streaming} is a streaming process, in which the system responds to user's view on the geometry model and stream corresponding detail information for refinement of the model. 
+\end{defn}
+This definition raises another question - how to achieve view-dependent streaming? This question is related with a series of problems in data structures and algorithms. \\
+
+In the following chapters of this thesis, we will try to answer and solve the problems raised above. 
 
 \section{Theoretical Concepts}
-\TODO{In this section, we will introduce the theoretical concepts. }
+\label{section:TheoConcpt}
+As the problems stated in Section \ref{section:ProbStat}, in this section we will introduce the theoretical concepts which are related to the problems raised. 
+
+\subsection{Notation}
+\label{subsection:notation}
+In modern computer science, models are usually represented in the form of \emph{triangular meshes}. Here we define a \emph{triangular mesh} as follows:
+\begin{defn}
+	A \emph{triangular mesh} is a surface consisting of a set of triangles pasted together along their edges\cite{Hoppe:1996:PM}. 
+\end{defn}
+A triangular mesh $M$ has three kinds of \emph{mesh elements}: vertices, edges and faces. Thus, we have the following definitions:
+\begin{defn}
+	\emph{Mesh Connectivity}, or topology, is the information of a mesh $M$ which describes incidence relations of mesh elements(\eg, adjacent vertices and edges of a face, \etc).   
+\end{defn}
+\begin{defn}
+	\emph{Mehs Geometry} is the information of a mesh $M$ which specifies the position and other geometric characteristics of each vertex in $M$.
+\end{defn}
+
+\input{graphs/GraphDefMesh}
+
+For an edge in mesh $M$ connecting two vertices $v_i$ and $v_j$, we can denote it by $e_{ij}$. And for a single vertex $v_i$, there is a set of 1-ring neighbor vertices that each of them is connected to $v_i$ with an edge. We can denote this vertex set by $N_{v_i}$. (see \FG{fig:DefMesh})
+
+\subsection{Progressive Mesh}
+\label{subsection:theoreticalPM}
+In the approach proposed in this paper, \emph{progressive mesh} is used as the multi-resolution representation of a mesh. In \cite{Hoppe:1996:PM} Hoppe \etal introduced the concept of \emph{progressive mesh (PM)} based on two basic mesh transformation operations: \textbf{edge collapse} and \textbf{vertex split}. These two transformation operations are essential in the generating and reconstruction phase of a PM respectively. Hence, we will first introduce these two transformations. 
+
+\begin{defn}
+	In a triangular mesh $M$, given two vertices $v_u$, $v_t$ and the edge $e_{ut}$ connecting them, an \emph{edge collapse} transformation operation $ecol(v_s,v_u,v_t,v_l,v_r)$ collapses two vertices $v_u$ and $v_t$ connected with edge $e_{ut}$ into a new vertex $v_s$ and produces a new mesh $M'$. Here $v_l$ and $v_r$ are the two vertices in the two triangles sharing edge $e_{ut}$ which remain unchanged during the transformation. 
+\end{defn}
+
+The \emph{edge collapse} is defined above. And we can then define \emph{vertex split} as follows:
+\begin{defn}
+	In a triangular mesh $M$, given a vertex $v_s$ and two new vertex $v_u$ and $v_t$, a \emph{vertex split} transformation operation $vsplit(v_s,v_u,v_t,v_l,v_r)$ splits a vertex $v_s$ into two vertices $v_u$ and $v_t$ and resulting a new mesh $M'$ in which edge $e_{ut}$ connects vertices $v_u$ and $v_t$ and is the sharing edge of the two neighboring triangles: $Triangle(v_u,v_t,v_l)$ and $Triangle(v_u,v_t,v_r)$. 
+\end{defn}
+
+\FG{fig:ecol_vsplt_illustration} illustrates the $ecol$ and $vsplit$ transformation operations. Obviously they are reverse operations. The last two parameters of $ecol$ operation are $v_l$ and $v_r$ are the opposite vertices of the edge $e_{ut}$ which is to be collapsed. And in the $vsplit$ operation the last two parameters are also $v_l$ and $v_r$. However, not like those in $ecol$ operation, the $v_l$ and $v_r$ in $vsplit$ operation can be any two different vertices in the neighbor vertices set $N_{v_s} $of $v_s$. These two vertices are crucial in the $vsplit$ operation since they determine the connectivity of $v_u$ and $v_t$ with $N_{v_s}$ after $vsplit$ operation. And as described in \cite{Kim:2003:TransitiveMeshSpace}, we call the vertices $v_l$ and $v_r$ the \emph{cut vertices} of $ecol$ and $vsplit$ operations.  
+
+\input{graphs/GraphEcolVspltillu}
+
+In a general framework of \emph{progressive mesh}, there are two phases, the \emph{simplification phase} and the \emph{reconstruction phase}. In \emph{simplification phase} we perform $ecol$ operation on the original mesh $\hat{M}=M^n$ iteratively until a coarser mesh $M^0$ is produced. On the other hand, in \emph{reconstruction phase} the $vsplit$ operation is iteratively performed on the coarsest mesh $M^0$ which is produced in \emph{simplification phase} until the original mesh $M^n$ is reached. $n$ here indicates the number of reconstruction steps. \\
+
+Therefore we can express the \emph{simplification phase} as follows:
+$$
+	(\hat{M}=M^n)\xrightarrow{ecol_{n-1}}{M^{n-1}}\xrightarrow{ecol_{n-2}}\ldots\xrightarrow{ecol_1}{M^1}\xrightarrow{ecol_0}{M^0}
+$$
+In each step in the \emph{simplification phase} from $M^{i+1}$ to $M^i$, we denote an $ecol$ operation of resolution level $i$ by:
+$$
+	ecol_i=ecol(v_{s_i},v_{t_i},v_{u_i},v_{l_i},v_{r_i}),
+$$
+where $i\in\{x|x\in{\mathbb{Z}}\wedge 0\le x <n\}$. By performing the $ecol$ operation until the $M^0$ is reached, a sequence of $ecol$ operations is generated: 
+$$(ecol_{n-1},ecol_{n-2},\ldots,ecol_{1},ecol_{0})$$
+As is stated in the previous paragraph, there is a key observation that the $ecol$ operations are invertible. In other words, in any edge collapse operation $ecol_i$, detail information $d_i$, consisting of $(v_{s_i},v_{t_i},v_{u_i},v_{l_i},v_{r_i})$,is reserved to reconstruct $M^{i+1}$ from $M^{i}$. And if we extract each detail information from the $ecol$ sequence and apply them into $vsplit$ operation in reversed order, we will get a sequence of $vsplit$ operations:
+$$
+	(vsplit_{0},vsplit_{1},\ldots,vsplit_{n-2},vsplit_{n-1}),
+$$
+where for any $0\le i < n$, a $vsplit$ can be expressed as:
+$$
+	vsplit_i=vsplit(v_{s_i},v_{t_i},v_{u_i},v_{l_i},v_{r_i})
+$$
+Therefore in the \emph{reconstruction phase} an arbitrary triangle mesh $\hat{M}$ can be represented as a simplified mesh $m^0$ together with a sequence of n $vsplit$ records:
+$$
+	M^0\xrightarrow{vsplit_0}M^1\xrightarrow{vsplit_1}\ldots\xrightarrow{vsplit_{n-2}}M^{n-1}\xrightarrow{vsplit_{n-1}}(M^n=\hat{M})
+$$
+As described in \cite{Hoppe:1996:PM}, we call $(M^0,\{vsplit_0,\ldots,vsplit_{n-1}\})$ a \emph{progressive mesh} representation of $M$. And the detail information sequence generated from the $ecol$ operations are denoted as \emph{PM sequence}.\\
+
+Note that in a edge collapse operation $ecol_i$, the \emph{cut vertices} $v_{l_i}$ and $v_{r_i}$ are always the opposite vertices of the collapsed edge $e_{{u_i}{t_i}}$. Actually the edge collapse operation $ecol_i$ can be performed without specifying those two cut vertices because the connectivity information among the \emph{cut vertices} $(v_{l_i},v_{r_i})$ and collapsed edge $e_{{u_i}{t_i}}$ is implicitly implied in the \emph{edge collapse} operation itself. However, the cut vertices are still stored as the detail information $d_i$, why? Because when we apply a vertex split operation $vsplit_i$ to $M^i$, the connectivity of the split vertex $v_{s_i}$ and its 1-ring neighbors $N_{v_{s_{i}}}$ in the resulting mesh $M^{i+1}$ is determined by the \emph{cut vertices} of $vsplit_i$, which are originally stored in the detail information $d_i$.  \\
+
+Furthermore, sequential LOD meshes $M^i$ can be naturally generated by using $vsplit_i$ and $ecol_i$ operations. The mesh of LOD lever $i$ can be produced bi-directionally by applying the PM sequence $(vsplit_0,\ldots,vsplit_{i-1})$ or $(ecol_{n-1},\ldots,ecol_{i})$ on the base mesh $M^0$ or on the original mesh $M^n$ respectively. (see \FG{fig:PmExample})
+$$
+	M^0\underoverrightleftarrow{ecol_{i-1}}{vsplit_{i-1}}\ldots\underoverrightleftarrow{ecol_{i-1}}{vsplit_{i-1}}M^i\underoverrightleftarrow{ecol_i}{vsplit_i}\ldots\underoverrightleftarrow{vsplit_{n-1}}{ecol_{n-1}}M^n
+$$
+
+\input{graphs/GraphPMExample}
+
+\subsection{Quadric Error Metrics}
+\label{subsection:theoreticalQEM}
+\TODO{theoretical concepts of QEm}
+
+
+\subsection{Vertices Hierarchy Forest}
+\label{subsection:theoreticalVHF}
+\TODO{theoretical concepts of VHF}
+
 
 \section{Technical Concepts}
+\label{section:TechConcpt}
 \TODO{In this section, we will introduce the techniques we used in this project. }
 
 
