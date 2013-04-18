@@ -253,6 +253,7 @@ oneside, openright
 \usepackage{booktabs}
 \usepackage{algorithm}
 \usepackage{algorithmic}
+
 %%%
 %%% PDF
 %%%
@@ -299,6 +300,10 @@ oneside, openright
          %% None, UseOutlines (=show bookmarks), UseThumbs (show thumbnails), FullScreen
   ]{hyperref}
 
+\usepackage{pdftricks}
+  \begin{psinputs}
+    \usepackage{pstricks}
+  \end{psinputs}
 
   %%% provide all graphics (also) in this format, so you don't have
   %%% to add the file extensions to the \includegraphics-command
@@ -310,6 +315,9 @@ oneside, openright
 
   %\usepackage[dvips]{graphicx}
 
+\usepackage{pstricks}
+  \newenvironment{pdfpic}{}{}
+  
   \DeclareGraphicsExtensions{.eps}
 
   \usepackage[%
@@ -450,6 +458,20 @@ escapeinside={\%}{)}          % if you want to add a comment within your code
 }
 
 \include{ivda-macros}
+
+%definition
+\usepackage{amsthm}
+
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}%[chapter] % reset theorem numbering for each chapter
+
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition} % definition numbers are dependent on theorem numbers
+\newtheorem{exmp}[thm]{Example} % same for example numbers
+
+\usepackage{enumitem}% http://ctan.org/pkg/enumitem
+
+\newcommand{\underoverrightleftarrow}[2]{\underset{#1}{\overset{#2}\rightleftharpoons}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%
