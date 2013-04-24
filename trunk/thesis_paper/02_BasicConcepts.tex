@@ -31,7 +31,7 @@ Given the definition of \emph{Mesh Streaming}, we can get the following problems
 
 Furthermore, as introduced in Chapter \ref{chapter:introduction}, our approach is providing \emph{view-dependent} streaming. Here we define the term \emph{View-dependent geometry streaming} as follows: 
 \begin{defn}
-	\emph{View-dependent geometry streaming} is a streaming process, in which the system responds to user's view on the geometry model and stream corresponding detail information for refinement of the model. 
+	\emph{View-dependent geometry streaming} is a streaming process, in which the system responds to user's view on the geometry model and stream corresponding detail information for the refinement of the model. 
 \end{defn}
 This definition raises another question - how to achieve view-dependent streaming? This question is related with a series of problems in data structures and algorithms. \\
 
@@ -113,12 +113,140 @@ $$
 
 \subsection{Quadric Error Metrics}
 \label{subsection:theoreticalQEM}
-\TODO{theoretical concepts of QEm}
+%\TODO{theoretical concepts of QEm}
+As is described in \SC{subsection:theoreticalPM}, the first step of generating a \emph{progressive mesh} is the \emph{simplification phase}. If we decompose the \emph{simplification phase}, we will get a sequence of \emph{edge collapse} operations. By performing a number of \emph{edge collapse} operations on the original mesh, we will get a coarser mesh with relatively lower resolution. In each single operation of \emph{edge collapse} $ecol_i$, an edge $e_i$ is chosen to be collapsed. Intuitively, edges will be chosen to be collapsed based on the approximating error of applying $ecol$ operation on the chosen one. We will always choose the edge which has the minimal simplification error. Hence, we need an algorithm to produce such $ecol$ sequence. \\
+
+Garland \etal\cite{Garland:1997:SSU} proposed a method using \emph{quadric error metrics (QEM)} for surface simplification. In this thesis we use this method to generate the \emph{edge collapse} sequence. 
+
+\subsubsection{Basic Idea}
+\label{QEM:BasicIdea}
+Let's first think about a question: how should we evaluate whether a simplification is good or not? Obviously, we evaluate the similarity between the original and simplified mesh. We say a simplification is a good simplification if the simplified mesh \emph{looks like} the original one. \emph{Quadric Error Metrics}\cite{Garland:1997:SSU} provides a way optimally and quickly find a good simplification. \\
+
+For each vertex in a mesh $v_i$ we can express it as the intersection of adjacent faces. We call those faces \emph{$v_i$'s planes} Then we have the following definition:
+\begin{defn}
+	The \textbf{error at a vertex} $v$ is the sum of the square distances to its planes:
+	\begin{equation}
+	\Delta(\textbf{v})=\Delta({\begin{bmatrix}v_x & v_y & v_z & 1\end{bmatrix}}^\intercal)=\sum_{\textbf{p}\in{planes(\textbf{v})}} (\textbf{p}^\intercal\textbf{v})^2,
+	\label{QEM:ErrV}
+	\end{equation}
+	where $\textbf{p}={\begin{bmatrix}a & b & c & d\end{bmatrix}}^\intercal$ is the plane $ax+bx+cx+d=0$ with $a^2+b^2+c^2=1.$
+\end{defn}
+
+This approximation error metric is initially proposed in \cite{RonfardR:96} and \cite{Garland:1997:SSU}. The set of supporting planes of any vertex $v_i$ is initially determined by the planes of the triangles that intersect at that vertex. We can further derive the error described in \EQ{QEM:ErrV} to a quadric form:
 
 
-\subsection{Vertices Hierarchy Forest}
+\begin{align}
+          \Delta (\textbf{v}) &= \sum_{\textbf{p}\in plane(\textbf{v})}(\textbf{v}^\intercal \textbf{p})(\textbf{p}^\intercal \textbf{v})\\
+          \Delta (\textbf{v}) &= \sum_{\textbf{p}\in planes(\textbf{v})}\textbf{v}^\intercal(\textbf{p}\textbf{p}^\intercal)\textbf{v}\\
+          \Delta (\textbf{v}) &= \textbf{v}^\intercal\left(\sum_{\textbf{p}\in planes(\textbf{v})}\textbf{K}_{\textbf{p}}\right)\textbf{v}
+\end{align}
+where $\textbf{K}_{\textbf{p}}$ is the matrix:
+$$
+	\textbf{K}_{\textbf{p}}=\textbf{pp}^\intercal=
+	\begin{bmatrix}
+		a^2	&	ab	&	ac	&	ad\\
+		ab	&	b^2	&	bc	&	bd\\
+		ac	&	bc	&	c^2	&	cd\\
+		ad	&	bd	&	cd	&	d^2
+	\end{bmatrix}
+$$
+
+As is described in \cite{Garland:1997:SSU}, $\textbf{K}_{\textbf{p}}$ is called \emph{fundamental error quadric} with which we can calculate the squared distance of any point in space to the plane $\textbf{p}$. An entire set of supporting planes of a vertex $v$ can be represented by the sum of these fundamental quadrics together: 
+\begin{equation}
+Q_v=\sum_{i} \textbf{K}_{\textbf{p}_i}
+\label{sumofkp}
+\end{equation}
+As \cite{Garland:1997:SSU} and \cite{RonfardR:96} did, we propagate planes after an edge collapse $ecol(v_u,v_t)\rightarrow\hat{v_s}$ using the approximation rule: $planes(v_s)=planes(v_u)\cup planes(v_t)$. Here we don't have to do a set union computation. Instead we use a approximation of simply adding two quadrics $(\textbf{Q}_u+\textbf{Q}_t)$. Therefore, we can express the error on each edge collapse of vertex $v_u$ and $v_t$ to $v_s$ ($ecol(v_u,v_t)\rightarrow v_s$) as $\textbf{v}_s^\intercal(\textbf{Q}_u+\textbf{Q}_t)\textbf{v}_s$
+
+\input{graphs/GraphEcolIllu}
+
+\subsubsection{Algorithm}
+\label{QEM:Algorithm}
+Given the basic idea stated in \SC{QEM:BasicIdea}, the algorithm of \emph{Quadric Error Metric} can be summarized as \AL{QEM:algorithmlist}:
+\begin{algorithm}                     
+\caption{Quadric Error Metrics Algorithm Summary}          
+\label{QEM:algorithmlist}                           
+\begin{algorithmic}      
+ 	\FORALL{initial vertices v} 
+		\STATE{Compute the $\mat{Q}$ matrix for $v$.} 
+	\ENDFOR
+	\STATE{Compute and select all valid edges with vertex pairs.}
+	 \WHILE{Not done} 
+	 	\STATE{For each edge $e(v_u,v_t)$\\
+				compute $v_s$ with minimum collapse error 
+		} 
+		\STATE{Perform $ecol(v_u,v_t)\rightarrow v_s$ with minimal error.}
+		\STATE{Setting $\mat{Q}_s=\mat{Q}_u+\mat{Q}_t$ and update candidate edges.}
+	\ENDWHILE
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{View-dependent refinement of Progressive Mesh}
+\label{theo:vdpm}
+In the scenario of \emph{view-dependent refinement of progressive mesh}, instead of a sequential refinement process of LODs, the base mesh $M^0$ is refined according to user's viewing parameters (angle, perspective \etc). When receive a user viewing parameter, a number of vertices are chosen to be split. And those vertices with fewer viewing contributions remain unchanged or will be performed $ecol$ operation. Therefore in this case, the viewing mesh model are varying dynamically upon user interaction. In this section, we introduce the theoretical backgrounds of \emph{view-dependent refinement of progressive mesh}. 
+
+\subsubsection{Vertex Hierarchy}
 \label{subsection:theoreticalVHF}
-\TODO{theoretical concepts of VHF}
+%\TODO{theoretical concepts of VHF}
+In \emph{simplification phase}, a PM sequence is generated with a series of edge collapse operations\cite{Hoppe:1997:VRP}. For each step in the \emph{simplification phase}, an edge collapse operation, $ecol_i=ecol(v_{s_i},v_{t_i},v_{u_i},v_{l_i},v_{r_i})$, implicitly establishes a hierarchical relation between the collapsed vertices $(v_{t_i},v_{u_i})$ and the newly generated vertex $v_{s_i}$. After the whole sequence is generated, a \emph{vertex hierarchy} $H$ is obtained. The vertex hierarchy $H$ is a forest structure and its root nodes are exactly the vertices of the base mesh $M^0$. Similarly leaf nodes of the vertex hierarchy forest $H$ denote corresponding vertices in the original mesh $\hat{M}=M^n$. (See \FG{fig:vhExample})\\
+\input{graphs/GraphVhExample}
+\subsubsection{Transitive Space of Progressive Meshes}
+\label{theo:tspm}
+Kim \etal\cite{Kim:2003:TransitiveMeshSpace}\cite{Kim:2001:trulyselective} introduced the concept of \emph{progressive transitive mesh space} of a given mesh $\hat{M}$. The \emph{progressive transitive mesh space $\mat{S}_H(\hat{M})$} has the following characteristics:
+\begin{enumerate}
+\item
+$\mat{S}_H(\hat{M})$ contains all selectively refined meshes that can be obtained from the base mesh $M^0$.
+\item
+$\mat{S}_H(\hat{M})$ is fixed when the \emph{Vertex Hierarchy} $H$ has been generated from the \emph{simplification phase}. 
+\item
+Given the same original mesh $\hat{M}$, $\mat{S}_H(\hat{M})$ varies if $\hat{M}$ is simplified in different way. 
+\end{enumerate}
+With the \emph{transitive progressive mesh space} we can design more effective $ecol$ and $vsplit$ operations and help us to build a view-dependent progressive mesh schema. 
+\subsubsection{Dual Perspective of Progressive Mesh}
+\label{theo:dppm}
+To understand the implicit relation between a mediate mesh in $\mat{S}_H(\hat{M})$ and the finest original mesh $\hat{M}$, we need to first define the \emph{fundamental dual piece} of a vertex $\hat{v}$ in $\hat{M}$ as follows\cite{Kim:2001:trulyselective}: 
+\begin{defn}
+The \textbf{fundamental dual piece} of $\hat{v}$ $\mathcal{D}_f(\hat{v})$ is the closed region over a given mesh $\hat{M}$, and surrounded by dual edges that connect the dual vertices corresponding to the faces adjacent to $\hat{v}$ (see \FG{fig:fundDualPiece})
+\end{defn}
+\input{graphs/GraphFundDualPiece}
+
+Moreover, we can define the \emph{dual piece} of a vertex $v$ $\mathcal{D}(v)$ as follows:
+\begin{defn}
+The \textbf{dual piece} of a vertex $v$ $\mathcal{D}(v)$ in the vertex hierarchy $H$ is the union of fundamental dual pieces of all leaf nodes in the subtree of $H$ whose root is $v$.(See \FG{fig:dualPiece})
+\end{defn}
+And as Kim \etal\cite{Kim:2001:trulyselective} described, the dual pieces of vertices in a vertex hierarchy $H$ have the following properties:
+\begin{enumerate}
+\item
+$\mathcal{D}(v_{s_i})=\mathcal{D}(v_{t_i})\cup\mathcal{D}(v_{u_i})$ and $\mathcal{D}(v_{t_i})\cap\mathcal{D}(v_{u_i})=\emptyset$, for all $i$.
+\item
+$\mathcal{D}(v_{t_i})$ and $\mathcal{D}(v_{u_i})$ are adjacent to each other, for all $i$.
+\item
+$\mathcal{D}(v_q)\subset\mathcal{D}(v_p)$ if $v_p$ is an ancestor of $v_q$ in $H$.
+\item
+$\mathcal{D}(v_p)\cap\mathcal{D}(v_q)=\emptyset$ if $v_p$ and $v_q$ have no ancestor-descendent relationship in $H$.
+\end{enumerate}
+\input{graphs/GraphDualPiece}
+
+A common observation is that for the union of the dual pieces of all the vertices in a simplified mesh $M$ cover the original mesh $\hat{M}$ without overlaps and holes. That is to say, the dual pieces from $M$ partition the surface of $\hat{M}$. And with the simplification process goes, the partitioning becomes finer. \\
+
+Now let's go back to this section's topic - \emph{view-dependent progressive mesh}. With the vertex hierarchy and the dual perspective, it is possible to design view-dependent vertex split and vertex collapse operations with responds to user interaction. It is obvious that in the dual space, a $vsplit$ operation is equivalent to re-partitioning a dual piece $\mathcal{D}(v_{s_i})$ into two adjacent dual pieces $\mathcal{D}(v_{u_i})$ and $\mathcal{D}(v_{t_i})$. And the $ecol$ operation is the corresponding inverse transformation of merging two adjacent dual pieces into one. Now the problem is that suppose we wish to split vertex $v_{s_i}$ with $vsplit(v_{s_i}, v_{u_i},v_{t_i},v_{l_i},v_{r_i})$ while the $v_{l_i}$ and $v_{r_i}$ obtained from \emph{simplification phase} are not yet active in the current mesh and cannot be found in current 1-ring neighbors of $v_{s_i}$. Therefore we need to find two vertices in $N(v_{s_i})$, which we call them \emph{cut vertices}, to play the role of $v_{l_i}$ and $v_{r_i}$. \\
+\input{graphs/GraphDualPieceSplit}
+We can see that the cut vertices of $v_{s_i}$ in its 1-ring neighbors $N(v_{s_i})$ are the vertices whose dual pieces are consecutively adjacent to both $\mathcal{D}(v_{u_i})$ and $\mathcal{D}(v_{t_i})$ and they always exist as is showed in \FG{fig:dualPieceSplit} in the left diagram. Therefore we convert the problem to finding two vertices among $N(v_{s_i})$ whose dual pieces are adjacent to both $\mathcal{D}(v_{u_i})$ and $\mathcal{D}(v_{t_i})$. And in this case, we need to use the hierarchical partitioning property of the dual pieces. Let $\hat{v}_{l_i}$ and $\hat{v}_{r_i}$ are the original cut vertices of $v_{s_i}$ which are currently not active. They are adjacent to both $\mathcal{D}(v_{u_i})$ and $\mathcal{D}(v_{t_i})$. Then, we can obtain that any active ancestor of $\hat{v}_{l_i}$ (or $\hat{v}_{r_i}$), denoted as $v^a_{l_i}$ (or $v^a_{r_i}$) has the same adjacency because $\mathcal{D}(\hat{v}_{l_i})\subset\mathcal{D}(v^a_{l_i})$ (or $\mathcal{D}(\hat{v}_{r_i})\subset\mathcal{D}(v^a_{r_i})$) according to the properties of dual piece. Thus, finding the cut vertices in $N(v_{s_i})$ becomes the problem of finding active ancestor of $\hat{v}_{l_i}$ and $\hat{v}_{r_i}$ among current 1-ring neighbor $N(s_i)$. \\
+
+Therefore, in the scenario of \emph{view-dependent refinement of progressive mesh}, we redefine the $vsplit$ and $ecol$ operations as the follows:
+\begin{align}
+	vsplit & (v_{s_i},v_{u_i},v_{t_i},\hat{v}_{l_i},\hat{v}_{r_i}) \\
+		 & =vsplit(v_{s_i},v_{u_i},v_{t_i},v^a_l,v^a_r)\\
+	 ecol&(v_{s_i},v_{u_i},v_{t_i},\hat{v}_{l_i},\hat{v}_{r_i}) \\
+	         & =ecol(v_{s_i},v_{u_i},v_{t_i},v^a_l,v^a_r)
+\end{align}
+where
+\begin{align}
+	v^a_l & =ActiveAncestor(\hat{v}_{l_i})\\
+	v^a_r &=ActiveAncestor(\hat{v}_{r_i})	
+\end{align}
+
+This new $ecol$ and $vsplit$ operation definition solves the problem finding \emph{cut vertices}. Therefore in a view-dependent refinement of progressive mesh we can easily traverse in the \emph{transitive mesh space} from any refined mesh $M^i$ to $M^j$ responding to user's viewing parameter. In each LOD, corresponding operations of $ecol$ or $vsplit$ will be performed according viewing contribution of affecting vertices. 
 
 
 \section{Technical Concepts}
