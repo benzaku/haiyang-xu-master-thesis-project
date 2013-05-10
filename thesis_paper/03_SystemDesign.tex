@@ -1,11 +1,134 @@
 \chapter{System Design}
 \label{chapter:SystemDesign}
-\TODO{In this part we will introduce the software design of both server and client side. }
+%\TODO{In this part we will introduce the software design of both server and client side. }
+
+\input{graphs/GraphClientServer}
+The main contribution of this thesis the view-dependent geometry streaming application implemented on mobile device. As stated in the previous chapters, our streaming application can be divided into to parts: client and server. (see \FG{fig:clientserver}) The client application is developed in Objective-C and deployed on a the iOS system. And the server part of the application is running on a an ordinary PC. In this chapter, software design detail of the both server-side and client-side will be described. \\
+
+This chapter is organized as follows: First in \SC{section:serverdesign} we describe the software design of our geometry streaming server. We will focus on the software architecture of the server application. Then in \SC{section:clientdesign} we describe the software design of our geometry streaming client on iOS. And we will illustrate the implementation details in Chapter~\ref{chapter:SystemImplementation}.
 
 \section{Server-side Design}
+\label{section:serverdesign}
+
+\input{graphs/GraphServerArch}
+
+\FG{fig:serverArch} shows the software components of the \emph{Progressive Mesh Server}. The server is consisting of four subsystems and one central controller. The four subsystems are (1) \emph{Network}, (2) \emph{PM Manager}, (3) \emph{Server Metadata} and (4) \emph{Server Rendering}. These four subsystems are responsible for their corresponding tasks and working collaboratively through the central controller. The rest part of this section describes in detail the design and function of each server subsystem separately. 
+
+
+\subsection{Server PM Manager Subsystem}
+\label{section:svrpmmangr}
+\input{graphs/GraphPMManager}
+Server's PM Manager subsystem is mainly responsible for all the loading and parsing tasks of the progressive mesh models. Here we design the PM Manager subsystem as a utility component which can be accessed by other subsystems and the central controller as well. As is showed in \FG{fig:pmmanager} the \emph{PM Manager} subsystem is consisting of 3 main components - \emph{PM Repository}, \emph{PM Loader} and \emph{VDPM Support}. \\
+
+First of all, the \emph{PM Manager} manages a progressive mesh repository which contains all the server side models as showed in \FG{fig:pmmanager}. Next, the \emph{PM Loader} is mainly responsible for all the I/O operations of the model files in the mesh repository. And then the VDPM Support part provide algorithm of parsing the loaded view-dependent progressive mesh files into corresponding data structure. We will discuss the details of parsing algorithm in Chapter~\ref{chapter:SystemImplementation}. 
+
+\subsection{Server Network Subsystem}
+\label{section:svrnetcom}
+\input{graphs/GraphNetworkComponent}
+The \emph{Network} subsystem can also be divided into three parts:
+\begin{enumerate}
+\item
+Network Protocol
+\item
+Socket Transmit Controller
+\item
+Vsplit Streaming
+\end{enumerate}
+The Network Protocol part contains functionalities which handles the network communications and defines the protocol between the server and its corresponding client, including connection establishment, request/response handling, server-client synchronization, \etc.\\
+The Socket transmit Controller part controls the socket functionalities. This part is relatively lower then the previous one. We design it to provide interfaces to other components for controlling the socket transmission operations, \ie listening on port, send bytes, \etc.\\
+And the last part, Vsplit Streaming part provides all the functionalities of streaming vertex split information. Once the split information are ready, it will stream those data via the Socket Transmit Controller to the client side. 
+\subsection{Server Metadata Subsystem}
+\label{section:svrmtcom}
+\input{graphs/GraphMetadata}
+\input{graphs/GraphModelList}
+Another part of the server architecture is the Server Metadata subsystem. It manages and maintains basic information of the server. As \FG{fig:metadata} shows, the metadata subsystem is consisted of two parts - \emph{Server Info} and \emph{Model List}. \emph{Server Info}. The \emph{Server Info} part contains network information of the server such as its IP address, port number, network bandwidth \etc. And The \emph{Model List} part provides a list view of all available model on the server. It also contains detail information of each model the server holds like model file name, file size, model type \etc. (See \FG{fig:modellist})
+
+\subsection{Server Rendering Subsystem}
+\label{section:svrrender}
+\input{graphs/GraphServerRendering}
+As is described in previous chapters, our application also has the functionality of server-side rendering when the client attempts to view a model with huge size. And the \emph{Server Rendering Subsystem} is mainly responsible for this task.\\ 
+
+As is showed in \FG{fig:serverrendering}, the Server Rendering subsystem can be divided into two parts: \emph{Renderer} and \emph{Image Compressor}. \\
+
+The Renderer part is responsible for all the graphics rendering tasks for server rendering. Generally the renderer is organized in a pipeline with three steps: (a) Model Refinement, (b) Geometry Submission and (c) Render to Framebuffer. As we can see from \FG{fig:serverrendering}, the first step is done by the progressive mesh refinement process and the next two steps is designed to be processed by server's GPU via OpenGL. \\
+
+Next is the Image Compressor part. This part compresses the rendering result from GPU and get it ready for streaming. As is showed in \FG{fig:serverrendering}, it first captures the rendering result from GPU as bitmap image. Then the captured bitmap image is compressed using image compression algorithm. And Finally the image is prepared for streaming. 
+
+\subsection{Server Central Controller}
+\label{section:svrcencont}
+\input{graphs/GraphServerCentralController}
+
+In the previous sections, we have described four main subsystems: Network, PM Manager, Server Metadata and Server Rendering. Each subsystem is responsible for their own tasks respectively. Obviously, a central management component is necessary for the four subsystems to collaborate together. The \emph{Server Central Controller} plays the role of centralized collaboration component.\\
+
+As is illustrated in \FG{fig:servercentralcontroller}, The \emph{Server Central Controller} obtains connection with every subsystem. In other words, all the server behaviors are determined by the central controller. The central controller listens to client's request, determines vertex split details to send to client or employs the server rendering and captures image from frame buffer, \etc, during which each subsystem is invoked via the central controller. 
+
 
 
 \section{Client-side Design}
+\label{section:clientdesign}
+\input{graphs/GraphClientArch}
+In \SC{section:serverdesign}, we describe the server-side component design of our application. Now in this section we will introduce the client-side design of our application. \\
+
+First, let's take a look at \FG{fig:clientArch} which illustrates the component organization of the client. Similar to the server, our client system consists five collaborating components: (1) \emph{Client Network Component}, (2) \emph{Client PM Manager Component}, (3) \emph{Client View-dependent Renderer Component}, (4) \emph{Client Interactive User Interface Component} and the (5) \emph{Client Central Controller Component}. In the follow subsections, we will introduce these client-side components separately.
+
+\subsection{Client Network Component}
+\label{section:clientnetcom}
+\input{graphs/GraphClientNetwork}
+Similar to the Network subsystem in the server side, the \emph{Network Component} in the client side is consisted of three parts. 
+\begin{enumerate}
+\item
+\emph{Client Network Protocol}\\
+This part contains the network protocol for the client side. The client side protocol and server side protocol need to work together collaboratively to ensure communication and information synchronization between the server and client. 
+\item
+\emph{Socket Transmit Controller}\\
+Just like the server side, the client uses socket for network communication. And this part performs communicate with low-level socket API for sending and receiving data through socket. 
+\item
+\emph{Receiving Vsplit Stream}\\
+As is illustrated in \FG{fig:clientnetwork}, this part mainly responsible for receiving the vsplit data of the progressive mesh. It listens on socket and receive the detail information of a progressive mesh for refinement.
+\end{enumerate}
+
+\subsection{Client PM Manager Component}
+\label{section:clientpmmcom}
+\input{graphs/GraphClientPMManager}
+\emph{Progressive Mesh Manager} is the core component in the client side. As we can see in \FG{fig:clientpmmanager}, the PM Manager component includes (1) Base Mesh Loader, (2) Viewing Parameter Sync part and (3) View-dependent Refinement Algorithm part. These three parts together provide the functionality of the management and manipulation of Progressive Mesh in the client side. Now let's illustrate each part of the PM Manager Component. \\
+
+The Base Mesh Loader is usually invoked at the very beginning of a model transmission. Its main responsibility is to load the base mesh transmitted from the server into client's memory.  Another part of of the \emph{Progressive Mesh Manager} is named Viewing Parameter Sync. It captures viewing parameters (incl. viewing angle, visible part, screen error... ) which assists the view-dependent refinement algorithm to determine which part of the model contributes to final rendered image. And then it uses network module to synchronize the viewing data with client's corresponding server. And the third part, View-dependent Refinement Algorithm part, is mainly responsible for employing view-dependent refinement algorithms to perform $ecol$ and $vsplit$ operations on current model. 
+
+
+\subsection{Client View-dependent Renderer Component}
+\label{section:clientvdrendercom}
+\input{graphs/GraphClientVDRenderer}
+
+Similar to the server-side component, the client also has a renderer component. The view-dependent renderer's major task is to render the model on the screen of client device (iPad). We are using OpenGL ES 2.0 for the rendering job on the client side. For the purpose of code reuse, we employ the same piece of GLSL code both on the server- and client-side. As showed in \FG{fig:clientvdrenderer}, other part of the client-side renderer component is that we use the vertex buffer object on the client for storing model's geometry. Since the major feature of our application is streaming of mesh models, the model on the client-side is continuously changing. Therefore there will be numerous I/O operations on client's memory. For efficient memory update we create a component especially for manipulating the memory operations of the vertex buffer object. And in the situation of server rendering, the client renderer just simply display the rendered image transmitted from server. We will describe details of the implementation of this part in Chapter~\ref{chapter:SystemImplementation}. 
+
+
+\subsection{Client Interactive User Interface Component}
+\label{section:clientintuicom}
+\input{graphs/GraphclientGUI}
+One of the main contribution of our application is that it provides an \emph{Interactive User Interface} 
+Another core component of the client is the \emph{Interactive User Interface} component. Here in this section we will describe in detail the design of client-side user interface. \\
+
+As is showed in \FG{fig:clientgui}, there are three tabs in the \emph{Interactive User Interface}: (1) Model View, (2) Mesh List and (3) Setup. Users can switch freely through these three tabs via tab bar on the bottom of the screen.\\
+\textbf{Model View} tab is the first tab of the GUI of our application. The Model View tab is designed in two perspectives: (a) \emph{visual effects} and (b) \emph{user interaction}. In other words, it is able to display the mesh model on the screen in response to users' touch gestures using the multi-touch feature of the device. This visual effects is the output of the view-dependent renderer mentioned in \SC{section:clientvdrendercom}. The client side renderer renders the mesh model with lighting effects and displays it on the screen. And meanwhile, users are able to rotate, move or zoom in/out the model with their finger gesture. We define the standard finger gestures as follows:
+\begin{enumerate}
+\item
+Rotation: Use \textbf{one finger} to slide through the screen to rotate the viewing object. 
+\item
+Move: Use \textbf{two fingers} to slide parallely through the screen to move the viewing object.
+\item
+Zoom in/out: Use \textbf{two fingers}, glide them apart with continuous contact on the screen performs zoom in, and vice versa, glide them toward each other with continuous contact on the screen performs zoom out. 
+\end{enumerate}
+One important feature of the Model View tab is that its interactivity. Consider a scenario that a user rotates the model and zooms into a specific region of the model's surface. The system immediately starts to request for $vsplit$ details of the visible part of the currently model and continuously refines it. However the user may rotate or zoom again not until all the refinements are finished. In this situation, we design the visual effect of refinement process that it can always be interrupted by the user for the purpose of high interactivity. Implementation details of this part will be described in Chapter~\ref{chapter:SystemImplementation}.\\
+\textbf{Mesh List} part is the second tab of our application user interface. As is introduced in \SC{section:svrmtcom}, the server-side maintains metadata, which contains a list of all available mesh models in server's mesh repository. Each time when a client process is connected to its server, the mesh list will be synchronized from server. And here in this Mesh List tab we display the list of all available meshes stored on the server. The user can select any item in the list to view it in the Model View tab. \\
+\textbf{Setup} part is the last tab of our application user interface. This tab is used for configuration purpose. As is showed in \FG{fig:clientgui}, user can set the IP address, Port number of a mesh server. Furthermore, it is also possible to switch whether to render the model in server rendering mode or in client rendering mode. When client rendering mode is selected, the client-side application will continuously request for mesh details from its server. When server rendering mode is selected, instead of mesh details, the client-side application will continuously receive rendered images from its server.  
+
+\subsection{Client Central Controller Component}
+\label{section:clientcenconcom} 
+\input{graphs/GraphClientCentral}
+
+Just like design of the server-side application, there is also a centralized component designed in the client to handle centralized management tasks. As is showed in \FG{fig:clientcentral}, the \emph{Central Controller} component has connection with all the other components. And any communication between different components will be handle by the Central Controller component. The implementation details of this part will also be described in Chapter~\ref{chapter:SystemImplementation}.
+
+
 
 %Picture
 %\noindent

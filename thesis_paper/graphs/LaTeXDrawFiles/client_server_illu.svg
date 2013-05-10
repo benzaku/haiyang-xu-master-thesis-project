@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+    xmlns:latexdraw="http://latexdraw.sourceforge.net/namespaces/latexdraw"
+    version="1.1" baseProfile="full">
+    <defs>
+        <marker overflow="visible" orient="auto" id="arrow2-144">
+            <path
+                d="M 0.0 0.0 L -3.031510416666667 1.0826822916666667 L -1.81890625 0.0 L -3.031510416666667 -1.0826822916666667 z "
+                latexdraw:arrSizeNum="2.0" fill="black"/>
+        </marker>
+        <marker overflow="visible" orient="auto" id="arrow2-145">
+            <path
+                d="M 0.0 0.0 L -3.031510416666667 1.0826822916666667 L -1.81890625 0.0 L -3.031510416666667 -1.0826822916666667 z "
+                latexdraw:arrSizeNum="2.0" fill="black"/>
+        </marker>
+    </defs>
+    <g>
+        <g latexdraw:type="picture" id="id140">
+            <image
+                xlink:href="/Users/hyx/Dropbox/MasterThesis/thesis_paper_tex/graphs/LaTeXDrawFiles/iPadImg_.png"
+                x="50.0" y="50.0" height="1222" width="824"/>
+        </g>
+        <g latexdraw:type="picture" id="id142">
+            <image
+                xlink:href="/Users/hyx/Dropbox/MasterThesis/thesis_paper_tex/graphs/LaTeXDrawFiles/mbp_.png"
+                x="1244.0" y="398.0" height="449" width="788"/>
+        </g>
+        <g latexdraw:type="line" id="id144">
+            <line x1="925.0" x2="1208.0" y1="500.0" y2="500.0"
+                stroke-width="16.0" stroke="black"
+                latexdraw:rotationAngle="0.0" marker-end="url(#arrow2-144)"/>
+            <line x1="925.0" x2="1208.0" y1="500.0" y2="500.0"
+                stroke="white" stroke-width="6.0" fill="none" latexdraw:type="dbleborders"/>
+        </g>
+        <g latexdraw:type="line" id="id145">
+            <line x1="1208.0" x2="925.0" y1="720.0" y2="720.0"
+                stroke-width="16.0" stroke="black"
+                latexdraw:rotationAngle="3.141592653589793" marker-end="url(#arrow2-145)"/>
+            <line x1="1208.0" x2="925.0" y1="720.0" y2="720.0"
+                stroke="white" stroke-width="6.0" fill="none" latexdraw:type="dbleborders"/>
+        </g>
+    </g>
+    <metadata>
+        <latexdraw:metadata>
+            <latexdraw:displayBorders>false</latexdraw:displayBorders>
+            <latexdraw:autoAdjust>true</latexdraw:autoAdjust>
+            <latexdraw:ppc>50</latexdraw:ppc>
+            <latexdraw:zoom>0.5</latexdraw:zoom>
+            <latexdraw:unit>cm</latexdraw:unit>
+            <latexdraw:classicGrid>false</latexdraw:classicGrid>
+            <latexdraw:gridGap>10</latexdraw:gridGap>
+            <latexdraw:code>0</latexdraw:code>
+            <latexdraw:displayGrid>true</latexdraw:displayGrid>
+            <latexdraw:magneticGrid>false</latexdraw:magneticGrid>
+            <latexdraw:autoUpdate>true</latexdraw:autoUpdate>
+            <latexdraw:version>2.0.8</latexdraw:version>
+            <latexdraw:size>
+                <latexdraw:width>1280</latexdraw:width>
+                <latexdraw:height>774</latexdraw:height>
+            </latexdraw:size>
+            <latexdraw:position>
+                <latexdraw:x>0</latexdraw:x>
+                <latexdraw:y>22</latexdraw:y>
+            </latexdraw:position>
+            <latexdraw:dividerPosition>0.80390625</latexdraw:dividerPosition>
+            <latexdraw:displayCodePanel>true</latexdraw:displayCodePanel>
+            <latexdraw:displayXScale>true</latexdraw:displayXScale>
+            <latexdraw:displayYScale>true</latexdraw:displayYScale>
+            <latexdraw:delimitorOpacity>130</latexdraw:delimitorOpacity>
+        </latexdraw:metadata>
+    </metadata>
+</svg>
