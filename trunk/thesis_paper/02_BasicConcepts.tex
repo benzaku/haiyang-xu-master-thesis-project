@@ -190,6 +190,7 @@ In the scenario of \emph{view-dependent refinement of progressive mesh}, instead
 %\TODO{theoretical concepts of VHF}
 In \emph{simplification phase}, a PM sequence is generated with a series of edge collapse operations\cite{Hoppe:1997:VRP}. For each step in the \emph{simplification phase}, an edge collapse operation, $ecol_i=ecol(v_{s_i},v_{t_i},v_{u_i},v_{l_i},v_{r_i})$, implicitly establishes a hierarchical relation between the collapsed vertices $(v_{t_i},v_{u_i})$ and the newly generated vertex $v_{s_i}$. After the whole sequence is generated, a \emph{vertex hierarchy} $H$ is obtained. The vertex hierarchy $H$ is a forest structure and its root nodes are exactly the vertices of the base mesh $M^0$. Similarly leaf nodes of the vertex hierarchy forest $H$ denote corresponding vertices in the original mesh $\hat{M}=M^n$. (See \FG{fig:vhExample})\\
 \input{graphs/GraphVhExample}
+
 \subsubsection{Transitive Space of Progressive Meshes}
 \label{theo:tspm}
 Kim \etal\cite{Kim:2003:TransitiveMeshSpace}\cite{Kim:2001:trulyselective} introduced the concept of \emph{progressive transitive mesh space} of a given mesh $\hat{M}$. The \emph{progressive transitive mesh space $\mat{S}_H(\hat{M})$} has the following characteristics:
@@ -251,8 +252,85 @@ This new $ecol$ and $vsplit$ operation definition solves the problem finding \em
 
 \section{Technical Concepts}
 \label{section:TechConcpt}
-\TODO{In this section, we will introduce the techniques we used in this project. }
+%\TODO{In this section, we will introduce the techniques we used in this project. }
+Since the major contribution of our thesis is in the perspective of application implementation, in this section we will introduce some technical concepts which are important to the implementation of our geometry streaming framework. In \SC{section:implQEM} the implementation detail of \emph{quadric error metric} method will be described. \SC{section:implVH} will introduce the efficient implementation of the \emph{vertex hierarchy forest} which contributes to the implementation of \emph{view-dependent refinement of progressive mesh}. Then \SC{section:openmesh} introduces the an open-source mesh representation framework \emph{OpenMesh} we use in this thesis. At last, the programming tools and technologies we used to implementation our system will be described in \SC{section:progTools}.
 
+\subsection{Implementation of QEM}
+\label{section:implQEM}
+As illustrated in \AL{QEM:algorithmlist}, it needs to trace every edge in the whole mesh and in each in each iteration searches for the edge with vertices which have minimum quadric error, remove it from the mesh and then update the costs of all valid edges involved. Therefore we need an efficient data structure to store edges' error information and a fast algorithm to retrieve the edge with minimum error. Naturally we choose to use the \emph{minimum heap} to store all the edge error information. Thus, we can build the heap in $O(n)$ time and each removal of a minimum cost edge costs $O(\log{n})$
+
+\subsection{Efficient Implementation of Vertex Hierarchy}
+\label{section:implVH}
+As is described in \SC{theo:tspm} the key point view-dependent refinement is that, for each $ecol$ or $vsplit$ operation, we need to find its cut vertices $v_l$ and $v_r$. And the way to find cut vertices is to find active ancestors ($v^a_l$ and $v^a_r$) of its \emph{fundamental cut vertices} among the current 1-ring neighbor $N(v_s)$. 
+
+\input{graphs/GraphVhEncoding}
+
+For the view-dependent $ecol$ operation, find the \emph{cut vertices} is quite straight forward. (see \FG{fig:ecol_vsplt_illustration}) However to find the \emph{cut vertices} in a view-dependent $vsplit$ operation we have to use the \emph{vertex hierarchy structure} to find the active ancestors. We are inspired by \cite{Kim:2001:trulyselective} and use the bit-wise approach to represent the vertex hierarchy structure. To speed up the $vsplit$ operation, each node in the vertex hierarchy $H$ is encoded as $<treeId,nodeId>$ notation. Naturally nodes in the same tree in $H$ share the same $treeId$. And for any node $<treeId_n,nodeId_i>$ in a tree, its two children's $nodeId$ are encoded as $<treeId_n,2\cdot nodeId_i>$ and $<treeId_n,2\cdot nodeId_i+1>$. The $nodeId$ of root node is always $1$. (see \FG{fig:vhEncoding}) Based on this encoding schema, an $IsAncestor(v^a,v_d)$ procedure can be designed to test if $v^a$ is the ancestor of $v_d$ via simply check their $<treeId,nodeId>$ notation. Vertex $v^a$ is the ancestor of $v_d$ \textbf{if and only if} the following two conditions both hold:
+\begin{enumerate}
+\item
+$treeId_{v^a}=treeId_{v_d}$
+\item
+Define function $f(x)=\lfloor\frac{x}{2}\rfloor$ and $f^{n+1}=f^n(f(x))$, $f^{1}(x)=f(x)$ , $\exists{n}\in\mathbb{N}$ and $0<n\le\lceil\log{(nodeId_{v_d})}\rceil:{nodeId_{v^a}}=f^n(nodeId_{v_d})$.
+\end{enumerate}
+
+With the fact that each tree in the vertex hierarchy forest is actually a binary tree, we can represent each $nodeId$ with a 64-bit unsigned integer and the procedure of $IsAncestor$ can be simply implemented with binary shift operation within $O(1)$ time. Therefore we can locate the cut vertices $v^a_l$ and $v^a_r$ by testing each vertex in the 1-ring neighbor set of the split vertex $v_s$ with the $IsAncestor$ procedure given $v_s$'s fundamental cut vertices $\hat{v}_l$ and $\hat{v}_r$. This process can be finished within $O(m)$ time, where $m$ is the number of vertices in the current 1-ring neighbor $N(v_s)$. 
+
+\subsection{Mesh Data Structure}
+\label{section:meshdatastruct}
+%introduce opemmesh framework
+In our application, there is a heavy use of geometry mesh structure. And meanwhile, during the transformation operation $ecol$ and $vsplit$ in the progressive mesh, the 1-ring neighborhood of a specific vertex is essential for find the \emph{cut vertices}. Therefore, an efficient, easy-to-use data structure to represent the geometry mesh is highly needed. We choose \emph{OpenMesh}\cite{Botsch02openmesh}, an open-source data structure framework for polygonal meshes, in this project for mesh representation and manipulation.
+
+\subsubsection{OpenMesh}
+\label{section:openmesh}
+OpenMesh is a generic and efficient data structure and library implemented in C++, for representing and manipulating polygonal meshes. OpenMesh was designed with the following goals: 
+\begin{enumerate}
+\item
+Flexibility : provide a basis for many different algorithms without the need for adaptation.
+\item
+Efficiency : maximize time efficiency while keeping memory usage as low as possible.
+\item
+Ease of use : wrap complex internal structure in an easy-to-use interface.
+\end{enumerate}
+To accomplish these goals following features are provided in OpenMesh:
+\begin{enumerate}
+\item
+Representation of arbitrary polygonal (the general case) and pure triangle meshes (providing more efficient, specialized algorithms)
+\item
+Explicit representation of vertices, halfedges, edges and faces.
+\item
+Fast neighborhood access, especially the one-ring neighborhood (see below).
+\item
+Highly customizable :
+\subitem 
+Choose your coordinate type (dimension and scalar type)
+\subitem
+Attach user-defined elements/functions to the mesh elements.
+\subitem
+Attach and check for attributes.
+\subitem
+Attach data at runtime using dynamic properties.
+\end{enumerate} 
+
+\subsubsection{Half-edge Data Structure}
+\label{section:heDataStruct}
+Normally, polygonal meshes are consisted of two key elements: geometry (vertices) and topology (edges, faces). And the data structure for polygonal meshes can be categorized in the different ways they store the topology information. In face-based structures the connectivity in faces referencing their vertices and neighbors is stored while the explicit representation of edges is missing. And in edge-based structures the connectivity information is stored into edges with but low efficiency because of their missing orientation of edges.  \\
+
+If one now splits the edges (\ie an edge connecting vertex A and vertex B becomes two directed half-edges from A to B and vice versa) one gets a half-edge-based data structure. In a half-edge data structure as is showed in \FG{fig:halfedge}, each edge connecting two vertices is broken into two opposite directed edges, each pointing to the two ends of the original edge. Hence, (1) for each vertex it will have an outgoing half-edge with corresponding edge connected, (2) each face is bounded with a ring of half-edges with same direction, (3) each half-edge has a target vertex, (4) each half-edge has its corresponding bounded face, (5) give a half-edge we can find its next half-edge, (6) each half-edge has implicitly an opposite half-edge and (7) optionally we can store the previous half-edge information in each half-edge. 
+\input{graphs/GraphHalfEdge}
+
+Intuitively, this provides a natural and simple way to represent vertices, edges and faces, as well as arbitrary polygons. As is already stated in previous sections, in our progressive algorithms the \emph{1-ring neighbors} of a vertex is frequently used. Via the half-edge data structure locating the 1-ring neighbors of a given vertex can be done very efficiently. As is illustrated in \FG{fig:onering}, repeating step (2) to (4) will result in the 1-ring neighbors of a given vertex as showed. 
+\input{graphs/GraphOneRing}
+
+\subsection{Programming Language and Tools}
+\label{section:progTools}
+
+In the implementation of this thesis project, several programming languages, techniques and tools are used. \\
+
+The server side is purely implemented in C++. We integrated the OpenMesh framework in the server side application. The server side is programmed in \textbf{Xcode\footnote{\label{XCODE}\url{https://developer.apple.com/xcode/}} } in C++ on Mac OSX operating system. It is also possible to compile on Windows systems within Visual Studio. We use  \textbf{Poco\footnote{\label{POCO}\url{http://pocoproject.org}} } library to establish the socket server for network transmission. For server rendering we used the OpenGL. 
+
+The client side's code is a mixture of C/C++ and Objective-C. We managed to integrate and compile the OpenMesh framework on the \emph{iOS} system. The client side is mainly programmed in Objective-C, with some C/C++ code inserted into some Objective-C functions in \textbf{Xcode} on Mac OSX operating system. And for the rendering part OpenGL ES is used. 
+
+And we also used \textbf{OpenGL Shading Language} for the shader used in both part. 
 
 %Picture
 %\noindent

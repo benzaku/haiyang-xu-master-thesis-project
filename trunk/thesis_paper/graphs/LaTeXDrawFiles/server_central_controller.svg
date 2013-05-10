@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+    xmlns:latexdraw="http://latexdraw.sourceforge.net/namespaces/latexdraw"
+    version="1.1" baseProfile="full">
+    <defs>
+        <marker overflow="visible" orient="auto" id="arrow1-1799">
+            <path
+                d="M 0.0 0.0 L 1.779 1.4825 L 1.2452999999999999 0.0 L 1.779 -1.4825 z "
+                latexdraw:arrSizeNum="2.6" fill="black"/>
+        </marker>
+        <marker overflow="visible" orient="auto" id="arrow1-1800">
+            <path
+                d="M 0.0 0.0 L 1.4189999999999998 1.1824999999999999 L 0.9932999999999998 0.0 L 1.4189999999999998 -1.1824999999999999 z "
+                latexdraw:arrSizeNum="2.0" fill="black"/>
+        </marker>
+        <marker overflow="visible" orient="auto" id="arrow1-1814">
+            <path
+                d="M 0.0 0.0 L 1.4189999999999998 1.1824999999999999 L 0.9932999999999998 0.0 L 1.4189999999999998 -1.1824999999999999 z "
+                latexdraw:arrSizeNum="2.0" fill="black"/>
+        </marker>
+        <marker overflow="visible" orient="auto" id="arrow1-1815">
+            <path
+                d="M 0.0 0.0 L 1.779 1.4825 L 1.2452999999999999 0.0 L 1.779 -1.4825 z "
+                latexdraw:arrSizeNum="2.6" fill="black"/>
+        </marker>
+    </defs>
+    <g>
+        <g latexdraw:type="line" id="id1799">
+            <line x1="760.0" x2="760.0" y1="160.0" y2="280.0"
+                stroke-width="10.0" stroke="black"
+                latexdraw:rotationAngle="0.0" marker-start="url(#arrow1-1799)"/>
+        </g>
+        <g latexdraw:type="line" id="id1800">
+            <line x1="390.0" x2="390.0" y1="160.0" y2="270.0"
+                stroke-width="10.0" stroke="black"
+                latexdraw:rotationAngle="0.0" marker-start="url(#arrow1-1800)"/>
+        </g>
+        <g latexdraw:type="rectangle" id="id1801">
+            <rect x="102.5" y="192.5" width="355.0" height="45.0"
+                transform="translate(5.291666507720947 0.0) translate(-1.5498932600021362 3.7417733669281006)"
+                stroke-width="5.0" fill="#404040" stroke="#404040"
+                latexdraw:type="shadow" rx="2.25"/>
+            <rect x="102.5" y="192.5" width="355.0" height="45.0"
+                latexdraw:borderPos="outer" stroke-width="5.0"
+                stroke="black" fill="white" rx="2.25"/>
+        </g>
+        <g latexdraw:type="text" id="id1802"
+            font-family="Palatino Linotype" fill="black" font-size="17" latexdraw:x="250.0">
+            <text x="250.0" y="220.0"><![CDATA[Network]]></text>
+        </g>
+        <g latexdraw:type="rectangle" id="id1804">
+            <rect x="82.5" y="122.5" width="775.0" height="35.0"
+                transform="translate(5.291666507720947 0.0) translate(-1.5498932600021362 3.7417733669281006)"
+                stroke-width="5.0" fill="#404040" stroke="#404040"
+                latexdraw:type="shadow" rx="8.75"/>
+            <rect x="82.5" y="122.5" width="775.0" height="35.0"
+                latexdraw:borderPos="outer" stroke-width="5.0"
+                stroke="black" fill="white" rx="8.75"/>
+        </g>
+        <g latexdraw:type="rectangle" id="id1805">
+            <rect x="102.5" y="272.5" width="355.0" height="45.0"
+                transform="translate(5.291666507720947 0.0) translate(-1.5498932600021362 3.7417733669281006)"
+                stroke-width="5.0" fill="#404040" stroke="#404040"
+                latexdraw:type="shadow" rx="2.25"/>
+            <rect x="102.5" y="272.5" width="355.0" height="45.0"
+                latexdraw:borderPos="outer" stroke-width="5.0"
+                stroke="black" fill="white" rx="2.25"/>
+        </g>
+        <g latexdraw:type="rectangle" id="id1806">
+            <rect x="482.5" y="192.5" width="355.0" height="45.0"
+                transform="translate(5.291666507720947 0.0) translate(-1.5498932600021362 3.7417733669281006)"
+                stroke-width="5.0" fill="#404040" stroke="#404040"
+                latexdraw:type="shadow" rx="2.25"/>
+            <rect x="482.5" y="192.5" width="355.0" height="45.0"
+                latexdraw:borderPos="outer" stroke-width="5.0"
+                stroke="black" fill="white" rx="2.25"/>
+        </g>
+        <g latexdraw:type="text" id="id1807"
+            font-family="Palatino Linotype" fill="black" font-size="17" latexdraw:x="220.0">
+            <text x="220.0" y="300.0"><![CDATA[Server Metadata]]></text>
+        </g>
+        <g latexdraw:type="text" id="id1809"
+            font-family="Palatino Linotype" fill="black" font-size="17" latexdraw:x="620.0">
+            <text x="620.0" y="220.0"><![CDATA[PM Manager]]></text>
+        </g>
+        <g latexdraw:type="rectangle" id="id1811">
+            <rect x="482.5" y="272.5" width="355.0" height="45.0"
+                transform="translate(5.291666507720947 0.0) translate(-1.5498932600021362 3.7417733669281006)"
+                stroke-width="5.0" fill="#404040" stroke="#404040"
+                latexdraw:type="shadow" rx="2.25"/>
+            <rect x="482.5" y="272.5" width="355.0" height="45.0"
+                latexdraw:borderPos="outer" stroke-width="5.0"
+                stroke="black" fill="white" rx="2.25"/>
+        </g>
+        <g latexdraw:type="text" id="id1812"
+            font-family="Palatino Linotype" fill="black" font-size="17" latexdraw:x="600.0">
+            <text x="600.0" y="300.0"><![CDATA[Server Rendering]]></text>
+        </g>
+        <g latexdraw:type="line" id="id1814">
+            <line x1="190.0" x2="190.0" y1="160.0" y2="190.0"
+                stroke-width="10.0" stroke="black"
+                latexdraw:rotationAngle="0.0" marker-start="url(#arrow1-1814)"/>
+        </g>
+        <g latexdraw:type="line" id="id1815">
+            <line x1="580.0" x2="580.0" y1="160.0" y2="190.0"
+                stroke-width="10.0" stroke="black"
+                latexdraw:rotationAngle="0.0" marker-start="url(#arrow1-1815)"/>
+        </g>
+        <g latexdraw:type="text" id="id1816"
+            font-family="Palatino Linotype" fill="black" font-size="22" latexdraw:x="350.0">
+            <text x="350.0" y="150.0"><![CDATA[Server Central Controller]]></text>
+        </g>
+    </g>
+    <metadata>
+        <latexdraw:metadata>
+            <latexdraw:displayBorders>false</latexdraw:displayBorders>
+            <latexdraw:autoAdjust>true</latexdraw:autoAdjust>
+            <latexdraw:ppc>50</latexdraw:ppc>
+            <latexdraw:zoom>1.0</latexdraw:zoom>
+            <latexdraw:unit>cm</latexdraw:unit>
+            <latexdraw:classicGrid>false</latexdraw:classicGrid>
+            <latexdraw:gridGap>10</latexdraw:gridGap>
+            <latexdraw:code>0</latexdraw:code>
+            <latexdraw:displayGrid>true</latexdraw:displayGrid>
+            <latexdraw:magneticGrid>true</latexdraw:magneticGrid>
+            <latexdraw:autoUpdate>true</latexdraw:autoUpdate>
+            <latexdraw:version>2.0.8</latexdraw:version>
+            <latexdraw:size>
+                <latexdraw:width>1280</latexdraw:width>
+                <latexdraw:height>774</latexdraw:height>
+            </latexdraw:size>
+            <latexdraw:position>
+                <latexdraw:x>0</latexdraw:x>
+                <latexdraw:y>22</latexdraw:y>
+            </latexdraw:position>
+            <latexdraw:dividerPosition>0.80390625</latexdraw:dividerPosition>
+            <latexdraw:displayCodePanel>true</latexdraw:displayCodePanel>
+            <latexdraw:displayXScale>true</latexdraw:displayXScale>
+            <latexdraw:displayYScale>true</latexdraw:displayYScale>
+            <latexdraw:delimitorOpacity>130</latexdraw:delimitorOpacity>
+        </latexdraw:metadata>
+    </metadata>
+</svg>

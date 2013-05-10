@@ -1,0 +1,57 @@
+\begin{figure}[htb]
+	\centering
+	
+	\begin{pdfpic}
+\psframe[linewidth=0.1,framearc=0.1,dimen=outer,shadow=true,shadowangle=-45.0,fillstyle=solid](11.939681,4.0)(4.739681,1.6)
+\psframe[linewidth=0.06,framearc=0.1,dimen=outer,shadow=true,shadowangle=-45.0,fillstyle=solid](8.139681,3.2)(5.139681,2.0)
+\usefont{T1}{ppl}{m}{n}
+\rput(8.246591,3.52){\small Server Rendering}
+\usefont{T1}{ppl}{m}{n}
+\rput(6.4200277,2.72){\small Renderer}
+\psframe[linewidth=0.06,framearc=0.1,dimen=outer,shadow=true,shadowangle=-45.0,fillstyle=solid](11.539681,3.2)(8.539681,2.0)
+\usefont{T1}{ppl}{m}{n}
+\rput(9.6012335,2.72){\small Image}
+\usefont{T1}{ppl}{m}{n}
+\rput(10.037621,2.32){\small Compressor}
+\psframe[linewidth=0.06,framearc=0.1,dimen=outer,shadow=true,shadowangle=-45.0,fillstyle=solid](7.739681,1.0)(3.739681,0.0)
+\psline[linewidth=0.06,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{->}(6.539681,2.0)(6.539681,1.4)(6.139681,1.4)(6.139681,1.0)
+\usefont{T1}{ptm}{m}{n}
+\rput(5.822923,0.505){Refined Model}
+\psframe[linewidth=0.06,framearc=0.1,dimen=outer,shadow=true,shadowangle=-45.0,fillstyle=solid](7.739681,-0.6)(3.739681,-1.6)
+\usefont{T1}{ptm}{m}{n}
+\rput(5.623626,-0.895){Geometry Submit}
+\usefont{T1}{ptm}{m}{n}
+\rput(5.4590073,-1.295){to Vertexbuffer}
+\psline[linewidth=0.038cm,arrowsize=0.05291667cm 1.5,arrowlength=0.86,arrowinset=0.4,doubleline=true,doublesep=0.12]{->}(5.739681,0.0)(5.739681,-0.6)
+\psframe[linewidth=0.06,framearc=0.1,dimen=outer,shadow=true,shadowangle=-45.0,fillstyle=solid](7.739681,-2.2)(3.739681,-3.2)
+\usefont{T1}{ptm}{m}{n}
+\rput(5.797689,-2.695){Render to Framebuffer}
+\psline[linewidth=0.038cm,arrowsize=0.05291667cm 1.5,arrowlength=0.86,arrowinset=0.4,doubleline=true,doublesep=0.12]{->}(5.739681,-1.6)(5.739681,-2.2)
+\psline[linewidth=0.06,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{->}(9.939681,2.0)(9.939681,1.4)(10.539681,1.4)(10.539681,1.0)
+\psframe[linewidth=0.06,framearc=0.1,dimen=outer,shadow=true,shadowangle=-45.0,fillstyle=solid](12.939681,1.0)(8.939681,0.0)
+\usefont{T1}{ptm}{m}{n}
+\rput(10.977972,0.705){Capture Bitmap Image}
+\psframe[linewidth=0.06,framearc=0.1,dimen=outer,shadow=true,shadowangle=-45.0,fillstyle=solid](12.939681,-0.6)(8.939681,-1.6)
+\usefont{T1}{ptm}{m}{n}
+\rput(10.984407,-1.095){Image Compression}
+\psline[linewidth=0.038cm,arrowsize=0.05291667cm 1.5,arrowlength=0.86,arrowinset=0.4,doubleline=true,doublesep=0.12]{->}(10.939681,0.0)(10.939681,-0.6)
+\psframe[linewidth=0.06,framearc=0.1,dimen=outer,shadow=true,shadowangle=-45.0,fillstyle=solid](12.939681,-2.2)(8.939681,-3.2)
+\usefont{T1}{ptm}{m}{n}
+\rput(10.894144,-2.695){Image Ready}
+\psline[linewidth=0.038cm,arrowsize=0.05291667cm 1.5,arrowlength=0.86,arrowinset=0.4,doubleline=true,doublesep=0.12]{->}(10.939681,-1.6)(10.939681,-2.2)
+\psline[linewidth=0.04,arrowsize=0.05291667cm 1.5,arrowlength=0.86,arrowinset=0.4,doubleline=true,doublesep=0.12]{->}(5.739681,-3.2)(5.739681,-4.0)(8.459681,-4.0)(8.502181,0.4)(9.139681,0.4)
+\usefont{T1}{ptm}{m}{n}
+\rput(10.593822,0.305){from framebuffer}
+\psframe[linewidth=0.04,linestyle=dashed,dash=0.16cm 0.16cm,framearc=0.2,dimen=outer](8.139681,1.2)(3.339681,-0.2)
+\usefont{T1}{ptm}{m}{n}
+\rput(2.4859114,2.105){\psframebox[linewidth=0.04]{PM Refinement Algorithm}}
+\psbezier[linewidth=0.04,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{->}(2.339681,1.8)(1.739681,0.8)(2.539681,0.6)(3.339681,0.4)
+\psframe[linewidth=0.04,linestyle=dashed,dash=0.16cm 0.16cm,framearc=0.1,dimen=outer](8.139681,-0.4)(3.339681,-3.4)
+\usefont{T1}{ptm}{m}{n}
+\rput(1.4326888,-0.895){\psframebox[linewidth=0.04]{Done by OpenGL}}
+\psbezier[linewidth=0.04,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{->}(1.539681,-1.2)(1.539681,-2.0)(2.539681,-1.8857143)(3.339681,-2.0)
+	\end{pdfpic} 
+	\caption{Server Rendering}
+	\label{fig:serverrendering}
+
+\end{figure}

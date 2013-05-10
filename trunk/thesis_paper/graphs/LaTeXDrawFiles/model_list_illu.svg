@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+    xmlns:latexdraw="http://latexdraw.sourceforge.net/namespaces/latexdraw"
+    version="1.1" baseProfile="full">
+    <defs>
+        <marker overflow="visible" orient="auto" id="arrow2-617">
+            <path
+                d="M 0.0 0.0 L -3.1704166666666667 1.1322916666666667 L -1.90225 0.0 L -3.1704166666666667 -1.1322916666666667 z "
+                latexdraw:arrSizeNum="2.0" fill="black"/>
+        </marker>
+    </defs>
+    <g>
+        <g latexdraw:type="rectangle" id="id567">
+            <rect x="149.5" y="88.5" width="239.0" height="259.0"
+                latexdraw:borderPos="outer" stroke-width="5.0"
+                stroke="black" fill="white" rx="5.9750000000000005"/>
+        </g>
+        <g latexdraw:type="text" id="id568"
+            font-family="Times New Roman" fill="black" font-size="18" latexdraw:x="227.0">
+            <text x="227.0" y="113.0"><![CDATA[Model List]]></text>
+        </g>
+        <g latexdraw:type="rectangle" id="id571">
+            <rect x="176.0" y="123.0" width="176.0" height="18.0"
+                latexdraw:borderPos="outer" stroke-width="2.0"
+                stroke="black" fill="white" rx="2.6999999999999997"/>
+        </g>
+        <g latexdraw:type="text" id="id572" font-family="Courier New"
+            fill="black" font-size="17" latexdraw:x="181.0">
+            <text x="181.0" y="138.0"><![CDATA[$Model_1$]]></text>
+        </g>
+        <g latexdraw:type="triangle" id="id575"
+            latexdraw:points="350.5 124.5 368.5 124.5 350.5 139.5 368.5 139.5" transform="rotate(90.0) translate(-227.49999999999997 -491.5)">
+            <polygon
+                points="359.5,126.44365 366.93796,138.5 352.06204,138.5"
+                latexdraw:borderPos="outer" stroke-width="2.0"
+                stroke="black" fill="white"/>
+        </g>
+        <g latexdraw:type="rectangle" id="id576">
+            <rect x="176.0" y="147.0" width="176.0" height="18.0"
+                latexdraw:borderPos="outer" stroke-width="2.0"
+                stroke="black" fill="white" rx="2.6999999999999997"/>
+        </g>
+        <g latexdraw:type="text" id="id577" font-family="Courier New"
+            fill="black" font-size="17" latexdraw:x="181.0">
+            <text x="181.0" y="162.0"><![CDATA[$Model_2$]]></text>
+        </g>
+        <g latexdraw:type="triangle" id="id580"
+            latexdraw:points="350.5 148.5 368.5 148.5 350.5 163.5 368.5 163.5" transform="rotate(90.0) translate(-203.49999999999997 -515.5)">
+            <polygon
+                points="359.5,150.44365 366.93796,162.5 352.06204,162.5"
+                latexdraw:borderPos="outer" stroke-width="2.0"
+                stroke="black" fill="white"/>
+        </g>
+        <g latexdraw:type="rectangle" id="id581">
+            <rect x="175.0" y="172.0" width="176.0" height="18.0"
+                latexdraw:borderPos="outer" stroke-width="2.0"
+                stroke="black" fill="white" rx="2.6999999999999997"/>
+        </g>
+        <g latexdraw:type="text" id="id582" font-family="Courier New"
+            fill="black" font-size="17" latexdraw:x="180.0">
+            <text x="180.0" y="187.0"><![CDATA[$Model_3$]]></text>
+        </g>
+        <g latexdraw:type="triangle" id="id585"
+            latexdraw:points="349.5 173.5 367.5 173.5 349.5 188.5 367.5 188.5" transform="rotate(90.0) translate(-177.49999999999997 -539.5)">
+            <polygon
+                points="358.5,175.44365 365.93796,187.5 351.06204,187.5"
+                latexdraw:borderPos="outer" stroke-width="2.0"
+                stroke="black" fill="white"/>
+        </g>
+        <g latexdraw:type="rectangle" id="id586">
+            <rect x="174.0" y="197.0" width="176.0" height="18.0"
+                latexdraw:borderPos="outer" stroke-width="2.0"
+                stroke="black" fill="white" rx="2.6999999999999997"/>
+        </g>
+        <g latexdraw:type="text" id="id587" font-family="Courier New"
+            fill="black" font-size="17" latexdraw:x="179.0">
+            <text x="179.0" y="212.0"><![CDATA[$Model_4$]]></text>
+        </g>
+        <g latexdraw:type="triangle" id="id590"
+            latexdraw:points="348.5 198.5 366.5 198.5 348.5 213.5 366.5 213.5" transform="rotate(90.0) translate(-151.49999999999997 -563.5)">
+            <polygon
+                points="357.5,200.44365 364.93796,212.5 350.06204,212.5"
+                latexdraw:borderPos="outer" stroke-width="2.0"
+                stroke="black" fill="white"/>
+        </g>
+        <g latexdraw:type="rectangle" id="id591">
+            <rect x="174.0" y="223.0" width="176.0" height="18.0"
+                latexdraw:borderPos="outer" stroke-width="2.0"
+                stroke="black" fill="white" rx="2.6999999999999997"/>
+        </g>
+        <g latexdraw:type="text" id="id592" font-family="Courier New"
+            fill="black" font-size="17" latexdraw:x="179.0">
+            <text x="179.0" y="238.0"><![CDATA[$Model_5$]]></text>
+        </g>
+        <g latexdraw:type="triangle" id="id595"
+            latexdraw:points="348.5 224.5 366.5 224.5 348.5 239.5 366.5 239.5" transform="rotate(90.0) translate(-125.49999999999997 -589.5)">
+            <polygon
+                points="357.5,226.44365 364.93796,238.5 350.06204,238.5"
+                latexdraw:borderPos="outer" stroke-width="2.0"
+                stroke="black" fill="white"/>
+        </g>
+        <g latexdraw:type="rectangle" id="id596">
+            <rect x="174.0" y="306.0" width="176.0" height="18.0"
+                latexdraw:borderPos="outer" stroke-width="2.0"
+                stroke="black" fill="white" rx="2.6999999999999997"/>
+        </g>
+        <g latexdraw:type="text" id="id597" font-family="Courier New"
+            fill="black" font-size="17" latexdraw:x="179.0">
+            <text x="179.0" y="321.0"><![CDATA[$Model_n$]]></text>
+        </g>
+        <g latexdraw:type="triangle" id="id600"
+            latexdraw:points="348.5 307.5 366.5 307.5 348.5 322.5 366.5 322.5" transform="rotate(90.0) translate(-42.5 -672.5)">
+            <polygon
+                points="357.5,309.44366 364.93796,321.5 350.06204,321.5"
+                latexdraw:borderPos="outer" stroke-width="2.0"
+                stroke="black" fill="white"/>
+        </g>
+        <g latexdraw:type="text" id="id601"
+            font-family="Times New Roman" fill="black" font-size="35"
+            latexdraw:x="250.0" transform="rotate(90.0) translate(5.20654296875 -531.95654296875)">
+            <text x="250.0" y="270.0"><![CDATA[...]]></text>
+        </g>
+        <g latexdraw:type="rectangle" id="id604">
+            <rect x="512.5" y="158.5" width="155.0" height="99.0"
+                latexdraw:borderPos="outer" stroke-width="5.0"
+                stroke="black" fill="white" rx="2.475"/>
+        </g>
+        <g latexdraw:type="text" id="id605"
+            font-family="Times New Roman" fill="black" font-size="17" latexdraw:x="520.0">
+            <text x="520.0" y="180.0"><![CDATA[$ID_{model_i}$]]></text>
+        </g>
+        <g latexdraw:type="text" id="id608"
+            font-family="Times New Roman" fill="black" font-size="17" latexdraw:x="520.0">
+            <text x="520.0" y="200.0"><![CDATA[$Name_{model_i}$]]></text>
+        </g>
+        <g latexdraw:type="text" id="id611"
+            font-family="Times New Roman" fill="black" font-size="17" latexdraw:x="520.0">
+            <text x="520.0" y="220.0"><![CDATA[$Size_{model_i}$]]></text>
+        </g>
+        <g latexdraw:type="text" id="id614"
+            font-family="Times New Roman" fill="black" font-size="17" latexdraw:x="520.0">
+            <text x="520.0" y="240.0"><![CDATA[$Type_{model_i}$]]></text>
+        </g>
+        <g latexdraw:type="line" id="id617">
+            <line x1="400.0" x2="500.0" y1="210.0" y2="210.0"
+                stroke-width="10.0" stroke="black"
+                latexdraw:rotationAngle="0.0" marker-end="url(#arrow2-617)"/>
+            <line x1="400.0" x2="500.0" y1="210.0" y2="210.0"
+                stroke="white" stroke-width="6.0" fill="none" latexdraw:type="dbleborders"/>
+        </g>
+        <g latexdraw:type="text" id="id618"
+            font-family="Times New Roman" fill="black" font-size="18" latexdraw:x="400.0">
+            <text x="400.0" y="190.0"><![CDATA[$Model_i$]]></text>
+        </g>
+    </g>
+    <metadata>
+        <latexdraw:metadata>
+            <latexdraw:displayBorders>false</latexdraw:displayBorders>
+            <latexdraw:autoAdjust>true</latexdraw:autoAdjust>
+            <latexdraw:ppc>50</latexdraw:ppc>
+            <latexdraw:zoom>1.0</latexdraw:zoom>
+            <latexdraw:unit>cm</latexdraw:unit>
+            <latexdraw:classicGrid>false</latexdraw:classicGrid>
+            <latexdraw:gridGap>10</latexdraw:gridGap>
+            <latexdraw:code>0</latexdraw:code>
+            <latexdraw:displayGrid>true</latexdraw:displayGrid>
+            <latexdraw:magneticGrid>true</latexdraw:magneticGrid>
+            <latexdraw:autoUpdate>true</latexdraw:autoUpdate>
+            <latexdraw:version>2.0.8</latexdraw:version>
+            <latexdraw:size>
+                <latexdraw:width>1280</latexdraw:width>
+                <latexdraw:height>774</latexdraw:height>
+            </latexdraw:size>
+            <latexdraw:position>
+                <latexdraw:x>0</latexdraw:x>
+                <latexdraw:y>22</latexdraw:y>
+            </latexdraw:position>
+            <latexdraw:dividerPosition>0.7515625</latexdraw:dividerPosition>
+            <latexdraw:displayCodePanel>true</latexdraw:displayCodePanel>
+            <latexdraw:displayXScale>true</latexdraw:displayXScale>
+            <latexdraw:displayYScale>true</latexdraw:displayYScale>
+            <latexdraw:delimitorOpacity>130</latexdraw:delimitorOpacity>
+        </latexdraw:metadata>
+    </metadata>
+</svg>
