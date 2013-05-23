@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+    xmlns:latexdraw="http://latexdraw.sourceforge.net/namespaces/latexdraw"
+    version="1.1" baseProfile="full">
+    <defs/>
+    <g>
+        <g latexdraw:type="rectangle" id="id2094">
+            <rect x="12.5" y="137.5" width="195.0" height="35.0"
+                latexdraw:borderPos="outer" stroke-width="5.0"
+                stroke="black" fill="none"/>
+        </g>
+        <g latexdraw:type="text" id="id2095"
+            font-family="Times New Roman" fill="black" font-size="18" latexdraw:x="45.0">
+            <text x="45.0" y="160.0"><![CDATA[modelview matrix]]></text>
+        </g>
+        <g latexdraw:type="rectangle" id="id2098">
+            <rect x="207.5" y="137.5" width="95.0" height="35.0"
+                latexdraw:borderPos="outer" stroke-width="5.0"
+                stroke="black" fill="none"/>
+        </g>
+        <g latexdraw:type="text" id="id2099"
+            font-family="Times New Roman" fill="black" font-size="18" latexdraw:x="240.0">
+            <text x="240.0" y="160.0"><![CDATA[fovy]]></text>
+        </g>
+        <g latexdraw:type="rectangle" id="id2102">
+            <rect x="302.5" y="137.5" width="125.0" height="35.0"
+                latexdraw:borderPos="outer" stroke-width="5.0"
+                stroke="black" fill="none"/>
+        </g>
+        <g latexdraw:type="text" id="id2103"
+            font-family="Times New Roman" fill="black" font-size="18" latexdraw:x="325.0">
+            <text x="325.0" y="160.0"><![CDATA[aspect ratio]]></text>
+        </g>
+        <g latexdraw:type="rectangle" id="id2106">
+            <rect x="427.5" y="137.5" width="125.0" height="35.0"
+                latexdraw:borderPos="outer" stroke-width="5.0"
+                stroke="black" fill="none"/>
+        </g>
+        <g latexdraw:type="text" id="id2107"
+            font-family="Times New Roman" fill="black" font-size="18" latexdraw:x="450.0">
+            <text x="450.0" y="160.0"><![CDATA[screen error]]></text>
+        </g>
+    </g>
+    <metadata>
+        <latexdraw:metadata>
+            <latexdraw:displayBorders>false</latexdraw:displayBorders>
+            <latexdraw:autoAdjust>true</latexdraw:autoAdjust>
+            <latexdraw:ppc>50</latexdraw:ppc>
+            <latexdraw:zoom>1.0</latexdraw:zoom>
+            <latexdraw:unit>cm</latexdraw:unit>
+            <latexdraw:classicGrid>false</latexdraw:classicGrid>
+            <latexdraw:gridGap>5</latexdraw:gridGap>
+            <latexdraw:code>0</latexdraw:code>
+            <latexdraw:displayGrid>true</latexdraw:displayGrid>
+            <latexdraw:magneticGrid>true</latexdraw:magneticGrid>
+            <latexdraw:autoUpdate>true</latexdraw:autoUpdate>
+            <latexdraw:version>2.0.8</latexdraw:version>
+            <latexdraw:size>
+                <latexdraw:width>1298</latexdraw:width>
+                <latexdraw:height>774</latexdraw:height>
+            </latexdraw:size>
+            <latexdraw:position>
+                <latexdraw:x>0</latexdraw:x>
+                <latexdraw:y>22</latexdraw:y>
+            </latexdraw:position>
+            <latexdraw:dividerPosition>0.7619414483821263</latexdraw:dividerPosition>
+            <latexdraw:displayCodePanel>true</latexdraw:displayCodePanel>
+            <latexdraw:displayXScale>true</latexdraw:displayXScale>
+            <latexdraw:displayYScale>true</latexdraw:displayYScale>
+            <latexdraw:delimitorOpacity>130</latexdraw:delimitorOpacity>
+        </latexdraw:metadata>
+    </metadata>
+</svg>

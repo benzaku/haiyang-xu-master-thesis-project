@@ -122,7 +122,8 @@ oneside, openright
 %%%
 %%% color (custom: ralf),
 %%%
-\usepackage{xcolor}
+\usepackage{color,xcolor}
+
 %\definecolor{darkblue}{rgb}{0,0,.5}
 %\definecolor{lightblue}{rgb}{0.8,0.85,1}
 %\definecolor{darkgreen}{rgb}{0,.35,0}
@@ -163,7 +164,71 @@ oneside, openright
     %
     showstringspaces=false, % no special string spaces
     extendedchars=yes,
-    inputencoding=utf8
+%    inputencoding=utf8
+    inputencoding=latin1
+}
+
+\definecolor{pink}  {rgb}{0.67, 0.05, 0.57} % keywords
+\definecolor{red}   {rgb}{0.87, 0.20, 0.00} % strings
+\definecolor{green} {rgb}{0.00, 0.47, 0.00} % comments
+\definecolor{violet}{rgb}{0.41, 0.12, 0.61} % classes
+\definecolor{blue}  {rgb}{0.21, 0.00, 0.44} % functions
+\definecolor{brown} {rgb}{0.39, 0.22, 0.13} % brown
+
+\lstdefinelanguage{Objective-C 2.0}[Objective]{C} {
+    morekeywords={id, Class, SEL, IMP, BOOL, nil, Nil, NO, YES,
+                  oneway, in, out, inout, bycopy, byref,
+                  self, super, _cmd,
+                  @required, @optional,
+                  @try, @throw, @catch, @finally,
+                  @synchronized, @property, @snythesize, @dynamic},
+    moredelim=[s][color{red}]{@"}{"},
+    moredelim=[s][color{red}]{<}{>}
+}
+
+\lstdefinestyle{Xcode} {
+    language        = Objective-C 2.0,
+    basicstyle      = \footnotesize\ttfamily,
+    numbers=left,
+    numberstyle=\footnotesize\ttfamily,      % the size of the fonts that are used for the line-numbers
+    stepnumber=1,                   % the step between two line-numbers. If it is 1 each line will be numbered
+   numbersep=5pt,                  % how far the line-numbers are from the code
+    identifierstyle = \color{black},
+    commentstyle    = \color{green},
+    keywordstyle    = \color{pink},
+    stringstyle     = \color{red},
+    directivestyle  =\color{brown},
+    extendedchars   = true,
+    tabsize         = 4,
+    showspaces      = false,
+    showstringspaces = false,
+    breakautoindent = true,
+    flexiblecolumns = true,
+    keepspaces      = true,
+    stepnumber      = 0,
+    xleftmargin     = 0pt, 
+}
+
+\lstdefinestyle{customcpp}
+{
+language=C++,                % choose the language of the code
+basicstyle=\footnotesize\ttfamily,       % the size of the fonts that are used for the code
+%numbers=left,                   % where to put the line-numbers
+numberstyle=\footnotesize\ttfamily,      % the size of the fonts that are used for the line-numbers
+stepnumber=1,                   % the step between two line-numbers. If it is 1 each line will be numbered
+numbersep=5pt,                  % how far the line-numbers are from the code
+backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
+showspaces=false,               % show spaces adding particular underscores
+showstringspaces=false,         % underline spaces within strings
+showtabs=false,                 % show tabs within strings adding particular underscores
+frame=single,           % adds a frame around the code
+tabsize=2,          % sets default tabsize to 2 spaces
+captionpos=b,           % sets the caption-position to bottom
+breaklines=true,        % sets automatic line breaking
+breakatwhitespace=false,    % sets if automatic breaks should only happen at whitespace
+morekeywords={attribute, varying, lowp, vec4, gl_FragColor, vec3, uniform, mat4, mat3, normalize, gl_Position},
+keywordstyle=\color{pink},
+escapeinside={\%*}{*)}          % if you want to add a comment within your code
 }
 
 % activate standard listing style (custom: ralf)
@@ -253,6 +318,7 @@ oneside, openright
 \usepackage{booktabs}
 \usepackage{algorithm}
 \usepackage{algorithmic}
+
 
 %%%
 %%% PDF
@@ -473,6 +539,9 @@ escapeinside={\%}{)}          % if you want to add a comment within your code
 
 \newcommand{\underoverrightleftarrow}[2]{\underset{#1}{\overset{#2}\rightleftharpoons}}
 
+\renewcommand{\arraystretch}{1.5}
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%
 %%% begin document
@@ -529,19 +598,20 @@ escapeinside={\%}{)}          % if you want to add a comment within your code
 %\listoftables
 
 
-%\newpage
+%\newpage 
 \pagenumbering{arabic}
 %\pagestyle{scrheadings}
-
+\listoffigures
+\listoftables
+\lstlistoflistings
 
 \input{01_Introduction}
 \input{02_BasicConcepts}
 \input{03_SystemDesign}
 \input{04_SystemImplementation}
 \input{05_ExperimentalEvaluation}
-\input{06_CollaborationWithOtherProject}
+%\input{06_CollaborationWithOtherProject}
 \input{07_Conclusion}
-
 
 
 

@@ -1,14 +1,209 @@
 \chapter{System Implementation}
 \label{chapter:SystemImplementation}
-\TODO{In this chapter, we will describe in detail the implementation of both server and client of our mesh streaming framework.}
+%\TODO{In this chapter, we will describe in detail the implementation of both server and client of our mesh streaming framework.}
+We have describe the design of our mesh streaming system in the previous chapter. In this chapter, we will describe the implementation details of our system both in server and client side. 
+\input{graphs/GraphFlowChart}
+To describe the implementation of our streaming system, let's first take a look at the flow char of overall process \FG{fig:flowchart} shows. Consider a user is using our streaming system to view a mesh model progressively, the process goes as follows: 
+\begin{enumerate}
+\item
+Client/Server start and connect. 
+\item
+Select a model to view.
+\item
+If not using server rendering, continuously receiving $vsplits$ transmitted from server based on synchronized viewing parameter. And then perform mesh refinement and rendering.
+\item
+If using server rendering, continuously receiving rendered images from server based on synchronized viewing parameters.
+\item
+Connection closes.
+\end{enumerate}
+\FG{fig:flowchart} illustrates the functionalities of our streaming system out of the box. In the following sections we will describe the implementation details of each steps illustrated in \FG{fig:flowchart}. 
 
-\section{Server Implementation}
+\section{Model Loading}
+\label{section:modelloading}
+Both of the client and server have the functionality of model loading. The server need to load a view-dependent progressive mesh model when a a user selects it from client-side. And vice versa, the client also need to load the bash mesh of the selected model transmitted from server. Therefore, in this section, we will describe in detail the file format of the view-dependent progressive mesh model. \\
+%\subsection{File Format} 
+%\label{section:fileformat}
+\input{graphs/GraphPMFileFormat}
+\input{graphs/GraphVDPMFileFormat}
+In \SC{subsection:theoreticalQEM} it is described that we use Quadric Error Metrics method to produce progressive mesh. For view-dependent progressive mesh, it is described in \SC{subsection:theoreticalVHF} that inspired by Kim \etal's\cite{Kim:2003:TransitiveMeshSpace} work, we introduced a vertex hierarchy structure to enable view-dependent refinement. Therefore, all the models stored in server-side mesh repository are pre-processed into the format of view-dependent progressive mesh with vertex hierarchy structure. \\
+
+The original progressive mesh format is quite simple as \FG{fig:pmfileformat} shows: started with a file header "ProgMesh" indicating itself is a progressive mesh file, followed with d information of the base mesh and a series of details for refinement. \\
+
+View-dependent progressive mesh format is illustrated in \FG{fig:vdpmfileformat}. It has almost the same structure as the simple pm format except that mesh details are represented in the form of vertex hierarchy trees as show in the bottom of \FG{fig:vdpmfileformat}. And as introduced in \SC{section:implVH}, the vertex hierarchy trees are encoded in the fashion of bit-wise. In other words, each new vertex is stored with its corresponding $<treeId, nodeId>$.
+
+\section{Network Protocol Implementation}
+\label{section:networkprotocol}
+In our mesh streaming application, a network protocol is implemented for the network communication between server and client. It is run separately simultaneously on both sides. The protocol's job includes network transmission, transmission sequence control and definition of network packet format. 
+
+\subsection{Network Transmission}
+\label{section:networktransmission}
+We use TCP socket for network transmission in our application. In the server side, I choose to use the \textbf{Poco Network Library} which is provided by the open-souce C++ library \textbf{POCO\footnote{\label{POCO}\url{http://pocoproject.org}}}. And in the client side, an open-souce objective-c TCP/IP socket networking library, \textbf{GCDAsyncSocket\footnote{\label{GCDAsyncSocket}\url{https://github.com/robbiehanson/CocoaAsyncSocket}}} is used to provide fully \textbf{GCD(Grand Central Dispatch)\footnote{\label{gcd}\url{http://en.wikipedia.org/wiki/Grand_Central_Dispatch}}} based and Thread-Safe TCP socket support. 
+
+\subsection{Transmission Sequence Control}
+\label{section:transeqcontrol}
+The transmission sequence control is separately implemented in server and client. And the transmission between client and server is a request-and-response style, in which client always sends request to server and server is always waiting for request from client and sends back response. In the following we will introduce the implementation of transmission sequence control (TSC) of client- and server-side separately. 
+\subsubsection{Client-side TSC}
+\label{section:clienttsc}
+\input{graphs/GraphClientTSC}
+Since the server side network action is mainly driven by request from client side, we first describe the client side transmission sequence control. We can express the client side TSC in a state-machine-like diagram. \FG{fig:clienttscstate} shows roughly the state-machine which may express the transmission sequence control in the client side. The client is started in the state of $NotConnected$. And when it is connected with server, the client sends socket request for retrieving "Model List" from server and switch its state to $WaitModelList$ to wait for the server to send back the "Model List". Once the "Model List" arrives, the client will switch back to $ConnectedIdle$ state. This is a typical round process of client-side socket transmission sequence transfer. Similarly the processes like "Load Model" and "Sync Viewing Params" are also illustrated in FG{fig:clienttscstate}. Note that each socket request or response message is well-formatted with proper header. We will describe the socket message packet format in \SC{section:netpackformat}.  
 
 
-\section{Client Implementation}
+\subsubsection{Server-side TSC}
+\label{section:servertsc}
+\input{graphs/GraphServerTSC}
+Similar to client-side TSC described in \SC{section:clienttsc}, the server-side transmission sequence control can also be illustrated by a state-machine-like digram as \FG{fig:servertscstate} shows. Corresponding to client's $ConnectedIdle$ state introduced in \SC{section:clienttsc}, the server will remain $WaitForRequest$ state when a client is connected and keep listening for any request sent from client. When a request is received, the server process will perform corresponding operations and send back a response. \\
+%\TODO{add code list}
 
-\section{Implementation Discussion}
-\TODO{Discussion on implementation. }
+\subsection{Network Packet Format}
+\label{section:netpackformat}
+\input{graphs/GraphNetworkPackFormat}
+When client communicate with server over network, each message transmitted through the link is encoded in the form of $<HeaderString+Content>$. For example, each request of request of viewing parameter synchronization is encoded as $<SYNC\_SPM\_VIEWING\_PARAMS+ViewParamsContent>$. (See \FG{fig:netpackformat}) In \SC{section:vdstreamingimpl} the detail implementation of the network data packet in view-dependent streaming will be described.
+
+\section{View-dependent Streaming Implementation}
+\label{section:vdstreamingimpl}
+When users select client rendering, which means the model will be rendered on the client side, our system will stream corresponding details $vsplits$ from server to client according to the viewing parameters synchronized to server and client will refine model gradually and render it to screen. On the other hand, when users select server rendering, which means the model will be rendered on the server side, our system will stream rendered image from server according to viewing parameters synchronized. Therefore, in this section we will mainly discuss implementation details of view-dependent streaming process both client and server rendering situation. 
+%The following sections are organized as this: \TODO{the following paragraph organization}.
+\subsection{Client Rendering Situation}
+\label{section:clientrenderingvdpm}
+\input{graphs/GraphClientRenderingVD}
+In Client Rendering Situation, the rendering work is done solely by client. Therefore the major network transmission packets contains the $vsplits$ information. \FG{fig:clientrenderingvdsq} shows the sequential diagram of view-dependent streaming process in the situation of client rendering. In this section we will illustrate the implementation of view-dependent streaming and rendering in client rendering step by step according to this diagram. \\
+
+Actually the streaming process starts when finishing loading bash mesh. But here we take user interaction as the start point for description of the whole process implementation. As \FG{fig:clientrenderingvdsq} shows, when a user interaction is fired, client will first check if it is in the state of streaming or refining. To make is simple, we first illustrate the situation that there is no previous streaming or refining action and discuss the opposite situation later.\\
+\input{graphs/GraphViewingParamPacket}
+When user interacts, including translation, rotation and zooming, the current viewing parameters will be collected. The data structure of viewing parameter contains a $4 \times 4$ model view matrix, a fovy (field of view) of the view frustum, an aspect ratio of the client screen and screen error tolerance. (See \FG{fig:viewparampacket}) For the screen error tolerance we use the criteria proposed by Hoppe \cite{Hoppe:1997:VRP}. When the viewing parameter is transmitted to server, the server will performs view perform view-dependent vertex split algorithm as described in \SC{theo:vdpm} on vertex hierarchy trees of the model stored. This is a critical step of the whole view-dependent streaming process. We will illustrate here step by step. 
+\begin{enumerate}
+\item
+Based on viewing parameters received, server will find vertices in current mesh which need to be performed $vsplit$ by perform procedure $qrefine()$. The procedure $qrefine()$ evaluates each vertex in current mesh with the criteria of (1) if the vertex out of view frustum? (2) if its normal out of view scope? (3) if it's under screen error tolerance? List~\ref{qrefinecode} illustrates the C++ implementation of $qrefine$. 
+\item
+Once the server find a vertex need to split, it will perform $vsplit$ operation on it and run the procedure $qrefine$ on updated mesh again until there is no more vertex need to be split under current viewing parameters. This is a recursive process. 
+\item
+During the $qrefine$ and $vsplit$ process, each $vsplit$ operation will be recorded into an array with splitting order. This array of $vsplits$ will later be streamed to client. 
+\end{enumerate}
+\lstinputlisting[caption=qrefine() procedure, style=customcpp, label=qrefinecode]{codes/qrefine.cpp}
+
+Then the streaming of details process starts. As \FG{fig:clientrenderingvdsq} shows, client continuously receives $vsplits$ packets streamed from server and start refinement and rendering process on the fly. We define here for each $n=500$ $vsplit$ packet received the client will perform refinement and render the model to screen. If this series of $vsplits$ streaming has been finished, the client will automatically decrease the screen error tolerance or it will receive user interaction. Either way may update  and initiate viewing parameter synchronization again. Then this process starts again.\\
+
+\input{graphs/GraphUserInterruptStream}
+Now let's consider the situation that client receives user interaction when previous streaming process is still going on. As is described in previous paragraphs when server receive viewing parameter synchronization it will first refine the mesh on server side and produce the sequence of $vsplit$ to stream. Client side mesh is refined on-the-fly when receiving the sequence of $vsplit$ packet by packet (max. 250 $vsplits$ per packet). It is possible that when a user interaction occurs, client-side mesh hasn't been refined to the detail level of server-side mesh. (See \FG{fig:userinterruptstream}) In this situation if we still continue to synchronize viewing parameter and let server perform $vsplit$ on server side, there will be data consistency problem. Therefore we implement a rollback mechanism to avoid such situation. \\
+\input{graphs/GraphRollbackMechanism}
+
+As is described in \SC{subsection:theoreticalPM} $vsplit$ and $ecol$ are opposite operations and it is possible to transform between different LOD using $vsplit$ and $ecol$ operations. Based on that, we can rollback the server-side mesh LOD to current client-side mesh LOD by reversely perform $ecol$ operations on the sequence of $vsplits$ which has not been streamed yet, as \FG{fig:rollbackmechanism} shows. Once the LOD of both meshes on server and client is synchronized, the client can continue to receive user interaction and do the refinement and rendering.
+
+\subsection{Server Rendering Situation}
+\label{section:serverrenderingvdpm}
+\input{graphs/GraphServerRenderingVD}
+In the server rendering situation, most of the steps are the same as those in client rendering situation (See \FG{fig:vsstreamingsqserver}). While the difference is that the server is streaming rendered images, instead of $vsplit$ details. And since the client side is just displaying rendered image, there's no need to keep synchronization of both sides. In our implementation, the client side always holds the base mesh. When user performs multi-touch interaction on device's screen for translation, rotation and scaling, the bash mesh will be displayed. Once the user finishes interaction, client will synchronized the current viewing parameters with server and the server will start the adaptive refinement and rendering process. During the refinement process, different from client rendering situation, the server will not only find the vertices need to split, but will also perform $ecol$ on edges whose vertices don't contribute to final rendering effects any more. This is very critical to server rendering because it makes possible to keep an reasonable size of triangle to render when processing with huge meshes. Next the rendered image will be compressed into JPEG format and sent to the client.  
+
+\section{Renderer Implementation}
+\label{section:rendererimpl}
+Both client and server have a mesh renderer for client rendering and server rendering respectively. Therefore, in this section we will illustrate the implementation of the mesh renderer on client and server separately. 
+
+\subsection{Client-side Renderer}
+\label{section:clientrenderer}
+Client-side renderer is implemented in Objective-C and run on iPad. We use OpenGL ES 2.0 for rendering. The client rendering process can be split into three parts: (1) buffer initialization, (2) buffer update and (3) rendering using GLSL. In the following subsection our illustration will also follow this order. 
+\subsubsection{Buffer Initialization}
+\label{section:bufferinit}
+Our client side application is running on an iPad, which means there is limited computing resource and memory resource. When a mesh is being refined on-the-fly, the size of triangles is continuously increasing and its size of memory it takes as well. Since in the client rendering situation, the whole mesh will finally be transmitted and stored by the client side, it is necessary that we allocate the memory for the whole mesh size. When the base mesh and its information is transmitted, we will first calculate the total size of the mesh and allocate enough memory space to hold the original mesh for GPU to render. Listing~\ref{client_rdr_buffer_init} shows the code of buffer initialization for vertex-normal buffer and face-index buffer. Memory enough to hold the whole mesh is allocated for convenience of future update and modification. And then, as Listing~\ref{client_rdr_buffer_map} shows, the initial mesh's geometry information (point and normal) and face index information are copied into the gpu's memory. 
+\lstinputlisting[label=client_rdr_buffer_init,caption=Client Renderer Buffer Init, style=Xcode, firstline=1, lastline=11]{codes/clientrenderer.m}
+\lstinputlisting[label=client_rdr_buffer_map,caption=Client Renderer Buffer Map, style=Xcode, firstline=13, lastline=38]{codes/clientrenderer.m}
+
+\subsubsection{Buffer Update}
+\label{section:bufferupdate}
+When client receives details streamed from server and refine the mesh on-the-fly, huge amount of modifications on the mesh are called frequently. It would be impractical to re-submit the whole mesh's geometry and face index information into GPU's memory every time the mesh is updated. Therefore we implemented a partial update algorithm to avoid unnecessary memory modification. \\
+
+An intuitive observation on the feature of progressive mesh and its memory layout in GPU shows that each time when a $vsplit$ is performed, there will be one vertex and at most two faced added. In other words, there is no need to rearrange the initial memory layout. So the geometric and topological modifications on the mesh are also countable and limited within the split vertex's 1-ring neighbors. Therefore it is possible to design an algorithm to significantly reduce memory modification when updating the mesh in GPU's memory. \AL{partialMemUpdateAl} sketches out the \emph{Partial Memory Update Algorithm}. It significantly reduces update time and memory cost during refinement and rendering. 
+
+\begin{algorithm}                     
+\caption{Partial Memory Update Algorithm}          
+\label{partialMemUpdateAl}                           
+\begin{algorithmic}      
+	\STATE{Perform $vsplit$ on the mesh represented by OpenMesh}
+	\STATE{Find modified/new vertices' in OpenMesh and update/add its information in the GPU memory}
+	\FORALL{1-ring neighbors of $vsplit$ vertex}
+		\STATE{Update each neighbor face's geometry and topology information}
+	\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+
+
+\subsubsection{Rendering Using GLSL}
+\label{section:renderglsl}
+After each update of vertex buffer and index buffer, the mesh will be rendered. We use OpenGL ES along with GLSL to render the scene. As is illustrated in Listing~\ref{client_render_draw_code}, to render the scene we first bind corresponding buffer and enable vertex attribute which declare normal offset in memory. And then the GLSL program is loaded. We use the $glDrawElement()$ function to do the drawing. And finally corresponding buffers are unbind. Listing~\ref{shaderfsh} and Listing~\ref{shadervsh} illustrates the GLSL code for rendering. We use the same piece of GLSL on server side for server rendering. 
+\lstinputlisting[label=client_render_draw_code,caption=Rendering Method, style=Xcode, firstline=45, lastline=64]{codes/clientrenderer.m}
+\lstinputlisting[label=shaderfsh,caption=shader.fsh, style=customcpp, firstline=2, lastline=8]{codes/shader.c}
+\lstinputlisting[label=shadervsh,caption=shader.vsh, style=customcpp, firstline=11, lastline=31]{codes/shader.c}
+
+
+\subsection{Server-side Renderer}
+\label{section:serverrenderer}
+\lstinputlisting[label=serverrendererdraw,caption=Drawing code of server renderer, style=customcpp, firstline=28, lastline=42]{codes/serverrenderer.cpp}
+As is described in \SC{section:renderglsl}, server-side renderer is using the same piece of GLSL code for rendering. However, other part of server renderer is quite different from that of client renderer. The difference is mainly in the part of geometry submission and drawing method of the renderer. \\
+
+Unlike the client, the server-hold mesh model is always maintained to have minimum active vertices because of the server performs adaptive refinement which remove invisible vertices. This approach is significant to keep the amount of triangles to render in a relatively low level, however, it causes rearrangement of the vertex/index buffer submitted to the GPU's memory. Therefore we use different strategy for server renderer. \\
+
+Listing~\ref{serverrendererdraw} illustrates the drawing code of server renderer. Since the mesh's vertices and faces are changing continuously and frequently, We choose to submit the geometry of each active face in the mesh every time the scene is rendered to frame buffer. For efficient network transmission, the rendered image of server-side renderer will be compressed into JPEG format. When client side receives the rendered image it will map it to a quad with same size of the device's screen and rendered the image as its texture. 
+
+\section{UI Implementation}
+\label{section:uiimpl}
+The client part of the mesh streaming framework is in the form of App on iOS mobile OS. The UI part is one of the important parts of client implementation. Client's user interfaces are implemented in objective-c on iOS and can be divided into three parts: (1) Model View, (2) Model List and (3) Configuration. These three parts are arranged in the form tab view which user can select freely. In this section, we will describe the implementation details of these three parts respectively. 
+
+\subsection{Model View Tab}
+\label{section:modelview}
+\begin{figure}
+	\centering
+	\includegraphics[width=1.0\textwidth]{images/ModelView.png}
+	\caption{Screenshot of Model View Tab. There is a status bar on the top of the screen showing refinement process of current LOD}
+	\label{fig:modelviewtab}
+\end{figure}
+\lstinputlisting[label=progmeshglkviewcrtl,caption=ProgMeshGLKViewController.h, style=Xcode, firstline=4, lastline=14]{codes/uiimpl.m}
+\FG{fig:modelviewtab} shows the \textbf{Model View} tab of client application on iPad. The Model View tab is implemented using 
+\texttt{ProgMeshGLKViewController}, which is subclass of \texttt{GLKViewController} (See Listing~\ref{progmeshglkviewcrtl}). It is mainly responsible for user interaction and rendering the model scene on iPad's screen. 
+
+\subsection{Model List Tab}
+\label{section:modellist}
+\begin{figure}
+	\centering
+	\includegraphics[width=1.0\textwidth]{images/ModelList.png}
+	\caption{Screenshot of Model List Tab.}
+	\label{fig:modellisttab}
+\end{figure}
+\lstinputlisting[label=progmeshmodeltableviewctl,caption=ProgMeshModelTableViewController.h, style=Xcode, firstline=17, lastline=24]{codes/uiimpl.m}
+
+The second tab is the \textbf{Model List} tab, as showed in \FG{fig:modellisttab}. It has a list of all currently available models in the mesh repository on the server. When a user picks any item in the list, there will be background thread trying to load the bash mesh of the selected model from server. This tab is implemented using \texttt{ProgMeshModelTableViewController} which extends the base class \texttt{UITableViewController} provided by the iOS system itself (See Listing~\ref{progmeshmodeltableviewctl}). 
+
+
+\subsection{Configuration Tab}
+\label{section:configuration}
+
+\begin{figure}
+\centering
+\subfigure[b][Configuration tab (disconnected)]{
+	\centering
+	\includegraphics[width =0.45\textwidth] {images/ConfigurationDisconnected.png}
+	\label{fig:configtab:disconnected}
+}
+\hfill
+\subfigure[b][Configuration tab (connected)]{
+	\centering
+	\includegraphics[width =0.45\textwidth] {images/ConfigurationConnected.png}
+	\label{fig:configtab:connected}
+}
+\label{fig:configtab}
+\caption{Screenshot of Configuration Tab}
+\end{figure}
+The last tab, \textbf{Configuration} tab, provides graphics interface to user for the configuration of server IP address, port, control of connection and switching of rendering mode (client/server rendering), as showed in \FG{fig:configtab}. It is implemented using class \texttt{ConfigViewController} which is a subclass of \texttt{UIViewController} (See Listing~\ref{configviewcode}). \\
+
+\noindent
+\begin{minipage}{\linewidth}
+\makebox[\linewidth]{
+\lstinputlisting[label=configviewcode,caption=ConfigViewController.h, style=Xcode, firstline=27, lastline=37]{codes/uiimpl.m}
+}
+\bigskip
+\end{minipage}
+
+
+%\section{Implementation Discussion}
+%\TODO{Discussion on implementation. }
 
 %Picture
 %\noindent

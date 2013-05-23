@@ -1,7 +1,7 @@
 \chapter{Basic Concepts}
 \label{chapter:BasicConcepts}
 
-This section will be divided into 3 parts. In Section \ref{section:ProbStat} I will describe the problems in this thesis that I am going to solve. And In Section \ref{section:TheoConcpt} I will describe in detail the theoretical algorithms and concepts that solve the problems stated in Section \ref{section:ProbStat}. Section \ref{section:TechConcpt} introduce the techniques I used this thesis project. Further implementation details will be described in Chapter \ref{chapter:SystemDesign} and Chapter \ref{chapter:SystemImplementation}. 
+This section will be divided into three parts. In Section \ref{section:ProbStat} I will describe the problems in this thesis that I am going to solve. And In Section \ref{section:TheoConcpt} I will describe in detail the theoretical algorithms and concepts that solve the problems stated in Section \ref{section:ProbStat}. Section \ref{section:TechConcpt} introduce the techniques I used this thesis project. Further implementation details will be described in Chapter \ref{chapter:SystemDesign} and Chapter \ref{chapter:SystemImplementation}. 
 
 \section{Problem Statement}
 \label{section:ProbStat}
@@ -9,6 +9,7 @@ This section will be divided into 3 parts. In Section \ref{section:ProbStat} I w
 
 As the title of this thesis reads, the main contribution of our approach is the \emph{streaming} of geometries. Naturally how to achieve streaming becomes the core problem in our approach. \\
 %statement of the streaming
+
 For a precise statement of the problems, we have to initially define \emph{mesh streaming} properly. Here is a practical scenario: Suppose there is a mobile device user who would like to view a 3D model remotely stored on a server. In the traditional setup, the 3D model would be transmitted to the client side as a whole package. Once the client side get the whole model it would load it and render it to screen. This solution would be good when the model is small and the transmission of the whole model would be finished in acceptable time. While in the streaming setup, on the user have chosen a model, a rough model simplified from the original model with much smaller size and can be downloaded from client side within an acceptable time. Afterwards, details of the model would be sent to client side and the client side model will be refined on the fly until highest resolution level is reached. During the whole process the 3D model on the client side would be continuously and progressively reconstructed. Based on this scenario, we define \emph{Mesh Streaming} as follows: 
 \begin{defn}
 \emph{Mesh Streaming} is a process satisfying the following conditions: 

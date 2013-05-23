@@ -1,0 +1,50 @@
+\begin{figure}[htb]
+	\centering
+	
+	\begin{pdfpic}
+\psframe[linewidth=0.04,dimen=outer](2.6,3.0060155)(0.0,2.4060156)
+\usefont{T1}{ptm}{m}{n}
+\rput(1.2428125,2.7110157){NotConnected}
+\psframe[linewidth=0.04,dimen=outer](2.6,1.8060156)(0.0,1.2060156)
+\usefont{T1}{ptm}{m}{n}
+\rput(1.238291,1.5110157){ConnectedIdle}
+\psframe[linewidth=0.04,dimen=outer](8.6,1.8060156)(5.8,1.2060156)
+\usefont{T1}{ptm}{m}{n}
+\rput(7.0979004,1.5110157){WaitModelList}
+\psline[linewidth=0.04cm,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{->}(2.6,1.6060157)(5.8,1.6060157)
+\usefont{T1}{ptm}{m}{n}
+\rput(4.2371974,1.9110156){ReqModelList}
+\usefont{T1}{ptm}{m}{n}
+\rput(4.327197,1.1110157){ReceiveModelList}
+\psframe[linewidth=0.04,dimen=outer](8.6,0.006015625)(5.8,-0.59398437)
+\usefont{T1}{ptm}{m}{n}
+\rput(7.183945,-0.2889844){WaitLoadModel}
+\psline[linewidth=0.04,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{->}(2.4,1.2060156)(2.4,-0.19398437)(5.8,-0.19398437)
+\usefont{T1}{ptm}{m}{n}
+\rput(4.323242,0.111015625){ReqLoadModel}
+\psline[linewidth=0.04cm,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{<-}(2.6,1.4060156)(5.8,1.4060156)
+\psline[linewidth=0.04,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{<-}(2.2,1.2060156)(2.2,-0.39398438)(5.8,-0.39398438)
+\psframe[linewidth=0.04,dimen=outer](8.6,-1.5939844)(5.8,-2.1939843)
+\usefont{T1}{ptm}{m}{n}
+\rput(7.183945,-1.8889843){WaitLoadModel}
+\psline[linewidth=0.04,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{->}(1.8,1.2060156)(1.8,-1.7939844)(5.8,-1.7939844)
+\usefont{T1}{ptm}{m}{n}
+\rput(4.0924706,-1.4889843){SyncViewingParams}
+\psline[linewidth=0.04,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{<-}(1.6,1.2060156)(1.6,-1.9939843)(5.8,-1.9939843)
+\usefont{T1}{ptm}{m}{n}
+\rput(4.193242,-0.6889844){ReceiveBaseModel}
+\usefont{T1}{ptm}{m}{n}
+\rput(3.0517187,-2.2889843){ReceiveVsplits/ReceiveRenderedImage}
+\usefont{T1}{ptm}{m}{n}
+\rput(3.6676953,-2.7339845){\Huge ...}
+\psline[linewidth=0.04cm,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{->}(1.2,2.4060156)(1.2,1.8060156)
+\psline[linewidth=0.04cm,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{->}(1.4,1.8060156)(1.4,2.4060156)
+\usefont{T1}{ptm}{m}{n}
+\rput(4.6676955,-2.7339845){\Huge ...}
+\usefont{T1}{ptm}{m}{n}
+\rput(5.6676955,-2.7339845){\Huge ...}
+	\end{pdfpic} 
+	\caption{Client Transmission Sequence State-Machine Diagram}
+	\label{fig:clienttscstate}
+
+\end{figure}
