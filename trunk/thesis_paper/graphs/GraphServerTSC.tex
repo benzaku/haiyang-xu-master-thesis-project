@@ -1,0 +1,54 @@
+\begin{figure}[htb]
+	\centering
+	
+	\begin{pdfpic}
+\psframe[linewidth=0.04,dimen=outer](2.786992,3.2060156)(0.18699218,2.6060157)
+\usefont{T1}{ptm}{m}{n}
+\rput(1.4298047,2.9110155){NotConnected}
+\psframe[linewidth=0.04,dimen=outer](2.786992,1.6060157)(0.18699218,1.0060157)
+\usefont{T1}{ptm}{m}{n}
+\rput(1.5648925,1.3110156){WaitForRequest}
+\psframe[linewidth=0.04,dimen=outer](9.986992,1.6060157)(7.186992,1.0060157)
+\usefont{T1}{ptm}{m}{n}
+\rput(8.503662,1.3110156){LoadModelList}
+\psline[linewidth=0.04cm,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{->}(2.786992,1.4060156)(7.186992,1.4060156)
+\usefont{T1}{ptm}{m}{n}
+\rput(5.003916,1.7110156){ReceiveModelListReq}
+\usefont{T1}{ptm}{m}{n}
+\rput(4.8860154,0.9110156){SendModelList}
+\psframe[linewidth=0.04,dimen=outer](9.986992,-0.19398437)(7.186992,-0.79398435)
+\usefont{T1}{ptm}{m}{n}
+\rput(8.619707,-0.48898438){LoadModel}
+\psline[linewidth=0.04,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{->}(2.1869922,1.0060157)(2.1869922,-0.39398438)(7.186992,-0.39398438)
+\usefont{T1}{ptm}{m}{n}
+\rput(4.893916,-0.08898438){ReceiveLoadModelReq}
+\psline[linewidth=0.04cm,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{<-}(2.786992,1.2060156)(7.186992,1.2060156)
+\psline[linewidth=0.04,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{<-}(1.9869922,1.0060157)(1.9869922,-0.59398437)(7.186992,-0.59398437)
+\psframe[linewidth=0.04,dimen=outer](9.986992,-1.7939844)(7.186992,-2.3939843)
+\usefont{T1}{ptm}{m}{n}
+\rput(8.570937,-2.0889845){WaitLoadModel}
+\psline[linewidth=0.04,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{->}(0.9869922,1.0060157)(0.9869922,-1.9939843)(7.186992,-1.9939843)
+\usefont{T1}{ptm}{m}{n}
+\rput(4.9076366,-1.6889844){ReceiveViewingParams}
+\psline[linewidth=0.04,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{<-}(0.7869922,1.0060157)(0.7869922,-2.1939843)(7.186992,-2.1939843)
+\usefont{T1}{ptm}{m}{n}
+\rput(4.7520604,-0.8889844){SendBaseModel}
+\usefont{T1}{ptm}{m}{n}
+\rput(4.590537,-2.4889843){SendVsplits/SendRenderedImage}
+\usefont{T1}{ptm}{m}{n}
+\rput(3.8546875,-2.9339843){\Huge ...}
+\psline[linewidth=0.04cm,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{->}(1.3869922,2.6060157)(1.3869922,1.6060157)
+\psline[linewidth=0.04cm,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{->}(1.5869921,1.6060157)(1.5869921,2.6060157)
+\usefont{T1}{ptm}{m}{n}
+\rput(4.8546877,-2.9339843){\Huge ...}
+\usefont{T1}{ptm}{m}{n}
+\rput(5.8546877,-2.9339843){\Huge ...}
+\usefont{T1}{ptm}{m}{n}
+\rput(0.58076173,2.1110156){Connect}
+\usefont{T1}{ptm}{m}{n}
+\rput(2.5941894,2.1110156){Disconnect}	
+	\end{pdfpic} 
+	\caption{Server Transmission Sequence State-Machine Diagram}
+	\label{fig:servertscstate}
+
+\end{figure}

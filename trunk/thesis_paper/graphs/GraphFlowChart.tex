@@ -1,0 +1,70 @@
+\begin{figure}[htb]
+	\centering
+	
+	\begin{pdfpic}
+	\psset{unit=0.90cm}
+	\begin{pspicture}
+	\psframe[linewidth=0.1,dimen=outer](2.8,6.44)(0.4,5.52)
+\usefont{T1}{ptm}{m}{n}
+\rput(1.5690235,5.985){Server Start}
+\psframe[linewidth=0.1,dimen=outer](8.7,6.4)(6.28,5.48)
+\usefont{T1}{ptm}{m}{n}
+\rput(7.4237695,5.945){Client Start}
+\psframe[linewidth=0.1,dimen=outer](5.7,4.9)(3.26,3.98)
+\usefont{T1}{ptm}{m}{n}
+\rput(4.4737697,4.445){Connect}
+\psdiamond[linewidth=0.1,dimen=outer](4.5,0.96)(2.1,0.9)
+\usefont{T1}{ptm}{m}{n}
+\rput(4.4314356,0.965){Server Rendering?}
+\psframe[linewidth=0.1,dimen=outer](2.8,-0.1)(0.0,-1.02)
+\psline[linewidth=0.1,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{->}(2.5,0.96)(1.4,0.96)(1.4,-0.14)
+\psframe[linewidth=0.1,dimen=outer](5.7,3.3)(3.26,2.38)
+\usefont{T1}{ptm}{m}{n}
+\rput(4.5250683,2.845){Select Model}
+\psline[linewidth=0.1cm,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{->}(4.5,2.46)(4.5,1.86)
+\psline[linewidth=0.1cm,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{->}(4.52,4.06)(4.52,3.28)
+\psline[linewidth=0.1,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{->}(6.5,0.96)(7.7,0.96)(7.7,-0.14)
+\usefont{T1}{ptm}{m}{n}
+\rput(2.3161328,1.165){No}
+\usefont{T1}{ptm}{m}{n}
+\rput(6.772051,1.165){Yes}
+\psframe[linewidth=0.1,dimen=outer](9.1,-0.1)(6.3,-1.14)
+\usefont{T1}{ptm}{m}{n}
+\rput(1.3978711,-0.535){Receive $vsplit$}
+\psframe[linewidth=0.1,dimen=outer](2.8,-1.7)(0.0,-2.62)
+\psline[linewidth=0.1cm,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{->}(1.4,-0.94)(1.4,-1.74)
+\usefont{T1}{ptm}{m}{n}
+\rput(1.3872851,-2.135){Mesh Refinement}
+\usefont{T1}{ptm}{m}{n}
+\rput(4.5835447,-2.335){Synchronize}
+\psframe[linewidth=0.1,dimen=outer](2.8,-3.1)(0.0,-4.02)
+\psline[linewidth=0.1cm,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{->}(1.4,-2.54)(1.4,-3.14)
+\usefont{T1}{ptm}{m}{n}
+\rput(1.3436719,-3.535){Rendering}
+\usefont{T1}{ptm}{m}{n}
+\rput(7.6717186,-0.435){Receive}
+\usefont{T1}{ptm}{m}{n}
+\rput(7.681719,-0.835){Rendered Image}
+\psframe[linewidth=0.1,dimen=outer](9.1,-1.9)(6.3,-2.82)
+\psline[linewidth=0.1cm,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{->}(7.7,-1.04)(7.7,-1.94)
+\usefont{T1}{ptm}{m}{n}
+\rput(7.655869,-2.335){Display}
+\usefont{T1}{ptm}{m}{n}
+\rput(4.592139,-2.635){Viewing Params}
+\psline[linewidth=0.04cm,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{<-}(3.4,-1.14)(4.4,-2.04)
+\psline[linewidth=0.04cm,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{<-}(5.7,-1.14)(4.7,-2.04)
+\psline[linewidth=0.1,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{->}(1.4,-3.94)(1.4,-4.34)(3.2,-4.34)(3.2,0.36)(1.4,0.36)
+\psline[linewidth=0.1,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{->}(7.7,-2.7557895)(7.7,-3.34)(6.0,-3.34)(6.0,0.36)(7.7,0.36)
+\psframe[linewidth=0.1,dimen=outer](6.2,-5.54)(2.8,-6.44)
+\psline[linewidth=0.1,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{->}(1.4,-4.34)(1.4,-5.04)(4.5,-5.04)(4.5,-5.54)
+\psline[linewidth=0.1](7.7,-3.34)(7.7,-5.04)(4.5,-5.04)
+\usefont{T1}{ptm}{m}{n}
+\rput(4.478291,-5.935){Connection Close}
+\psline[linewidth=0.1,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{->}(2.7,5.96)(4.5,5.96)(4.5,4.86)
+\psline[linewidth=0.1,arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.4]{->}(6.3,5.96)(4.5,5.96)(4.5,4.86)
+	\end{pspicture}
+	\end{pdfpic} 
+	\caption{Overall Process Flow Chart}
+	\label{fig:flowchart}
+
+\end{figure}
