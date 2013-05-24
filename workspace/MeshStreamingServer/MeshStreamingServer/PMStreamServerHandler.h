@@ -16,6 +16,7 @@
 #include "ModelRepositoryHandler.h"
 #include "VDPMFileHandler.h"
 #include "GLHandler.h"
+#include "Logger.h"
 
 using Poco::Net::StreamSocket;
 using Poco::Net::SocketReactor;
@@ -65,7 +66,9 @@ private:
     bool                _server_rendering;
     
     GLHandler *         _glh;
+    SysLogger *         logger;
     
+    int                 accumulateDataSize;
     
     bool handleLoadModelRequest(int modelId);
     

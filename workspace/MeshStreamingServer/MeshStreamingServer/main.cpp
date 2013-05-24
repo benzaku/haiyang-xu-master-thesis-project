@@ -18,6 +18,20 @@
 #include <stdio.h>
 #include <jpeglib.h>
 
+#include "Poco/Logger.h"
+#include "Poco/PatternFormatter.h"
+#include "Poco/FormattingChannel.h"
+#include "Poco/ConsoleChannel.h"
+#include "Poco/FileChannel.h"
+#include "Poco/Message.h"
+
+using Poco::Logger;
+using Poco::PatternFormatter;
+using Poco::FormattingChannel;
+using Poco::ConsoleChannel;
+using Poco::FileChannel;
+using Poco::Message;
+
 using Poco::XML::Document;
 using Poco::XML::Element;
 using Poco::XML::Text;
@@ -35,7 +49,7 @@ int main(int argc, char** argv)
     PMStreamServer pmStreamServer;
     
     
-    
+	
     return pmStreamServer.run(argc, argv);
     
     

@@ -105,6 +105,8 @@ public:
     
     data_chunk* adaptive_refinement_server_rendering();
     
+    void get_vfront_info(int &vertices, int &faces);
+    
     std::vector<Vsplit>* get_vsplit_loaded(){ return &vsplit_loaded;};
 
     void rollback_split(data_chunk * vsplitdata);

@@ -25,6 +25,7 @@
 		5813CCE316F7536100B01C1E /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5813CCE216F7536100B01C1E /* OpenGL.framework */; };
 		5813CCE516F7536700B01C1E /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5813CCE416F7536700B01C1E /* GLUT.framework */; };
 		5818D2C0165F7E9700378191 /* VolumeObj.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5818D2BE165F7E9700378191 /* VolumeObj.cpp */; };
+		58267CB9174518FE000B3873 /* Logger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 58267CB7174518FE000B3873 /* Logger.cpp */; };
 		582DC9CC16A2355F004BC474 /* VDPMLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 582DC9CA16A2355F004BC474 /* VDPMLoader.cpp */; };
 		583C4F7416494993006AF99A /* MC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 583C4F7116494993006AF99A /* MC.cpp */; };
 		5840D5BE165FBE3400CA167C /* MeshObj.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5840D5BC165FBE3400CA167C /* MeshObj.cpp */; };
@@ -87,6 +88,8 @@
 		5813CCE416F7536700B01C1E /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = ../../../../../../../System/Library/Frameworks/GLUT.framework; sourceTree = "<group>"; };
 		5818D2BE165F7E9700378191 /* VolumeObj.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VolumeObj.cpp; sourceTree = "<group>"; };
 		5818D2BF165F7E9700378191 /* VolumeObj.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VolumeObj.h; sourceTree = "<group>"; };
+		58267CB7174518FE000B3873 /* Logger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Logger.cpp; sourceTree = "<group>"; };
+		58267CB8174518FE000B3873 /* Logger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Logger.h; sourceTree = "<group>"; };
 		582DC9CA16A2355F004BC474 /* VDPMLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VDPMLoader.cpp; sourceTree = "<group>"; };
 		582DC9CB16A2355F004BC474 /* VDPMLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VDPMLoader.h; sourceTree = "<group>"; };
 		583C4F6F16494993006AF99A /* StdDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StdDefines.h; sourceTree = "<group>"; };
@@ -184,6 +187,8 @@
 				588934B416567DC50001BA27 /* PMRepository.h */,
 				5840D5C0165FC5B400CA167C /* ModelRepositoryHandler.cpp */,
 				5840D5C1165FC5B400CA167C /* ModelRepositoryHandler.h */,
+				58267CB7174518FE000B3873 /* Logger.cpp */,
+				58267CB8174518FE000B3873 /* Logger.h */,
 				28D0AC7F161884D0000D174C /* Util */,
 			);
 			path = MeshStreamingServer;
@@ -366,6 +371,7 @@
 				58A4755A1703C1DD009B2E58 /* Phong.fsh in Sources */,
 				58DE335D1705E95F00766332 /* jpgd.cpp in Sources */,
 				58DE335E1705E95F00766332 /* jpge.cpp in Sources */,
+				58267CB9174518FE000B3873 /* Logger.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

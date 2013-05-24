@@ -512,6 +512,13 @@ void VDPMLoader::rollback_split(data_chunk * vsplitdata)
 
 }
 
+void VDPMLoader::get_vfront_info(int &vertices, int &faces)
+{
+    vertices = vfront_.size();
+    faces = mesh_.n_faces();
+}
+
+
 data_chunk* VDPMLoader::adaptive_refinement_server_rendering()
 {
     VDPMMesh::HalfedgeHandle v0v1;
@@ -800,12 +807,13 @@ bool VDPMLoader::qrefine(VHierarchyNodeHandle _node_handle){
     float	distance2 = distance * distance;
     float	product_value = dot(eye_dir, node.normal());
     
+    //if vertex is out of view frustum?
     if (outside_view_frustum(p, node.radius()) == true)
         return	false;
-    
+    //if vertex normal direction is out of view scope?
     if (oriented_away(node.sin_square(), distance2, product_value) == true)
         return	false;
-    
+    //if current screen error is under tolerance?
     if (screen_space_error(node.mue_square(),
                            node.sigma_square(),
                            distance2,

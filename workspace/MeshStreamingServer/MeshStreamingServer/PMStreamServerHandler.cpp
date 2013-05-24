@@ -35,8 +35,14 @@ PMStreamServerHandler::PMStreamServerHandler(StreamSocket& socket, SocketReactor
     std::string temp("hihi");
     _glh->initialize(temp, 768, 955);
     
+    std::stringstream ss;
+    ss << time(0);
     
+    Poco::FormattingChannel * pFCFile = new FormattingChannel(new PatternFormatter("%E\t%i\t%t"));
+    pFCFile->setChannel(new FileChannel("/Users/hyx/Development/MasterThesis/testdata/data_"+ss.str()+".csv"));
+    pFCFile->open();
     Application& app = Application::instance();
+    app.logger().setChannel(pFCFile);
     app.logger().information("Connection from " + socket.peerAddress().toString());
     
     _reactor.addEventHandler(_socket, NObserver<PMStreamServerHandler, ReadableNotification>(*this, &PMStreamServerHandler::onReadable));
@@ -67,7 +73,8 @@ PMStreamServerHandler::PMStreamServerHandler(StreamSocket& socket, SocketReactor
     _socket.sendBytes("HELLO", 5, 0);
     STREAM_STATE = NONE_STATE;
     temp_data_chunk = NULL;
-        
+    
+    accumulateDataSize = 0;
 }
 
 PMStreamServerHandler::~PMStreamServerHandler()
@@ -77,6 +84,10 @@ PMStreamServerHandler::~PMStreamServerHandler()
     {
         app.logger().information("Disconnecting " + _socket.peerAddress().toString());
         _vdpmFH->clear();
+        app.logger().close();
+        //delete logger;
+        //logger = NULL;
+        //delete logger;
         //if(pmInfoChunk)
             //delete pmInfoChunk;
     }
@@ -251,9 +262,21 @@ PMStreamServerHandler::handleRequest()
             memcpy(&vp, &(_pBuffer[23]), sizeof(viewparam));
             this->_vdpmFH->getVDPMLoader()->update_viewing_parameters(vp.modelViewMatrix, vp.aspect, vp.fovy, vp.tolerance_square);
             data_chunk *data = this->_vdpmFH->getVDPMLoader()->adaptive_refinement_server_rendering();
+            int vertices, faces;
+            _vdpmFH->getVDPMLoader()->get_vfront_info(vertices, faces);
             char header_size[8 + sizeof(int)];
             strncpy(header_size, data->HEADER, 8);
             memcpy(&header_size[8], &(data->size), sizeof(int));
+            
+            accumulateDataSize += data->size;
+            Application &app = Poco::Util::Application::instance();
+            std::stringstream ss;
+            ss << data->size;
+            ss << "\t";
+            ss << accumulateDataSize;
+            ss << "\t" << vertices << "\t" << faces;
+            app.logger().information(ss.str());
+            
             
             if(temp_data_chunk != NULL){
                 if(temp_data_chunk->data)
@@ -271,7 +294,14 @@ PMStreamServerHandler::handleRequest()
             this->_vdpmFH->getVDPMLoader()->update_viewing_parameters(vp.modelViewMatrix, vp.aspect, vp.fovy, vp.tolerance_square);
             
             data_chunk *data = this->_vdpmFH->getVDPMLoader()->adaptive_refinement();
-            std::cout << data->size << std::endl;
+            accumulateDataSize += data->size;
+            Application &app = Poco::Util::Application::instance();
+            std::stringstream ss;
+            ss << data->size;
+            ss << "\t";
+            ss << accumulateDataSize;
+            app.logger().information(ss.str());
+            std::cout << ss.str() << std::endl;
             char header_size[8 + sizeof(int)];
             strncpy(header_size, data->HEADER, 8);
             memcpy(&header_size[8], &(data->size), sizeof(int));
