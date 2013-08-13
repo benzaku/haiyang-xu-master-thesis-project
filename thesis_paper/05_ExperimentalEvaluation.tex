@@ -1,11 +1,11 @@
-\chapter{Result}
+\chapter{Evaluation}
 \label{chapter:result}
 %\TODO{In this chapter, we will describe the evaluation methodology and experimental results of our system. }
 The main contribution of this thesis work is the view-dependent progressive mesh streaming framework on iPad. We have described and illustrated the design and implementation details of our system in previous chapters. In this chapter, we will do some experiment on our system and illustrate the evaluation results.  
 
 \section{Overview}
 \label{chapter:result:overview}
-Since our framework provides both client and server rendering of progressive mesh, experiments are performed both for client rendering and server rendering scenario. The initial purpose of providing two ways of rendering is to process large models which are not suitable for client rendering, therefore we will different models will be used to test the system's performance in both scenarios. 
+Since our framework provides both client and server rendering of progressive mesh, experiments are performed both for client rendering and server rendering scenario. The initial purpose of providing two ways of rendering is to process large models which are not suitable for client rendering, therefore different models will be used to test the system's performance in both scenarios. 
 \subsection{Models for Test}
 \label{chapter:result:overview:modelfortest}
 Below is a list of test models: 
@@ -36,6 +36,7 @@ Below is a list of test models:
 	rolling\_stage\_1.2Mfaces\_edited			&596903			&1192501		\\ \hline
 	810\_Red\_circular\_box\_1.4Mtriangles\_clean	&701332			&1402640		\\ \hline
 	803\_neptune\_4Mtriangles\_manifold		&2003932			&4007872		\\ \hline
+	Thai Statue							&5000000			&10000000	\\ \hline
     \end{tabular}
     \caption{Test models for server rendering.}
     \label{table:modelsserverrendering}
@@ -97,11 +98,15 @@ The client rendering evaluation experiments are performed on the models listed i
 \label{fig:dragon_vrip_trans_perf}
 \caption{Client Rendering Data Transmission Performance of Model "dragon\_vrip"}
 \end{figure}
+
+
 Recall the transmission process in the situation of client rendering. When a connection is established and there is no more user interaction on client's screen, the client application will repeatedly reduce the screen error tolerance by half and send the viewing  parameter with updated screen error tolerance to server for new $vsplit$ packets. Then $vsplit$ packets corresponding to current viewing parameter are transmitted to client and the client will perform refinement operation on current mesh. Once the refinement is finished, if there's no more user interaction,  the client will continue to decrease the screen error tolerance and perform the process again until current possible maximum LOD is reached. Therefore, we collect the elapsed time and $vsplit$ packet's size for each viewing parameter synchronization and response process. \FG{fig:clientrndtransillu} illustrates each sampled elapsed time interval. \\
 
-\FGp{fig:hand_trans_perf_data} shows the data transmission performance experiment we performed on model "hand" (See \TAp{table:modelsclientrendering}). The X axis denotes the time passed and the Y axis denotes the data amount in the unit of KB. The blue curve illustrates the data transfer amount upon each viewing parameter synchronization request. And the red curve illustrates the accumulative data transfer amount over the time. It can be discovered that the major data transmission occurs between 0~80 seconds and 130~160 seconds. It is easy to explain: in the first 80 seconds we are streaming from the initial view of the model. And next crest reflects the rotation of view and the streaming process of model's back side geometry. During 80~130 seconds we are interacting with the model to adjust it to the second viewing angle and scale. From \FGp{fig:hand_trans_perf_data} we can also get the time of streaming from base mesh to highest LOD with maximum details for a specific viewing parameter with the model "hand". For the initial one it costs about 80 seconds. And for the second one it costs about 30 seconds. The reason why this time is decreasing is that in the second phase we are viewing (and zooming into) a small area of the model's back center and it naturally contains less detail to refine. \\
+\FGp{fig:hand_trans_perf_data} shows the data transmission performance experiment we performed on model "hand" (See \TAp{table:modelsclientrendering}). The X axis denotes the time passed and the Y axis denotes the data amount in the unit of KB. The blue curve illustrates the data transfer amount upon each viewing parameter synchronization request. And the red curve illustrates the accumulative data transfer amount over the time. It can be discovered that the major data transmission occurs between 0 - 80 seconds and 130 - 160 seconds. It is easy to explain: in the first 80 seconds we are streaming from the initial view of the model. And next crest reflects the rotation of view and the streaming process of model's back side geometry. During 80 - 130 seconds we are interacting with the model to adjust it to the second viewing angle and scale. From \FGp{fig:hand_trans_perf_data} we can also get the time of streaming from base mesh to highest LOD with maximum details for a specific viewing parameter with the model "hand". For the initial one it costs about 80 seconds. And for the second one it costs about 30 seconds. The reason why this time is decreasing is that in the second phase we are viewing (and zooming into) a small area of the model's back center and it naturally contains less detail to refine. \\
 
 \FGp{fig:hand_trans_perf_elapsedtime} shows the elapsed time for each viewing parameter sync request of the experiment on model "hand". The elapsed time includes network transmission time and client-side refine\&render time. Naturally it has similar trend of the blue line in \FGp{fig:hand_trans_perf_data}.
+
+
 
 
 
@@ -125,7 +130,7 @@ Recall the transmission process in the situation of client rendering. When a con
 \label{fig:hand_new_cpu_mem}
 \caption{CPU and Memory Usage of Experiment on model "hand\_new"}
 \end{figure}
-We use model "hand\_new" for our Memory/CPU Usage experiment. The results are showed in \FGp{fig:hand_new_cpu_mem}. \FG{fig:hand_new_cpu} illustrates the CPU usage from the beginning of streaming. During the experiment the model is rotated and zoomed in for different viewing angle and scale. We can see from it that there are a climax of CPU usage between each idle time, which is the effects of each server processing between two viewing parameter synchronization request from server. \FG{fig:hand_new_cpu_mem} shows the memory usage. It shows that the server's memory consumption is quite steady during streaming. 
+We use model "hand\_new" for our Memory/CPU Usage experiment. \FG{fig:hand_new_cpu} illustrates the CPU usage from the beginning of streaming. During the experiment the model is rotated and zoomed in for different viewing angle and scale. We can see from it that there are a climax of CPU usage between each idle time, which is the effects of each server processing between two viewing parameter synchronization request from server. \FG{fig:hand_new_mem} shows the memory usage. It shows that the server's memory consumption is quite steady during streaming. 
 
 
 \subsubsection{Visual Quality}
@@ -191,7 +196,7 @@ We use model "hand\_new" for our Memory/CPU Usage experiment. The results are sh
 \label{fig:angel_visual_effects_hair}
 \caption{Visual Effects of Model "angel"'s "hair"}
 \end{figure}
-When the client side start to stream a mesh, it will be viewed on the client screen and refined on-the-fly, which means it can be seen as a refinement animation. Therefore we choose to illustrate this process in a sequence of screen shots using the model "angel". 
+When the client side starts to stream a mesh, it will be viewed on the client screen and refined on-the-fly, which means it can be seen as a refinement animation. Therefore we choose to illustrate this process in a sequence of screen shots using the model "angel". 
 
 
 
@@ -216,12 +221,37 @@ When the client side start to stream a mesh, it will be viewed on the client scr
 \label{fig:hapy_vrip_svr_data_trans}
 \caption{Server Rendering Data Transmission Statistics of model "hapy\_vrip"}
 \end{figure}
+\begin{figure}
+\centering
+\subfigure[b][Data Transmission. X Axis: time (second), Y Axis: Data (KB).]{
+	\centering
+	\includegraphics[height=0.3\textheight] {results/thai_trans_data_perf.pdf}
+	\label{fig:thai_trans_data}
+}
+\subfigure[b][Number of vertices and faces of the model refined during streaming. X Axis: Vertices/Faces Number, Y Axis: Time (second)]{
+	\centering
+	\includegraphics[height=0.3\textheight] {results/thai_trans_geo_perf.pdf}
+	\label{fig:thai_trans_geo}
+}
+
+\subfigure[b][Number of vertices and faces of the model refined during streaming compared with time elapsed.]{
+	\centering
+	\includegraphics[height=0.3\textheight] {results/thai_trans_vft.pdf}
+	\label{fig:thai_trans_vft}
+}
+\label{fig:thai_trans_perf}
+\caption{Experiment results of model Thai Statue of 10 million triangles.}
+\end{figure}
+
+
+
 The server rendering evaluation experiments are performed on the models listed in \TA{table:modelsserverrendering}.
 
 \subsubsection{Transmission Performance}
 \label{section:servertransperf}
-Since in the server rendering situation, both the refinement and rendering is done by the server, the definition of elapsed time becomes: $Time_{refinement}+Time_{rendering}+Time_{transmission}$. We choose the model "hapy\_vrip" for experiment. Details see \FGp{fig:hapy_vrip_svr_data_trans}. We can see that the server rendering of big meshes is quite fast. 
+Since in the server rendering situation, both the refinement and rendering is done by the server, the definition of elapsed time becomes: $Time_{refinement}+Time_{rendering}+Time_{transmission}$. We choose the model "hapy\_vrip" for experiment. Details see \FG{fig:hapy_vrip_svr_data_trans_datasize} and \FG{fig:hapy_vrip_svr_data_trans_active_faces_vertices}. We can see that the server rendering of big meshes is quite fast. 
 
+Moreover, we also did some experiments on more powerful workstations with larger models. We did server rendering experiment on the model Thai Statue from Stanford Scanning Repository, which has 10M faces. As showed in \FG{fig:thai_trans_data}, the data transferred in each request is stable since the server is just streaming images. \FG{fig:thai_trans_geo} shows the geometry statistics during streaming. And \FG{fig:thai_trans_vft} shows the geometry statistics compared with elapsed time of each request. Hypothetically the elapsed time should has linear relationship with the number of vertices and faces refined. However, it is interesting to find that there are two high points of elapsed time in the chart and their corresponding number of faces and vertices are relatively low. The reason of this is that during the time of those two high points, user has interrupted the refinement and rendering and is changing his view. And meanwhile, the server is deleting unnecessary geometry of the model. 
 
 
 \subsubsection{Visual Quality}
@@ -248,10 +278,52 @@ Since in the server rendering situation, both the refinement and rendering is do
 }
 
 \label{fig:neptune_serverrendering_visual_effects}
-\caption{Server Rendering Visual Effects of model "803\_neptune\_4Mtriangles\_manifold" with 4M triangles}
+\caption{Server Rendering Visual Effects of model "neptune" with 4M triangles}
 \end{figure}
 
-Similar to \SC{section:clientvisualquality}, in this section we will illustrate some screen shots to show the visual quality of server rendering streaming (See \FGp{fig:neptune_serverrendering_visual_effects}). It can be found that there is significant different between \FG{fig:neptune_serverrendering_visual_effects1} and \FG{fig:neptune_serverrendering_visual_effects2}, while \FG{fig:neptune_serverrendering_visual_effects2} and \FG{fig:neptune_serverrendering_visual_effects3} looks almost the same. This is because when model's LOD reaches a certain high level, the triangles reconstructed could even be smaller than a pixel on screen, thus making it looks no difference compared with lower LOD level. 
+
+\begin{figure}
+\centering
+\subfigure[b][Visual Effects at low LOD level]{
+	\centering
+	\includegraphics[width =0.3\textwidth] {results/Thai_1.png}
+	\label{fig:thai_serverrendering_visual_effects1}
+}
+\hfill
+\subfigure[b][Visual Effects at medium LOD level]{
+	\centering
+	\includegraphics[width =0.3\textwidth] {results/Thai_2.png}
+	\label{fig:thai_serverrendering_visual_effects2}
+}
+\hfill
+\subfigure[b][Visual Effects at high LOD level]{
+	\centering
+	\includegraphics[width =0.3\textwidth] {results/Thai_3.png}
+	\label{fig:Thai_serverrendering_visual_effects3}
+	}
+\subfigure[b][Visual Effects at low LOD level]{
+	\centering
+	\includegraphics[width =0.3\textwidth] {results/Thai_4.png}
+	\label{fig:thai_serverrendering_visual_effects4}
+}
+\hfill
+\subfigure[b][Visual Effects at medium LOD level]{
+	\centering
+	\includegraphics[width =0.3\textwidth] {results/Thai_5.png}
+	\label{fig:thai_serverrendering_visual_effects5}
+}
+\hfill
+\subfigure[b][Visual Effects at high LOD level]{
+	\centering
+	\includegraphics[width =0.3\textwidth] {results/Thai_6.png}
+	\label{fig:thai_serverrendering_visual_effects6}
+}
+
+\label{fig:thai_serverrendering_visual_effects}
+\caption{Server Rendering Visual Effects of model "Thai Statue" with 10M triangles}
+\end{figure}
+
+Similar to \SC{section:clientvisualquality}, in this section we will illustrate some screen shots to show the visual quality of server rendering streaming. It can be found that there is significant different between \FG{fig:neptune_serverrendering_visual_effects1} and \FG{fig:neptune_serverrendering_visual_effects2}, while \FG{fig:neptune_serverrendering_visual_effects2} and \FG{fig:neptune_serverrendering_visual_effects3} looks almost the same. So as the visual effects showed in \FG{fig:thai_serverrendering_visual_effects1} to \FG{fig:thai_serverrendering_visual_effects6}This is because when model's LOD reaches a certain high level, the triangles reconstructed could even be smaller than a pixel on screen, thus making it looks no difference compared with lower LOD level. 
 
 \section{Discussion}
 \label{section:results:discussion}

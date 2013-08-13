@@ -3,7 +3,7 @@
 %\TODO{In this chapter, we will describe in detail the implementation of both server and client of our mesh streaming framework.}
 We have describe the design of our mesh streaming system in the previous chapter. In this chapter, we will describe the implementation details of our system both in server and client side. 
 \input{graphs/GraphFlowChart}
-To describe the implementation of our streaming system, let's first take a look at the flow char of overall process \FG{fig:flowchart} shows. Consider a user is using our streaming system to view a mesh model progressively, the process goes as follows: 
+To describe the implementation of our streaming system, let's first take a look at the flow chart of overall process that \FG{fig:flowchart} shows. Consider a user is using our streaming system to view a mesh model progressively, the process goes as follows: 
 \begin{enumerate}
 \item
 Client/Server start and connect. 
@@ -191,7 +191,7 @@ The second tab is the \textbf{Model List} tab, as showed in \FG{fig:modellisttab
 \label{fig:configtab}
 \caption{Screenshot of Configuration Tab}
 \end{figure}
-The last tab, \textbf{Configuration} tab, provides graphics interface to user for the configuration of server IP address, port, control of connection and switching of rendering mode (client/server rendering), as showed in \FG{fig:configtab}. It is implemented using class \texttt{ConfigViewController} which is a subclass of \texttt{UIViewController} (See Listing~\ref{configviewcode}). \\
+The last tab, \textbf{Configuration} tab, provides graphics interface to user for the configuration of server IP address, port, control of connection and switching of rendering mode (client/server rendering), as showed in \FG{fig:configtab:disconnected} and \FG{fig:configtab:connected}. It is implemented using class \texttt{ConfigViewController} which is a subclass of \texttt{UIViewController} (See Listing~\ref{configviewcode}). \\
 
 \noindent
 \begin{minipage}{\linewidth}
