@@ -1,6 +1,10 @@
 varying vec3 normal, eyeVec, lightDir;
+varying vec4 varycolor;
+
+
 void main (void)
 {
+    /*
     vec4 final_color =
     gl_FrontLightModelProduct.sceneColor;
     vec3 N = normalize(normal);
@@ -21,5 +25,8 @@ void main (void)
         gl_FrontMaterial.specular *
         specular;
     }
-    gl_FragColor = final_color;
+     */
+    //gl_FragColor = final_color;
+    gl_FragColor = varycolor;
+    //vec4(1.0, 0.4, 0.4, 1.0)
 }

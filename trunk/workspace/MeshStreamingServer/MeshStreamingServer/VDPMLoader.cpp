@@ -561,7 +561,7 @@ data_chunk* VDPMLoader::adaptive_refinement_server_rendering()
     }
     
     // free memories tagged as 'deleted'
-    mesh_.garbage_collection(false, true, true);
+    mesh_.garbage_collection(true, true, true);
     mesh_.update_face_normals();
     
     _glHandler->update_viewing_parameters(viewing_parameters_);
