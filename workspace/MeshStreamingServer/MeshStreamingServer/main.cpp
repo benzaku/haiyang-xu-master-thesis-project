@@ -16,7 +16,7 @@
 #include "Poco/DOM/DOMWriter.h"
 #include "Poco/XML/XMLWriter.h"
 #include <stdio.h>
-#include <jpeglib.h>
+//#include <jpeglib.h>
 
 #include "Poco/Logger.h"
 #include "Poco/PatternFormatter.h"

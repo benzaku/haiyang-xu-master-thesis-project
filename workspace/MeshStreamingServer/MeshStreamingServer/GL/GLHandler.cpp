@@ -465,7 +465,7 @@ GLHandler::initGL()
     glClearDepth(100.0f);                         // 0 is near, 1 is far
     glDepthFunc(GL_LEQUAL);
     
-    //initLights();
+    initLights();
     std::cout << "Init GL completed" << std::endl;
     
 }
