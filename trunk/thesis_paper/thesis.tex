@@ -20,11 +20,11 @@
 \documentclass[
 a4paper,     %% defines the paper size: a4paper (default), a5paper, letterpaper, ...
 % landscape,   %% sets the orientation to landscape
-% twoside,     %% changes to a two-page-layout (alternatively: oneside)
+twoside,     %% changes to a two-page-layout (alternatively: oneside)
 % twocolumn,   %% changes to a two-column-layout
  headsepline, %% add a horizontal line below the column title
 % footsepline, %% add a horizontal line above the page footer
- titlepage,   %% only the titlepage (using titlepage-environment) appears on the first page (alternatively: notitlepage)
+titlepage,   %% only the titlepage (using titlepage-environment) appears on the first page (alternatively: notitlepage)
 parskip,     %% insert an empty line between two paragraphs (alternatively: halfparskip, ...)
 % leqno,       %% equation numbers left (instead of right)
 % fleqn,       %% equation left-justified (instead of centered)
@@ -33,7 +33,9 @@ parskip,     %% insert an empty line between two paragraphs (alternatively: half
 % 10pt         %% set default font size to 10 point
 % 11pt         %% set default font size to 11 point
 12pt,         %% set default font size to 12 point
-oneside, openright
+%oneside, 
+%openright
+openright
 %]{scrartcl}  %% article, see KOMA documentation (scrguide.dvi)
 ]{thesis}   %% \documentclass[12pt, a4paper, twoside]{thesis}
 
@@ -398,12 +400,12 @@ escapeinside={\%*}{*)}          % if you want to add a comment within your code
 %%% (see fields in Acrobat Reader: ``File -> Document properties -> Summary'')
 %%% Note: this method is better than as options of the hyperref-package (options are expanded correctly)
 \hypersetup{
-  pdftitle={morphableUI: A Framework...}, %%
-  pdfauthor={Andrey Krekhov}, %%
-  pdfsubject={Master's Thesis, Saarland University, March 2011}, %%
+  pdftitle={Distributed Streaming of Large Scale Geometry}, %%
+  pdfauthor={Haiyang Xu}, %%
+  pdfsubject={Master's Thesis, Saarland University, June 2013}, %%
   pdfcreator={}, %%
   pdfproducer={}, %%
-  pdfkeywords={distributed interaction, automatic UI generation, distributed systems} %%
+  pdfkeywords={progressive mesh, view-dependent streaming, large scale geometry, mobile device} %%
 }
 
 
@@ -581,6 +583,7 @@ escapeinside={\%}{)}          % if you want to add a comment within your code
 \begin{spacing}{1.5}
 
 \input{00_Dedication}
+\newpage
 \input{00_Abstract}
 
 %%% start a new page and display the table of contents
@@ -588,6 +591,9 @@ escapeinside={\%}{)}          % if you want to add a comment within your code
 \newpage
 
 \tableofcontents
+\listoffigures
+\listoftables
+\lstlistoflistings
 \addtolength{\textheight}{-9mm}
 \newpage
 \thispagestyle{empty}
@@ -601,9 +607,7 @@ escapeinside={\%}{)}          % if you want to add a comment within your code
 %\newpage 
 \pagenumbering{arabic}
 %\pagestyle{scrheadings}
-\listoffigures
-\listoftables
-\lstlistoflistings
+
 
 \input{01_Introduction}
 \input{02_BasicConcepts}
