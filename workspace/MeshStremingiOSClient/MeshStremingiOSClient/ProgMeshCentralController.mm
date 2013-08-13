@@ -18,6 +18,8 @@
 
 #import "VDPMModel.h"
 
+#import "LoadingView.h"
+
 @implementation ProgMeshCentralController{
     NSMutableData * _tempData;
     BOOL _needUpdateVBO;
@@ -25,6 +27,9 @@
     std::vector<UpdateInfo *> * _update_infos;
     std::list<NSData *> * _update_data;
     NSData * _displayTextureData;
+    BOOL meshLoaded;
+    
+    LoadingView *loadingView;
 }
 - (void *) get_update_infos
 {
@@ -86,6 +91,10 @@ static id SharedInstance;
     _textureDataUpdated = NO;
     
     updateTexFinish = YES;
+    
+    meshLoaded = NO;
+    
+    loadingView = nil;
     
     return self;
 }
@@ -458,7 +467,7 @@ int current_idx;
 - (void) handleWaitForSPMBaseInfoData: (NSData *) data
 {
     NSLog(@"handleWaitForSPMBaseInfoData : get data" );
-    
+
     if (_progMeshModel != nil) {
         [_progMeshModel release];
         _progMeshModel = nil;
@@ -540,8 +549,9 @@ int current_idx;
             
 #endif
         }
+        if(loadingView != nil)
+            [loadingView performSelector:@selector(removeView)];
     }
-    
     
 }
 
@@ -631,7 +641,9 @@ int current_idx;
 - (void) didSelectModelToLoad: (ModelObj *) selectedModel
 {
     _currentSelectedModel = selectedModel;
-    
+    loadingView =
+    [LoadingView loadingViewInView:[_progMeshModelTableViewController.view.window.subviews objectAtIndex:0]];
+	
     [self requestServerLoadModel:[_currentSelectedModel.Id intValue]];
     
 }

@@ -10,7 +10,7 @@
 
 @implementation Constants
 
-NSString *const DEFAULT_HOST = @"192.168.1.3";
+NSString *const DEFAULT_HOST = @"134.96.59.132";
 NSString *const DEFAULT_PORT = @"9977";
 NSString *const SERVER_STATE_NOT_CONNECTED = @"Server NOT Connected";
 NSString *const SERVER_STATE_CONNECTED = @"Server Connected";

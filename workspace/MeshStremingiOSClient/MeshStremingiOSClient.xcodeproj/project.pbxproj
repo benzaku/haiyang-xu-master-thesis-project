@@ -61,6 +61,11 @@
 		587E2DFE16553A5000F1FA1B /* ProgMeshModel.mm in Sources */ = {isa = PBXBuildFile; fileRef = 587E2DFD16553A5000F1FA1B /* ProgMeshModel.mm */; };
 		587E2E0116553B8000F1FA1B /* ProgMeshModelArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 587E2E0016553B8000F1FA1B /* ProgMeshModelArray.m */; };
 		588934AD165670750001BA27 /* ServerInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 588934AC165670750001BA27 /* ServerInfo.m */; };
+		5897CB19175F802000020829 /* Phong2.vsh in Sources */ = {isa = PBXBuildFile; fileRef = 5897CB18175F802000020829 /* Phong2.vsh */; };
+		5897CB1B175F802A00020829 /* Phong2.fsh in Sources */ = {isa = PBXBuildFile; fileRef = 5897CB1A175F802A00020829 /* Phong2.fsh */; };
+		5897CB1C175F834B00020829 /* Phong2.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 5897CB1A175F802A00020829 /* Phong2.fsh */; };
+		5897CB1D175F834B00020829 /* Phong2.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 5897CB18175F802000020829 /* Phong2.vsh */; };
+		5897CB23175FC74200020829 /* LoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5897CB22175FC74200020829 /* LoadingView.m */; };
 		589FB97616AC14580048E847 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 589FB97516AC14580048E847 /* QuartzCore.framework */; };
 		58AC96D1166D4DB1008E35D0 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 58AC96D0166D4DB1008E35D0 /* libxml2.dylib */; };
 		58AC96E8166D4FB3008E35D0 /* XmlHeaderHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 58AC96DF166D4FB3008E35D0 /* XmlHeaderHelper.m */; };
@@ -236,6 +241,10 @@
 		588934AC165670750001BA27 /* ServerInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServerInfo.m; sourceTree = "<group>"; };
 		5892CA021668C5F900DCADA8 /* CWLSynthesizeSingleton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CWLSynthesizeSingleton.h; sourceTree = "<group>"; };
 		5892CA041668DF9B00DCADA8 /* GCDSingleton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GCDSingleton.h; sourceTree = "<group>"; };
+		5897CB18175F802000020829 /* Phong2.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Phong2.vsh; sourceTree = "<group>"; };
+		5897CB1A175F802A00020829 /* Phong2.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Phong2.fsh; sourceTree = "<group>"; };
+		5897CB21175FC74200020829 /* LoadingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoadingView.h; sourceTree = "<group>"; };
+		5897CB22175FC74200020829 /* LoadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadingView.m; sourceTree = "<group>"; };
 		589FB97516AC14580048E847 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		58AC96D0166D4DB1008E35D0 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		58AC96DE166D4FB3008E35D0 /* XmlHeaderHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XmlHeaderHelper.h; sourceTree = "<group>"; };
@@ -598,6 +607,8 @@
 				5833F3C716B41DA2002C8511 /* PMMemoryUpdateInformation.mm */,
 				58D7EA5616EB58CE00682DB2 /* Pair.h */,
 				58D7EA5716EB58CE00682DB2 /* Pair.m */,
+				5897CB21175FC74200020829 /* LoadingView.h */,
+				5897CB22175FC74200020829 /* LoadingView.m */,
 				58D7EA5916EB642D00682DB2 /* MyMutableArray.h */,
 				58D7EA5A16EB642D00682DB2 /* MyMutableArray.m */,
 			);
@@ -616,6 +627,8 @@
 		5839914016A56AFC008ED5A2 /* Shaders */ = {
 			isa = PBXGroup;
 			children = (
+				5897CB1A175F802A00020829 /* Phong2.fsh */,
+				5897CB18175F802000020829 /* Phong2.vsh */,
 				58B04A8016AE12DD008BB398 /* template.fsh */,
 				58B04A8116AE12DD008BB398 /* template.vsh */,
 				5839914116A56B14008ED5A2 /* Shader.fsh */,
@@ -1142,6 +1155,8 @@
 				582DCAC616A242C3004BC474 /* filesave.xpm in Resources */,
 				58B04A6A16AE126E008BB398 /* GLRenderViewController.xib in Resources */,
 				580ACB6016FCA78C00F163BB /* texture.png in Resources */,
+				5897CB1C175F834B00020829 /* Phong2.fsh in Resources */,
+				5897CB1D175F834B00020829 /* Phong2.vsh in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1246,6 +1261,9 @@
 				5833F3C816B41DA2002C8511 /* PMMemoryUpdateInformation.mm in Sources */,
 				58D7EA5816EB58CE00682DB2 /* Pair.m in Sources */,
 				58D7EA5B16EB642D00682DB2 /* MyMutableArray.m in Sources */,
+				5897CB19175F802000020829 /* Phong2.vsh in Sources */,
+				5897CB1B175F802A00020829 /* Phong2.fsh in Sources */,
+				5897CB23175FC74200020829 /* LoadingView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1306,7 +1324,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = iphoneos;
+				SDKROOT = iphoneos6.1;
 				TARGETED_DEVICE_FAMILY = 2;
 			};
 			name = Debug;
@@ -1331,7 +1349,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				SDKROOT = iphoneos;
+				SDKROOT = iphoneos6.1;
 				TARGETED_DEVICE_FAMILY = 2;
 				VALIDATE_PRODUCT = YES;
 			};
