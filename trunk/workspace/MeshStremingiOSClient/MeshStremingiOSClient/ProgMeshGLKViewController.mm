@@ -82,6 +82,8 @@ const double TRACKBALL_RADIUS = 0.6;
     
     BOOL _viewChanged;
     
+    int touchBeginCount;
+    
 }
 
 
@@ -661,7 +663,7 @@ void printMatrix4(GLKMatrix4 * m){
     float dot = GLKVector3DotProduct(_anchor_position, _current_position);
     float angle = acosf(dot);
     
-    GLKQuaternion Q_rot = GLKQuaternionMakeWithAngleAndVector3Axis(angle * 2, axis);
+    GLKQuaternion Q_rot = GLKQuaternionMakeWithAngleAndVector3Axis(angle * 0.7 , axis);
     Q_rot = GLKQuaternionNormalize(Q_rot);
     
     // TODO: Do something with Q_rot...
@@ -677,7 +679,7 @@ void printMatrix4(GLKMatrix4 * m){
             
             if ([allTouches count] == 1) {
                 
-                
+                touchBeginCount = 1;
                 UITouch * touch = [allTouches objectAtIndex:0];
                 CGPoint location = [touch locationInView:self.view];
                 
@@ -691,6 +693,7 @@ void printMatrix4(GLKMatrix4 * m){
                 interrupt_lod_up = YES;
             } else if ([allTouches count] == 2)
             {
+                touchBeginCount = 2;
                 //do nothing
                 
             }
@@ -702,7 +705,7 @@ void printMatrix4(GLKMatrix4 * m){
             
             if ([allTouches count] == 1) {
                 
-                
+                touchBeginCount = 1;
                 UITouch * touch = [allTouches objectAtIndex:0];
                 CGPoint location = [touch locationInView:self.view];
                 
@@ -716,6 +719,7 @@ void printMatrix4(GLKMatrix4 * m){
                 interrupt_lod_up = YES;
             } else if ([allTouches count] == 2)
             {
+                touchBeginCount = 2;
                 //do nothing
                 
             }
@@ -774,7 +778,7 @@ void printMatrix4(GLKMatrix4 * m){
         
         NSArray *allTouches = [[event allTouches] allObjects];
         
-        if ([allTouches count] == 1) {
+        if ([allTouches count] == 1 /*&& touchBeginCount == 1*/) {
             currentStage = 0;
             UITouch * touch = [allTouches objectAtIndex:0];
             CGPoint location = [touch locationInView:self.view];
@@ -804,7 +808,7 @@ void printMatrix4(GLKMatrix4 * m){
             
             [self computeIncremental];
             
-        } else if ([allTouches count] == 2){
+        } else if ([allTouches count] == 2 /*&& touchBeginCount == 2*/){
             currentStage = 0;
 
             if(![[ProgMeshCentralController sharedInstance] getClientAbort] && [[ProgMeshCentralController sharedInstance] isDuringUpdating])

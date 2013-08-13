@@ -309,7 +309,7 @@
 
 - (void) set_tolerance_square: (float) tsq
 {
-    viewing_parameters_.set_tolerance_square(0.001/ tsq);
+    viewing_parameters_.set_tolerance_square(0.0002/ tsq);
     viewing_parameters_.update_viewing_configurations();
 }
 
